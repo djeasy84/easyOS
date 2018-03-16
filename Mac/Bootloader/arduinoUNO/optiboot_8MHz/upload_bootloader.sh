@@ -37,7 +37,7 @@ then
     help
 fi
 
-../../../AVR-GCC/bin/avrdude -p atmega328p -P $upload_device -c stk500v1 -b 19200 -C ../../../AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:0xFD:m -Uhfuse:w:0xD8:m -Ulfuse:w:0xE2:m
+../../../AVR-GCC/bin/avrdude -p atmega328p -P $upload_device -c stk500v1 -b 19200 -C ../../../AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:0xFD:m -Uhfuse:w:0xDE:m -Ulfuse:w:0xE2:m
 if [[ $? != 0 ]]
 then
     upload_ko
