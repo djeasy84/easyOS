@@ -84,3 +84,7 @@
 #if defined (PID_M)
     #include "./System/PID.h"
 #endif
+
+#if defined (STATE_MACHINE_M)
+    #include "./System/StateMachine.h"
+#endif
