@@ -46,7 +46,7 @@ class Interrupt
 		bool disableInterrupt(uint8_t ID);
 };
 
-Interrupt IE;
+Interrupt IM;
 
 /****************************************************************************************/
 

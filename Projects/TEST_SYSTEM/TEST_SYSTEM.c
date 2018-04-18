@@ -38,9 +38,11 @@
 #define EEPROM_M
 #define MULTI_TASKING_M
 #define PID_M
+#define STATE_MACHINE_M
 
 #include "./../../easyOS.h"
 
+StateMachine SM;
 ProportionalIntegralDerivative PID;
 
 bool init()

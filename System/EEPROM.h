@@ -41,7 +41,7 @@ class ElectricallyErasableProgrammableROM
         bool write(uint16_t addr, uint8_t *data, uint16_t len);
 };
 
-ElectricallyErasableProgrammableROM ER;
+ElectricallyErasableProgrammableROM EEPROM;
 
 /****************************************************************************************/
 

@@ -48,6 +48,7 @@ class MultiTasking
         MultiTasking();
 
         bool addTask(void (*pLoop)(void), uint32_t tInterval = 0x00000000);
+
         void runTask();
 
     private:
