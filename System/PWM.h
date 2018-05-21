@@ -54,6 +54,7 @@ PulseWidthModulation PWM;
 
 PulseWidthModulation::PulseWidthModulation()
 {
+    #if !defined (COUNTER_M)
     DDRD |= (1<<5);
     DDRD |= (1<<6);
 
@@ -61,12 +62,14 @@ PulseWidthModulation::PulseWidthModulation()
 
     write(200, 0);
     write(201, 0);
+    #endif
 }
 
 bool PulseWidthModulation::setup(uint16_t freq)
 {
     switch(freq)
     {
+        #if !defined (COUNTER_M)
         case 125:
         {
             TCCR0A = 0b00000001;
@@ -115,6 +118,7 @@ bool PulseWidthModulation::setup(uint16_t freq)
             TCCR0B = 0b00000001;
         }
         break;
+        #endif
         default:
         {
             return false;
@@ -128,6 +132,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
 {
     switch(id)
     {
+        #if !defined (COUNTER_M)
         case 200:
         {
             if (value == 0)
@@ -166,6 +171,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             }
         }
         break;
+        #endif
     }
 }
 

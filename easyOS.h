@@ -63,6 +63,9 @@
 	#include "./System/Interrupt.h"
 #endif
 
+#if defined (COUNTER_M)
+	#include "./System/Counter.h"
+#endif
 #if defined (PWM_M)
     #include "./System/PWM.h"
 #endif
