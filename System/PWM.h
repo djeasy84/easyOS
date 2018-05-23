@@ -208,8 +208,12 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
 
 PulseWidthModulation::PulseWidthModulation()
 {
+	#if !defined (COUNTER_M)
     DDRG |= (1<<5);
+	#endif
+	#if !defined (COUNTER_M)
     DDRB |= (1<<7);
+	#endif
     DDRE |= (1<<3);
     DDRE |= (1<<4);
     DDRE |= (1<<5);
@@ -224,12 +228,16 @@ PulseWidthModulation::PulseWidthModulation()
 
     write(200, 0);
     write(201, 0);
+	#if !defined (COUNTER_M)
     write(202, 0);
+	#endif
     write(203, 0);
     write(204, 0);
     write(205, 0);
     write(206, 0);
+	#if !defined (COUNTER_M)
     write(207, 0);
+	#endif
     write(208, 0);
     write(209, 0);
     write(210, 0);
@@ -241,9 +249,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
     {
         case 125:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000100;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000100;
 
@@ -256,9 +265,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 250:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000100;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001100;
 
@@ -271,9 +281,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 500:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000011;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000011;
 
@@ -286,9 +297,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 1000:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000011;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001011;
 
@@ -301,9 +313,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 4000:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000010;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000010;
 
@@ -316,9 +329,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 8000:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000010;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001010;
 
@@ -331,9 +345,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 30000:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000001;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000001;
 
@@ -346,9 +361,10 @@ bool PulseWidthModulation::setup(uint16_t freq)
         break;
         case 60000:
         {
+			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000001;
-
+			#endif
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001001;
 
@@ -416,6 +432,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
         break;
         case 202:
         {
+			#if !defined (COUNTER_M)
             if (value == 0)
             {
                 TCCR0A &= ~(0b00110000);
@@ -431,6 +448,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR0A |= 0b00100000;
                 OCR0B = value;
             }
+			#endif
         }
         break;
         case 203:
@@ -511,6 +529,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
         break;
         case 207:
         {
+			#if !defined (COUNTER_M)
             if (value == 0)
             {
                 TCCR0A &= ~(0b11000000);
@@ -526,6 +545,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR0A |= 0b10000000;
                 OCR0A = value;
             }
+			#endif
         }
         break;
         case 208:
