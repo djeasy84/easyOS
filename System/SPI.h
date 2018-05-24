@@ -54,9 +54,10 @@ SerialPeripheralInterface::SerialPeripheralInterface()
     DDRB |= (1<<5);
 
     SPSR = 0;
+	SPSR |= (1<<SPI2X);
 
     SPCR = 0;
-    SPCR |= (1<<SPE) | (1<<MSTR);
+    SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);
 }
 
 #endif
@@ -72,9 +73,10 @@ SerialPeripheralInterface::SerialPeripheralInterface()
     DDRB |= (1<<2);
 
     SPSR = 0;
+	SPSR |= (1<<SPI2X);
 
     SPCR = 0;
-    SPCR |= (1<<SPE) | (1<<MSTR);
+    SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);
 }
 
 #endif
