@@ -29,6 +29,8 @@
 #ifndef COUNTER_H
 #define COUNTER_H
 
+#include <avr/interrupt.h>
+
 volatile int counter_val = -1;
 volatile uint8_t counter_div = 0;
 volatile uint8_t counter_count = 0;
