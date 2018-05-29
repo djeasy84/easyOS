@@ -45,12 +45,14 @@ class Display
     private:
         void data(uint8_t value);
         void command(uint8_t cmd, uint8_t val=0);
+
         void send(uint8_t value);
 
         uint8_t dcPin;
         uint8_t enPin;
         uint8_t dataPin[4];
         uint8_t ledPin;
+
         uint8_t nRows;
         uint8_t nCols;
 
