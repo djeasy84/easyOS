@@ -31,8 +31,6 @@
 
 #include "./Time.h"
 
-#include <stdlib.h>
-
 class InterIntegratedCircuit
 {
     public:

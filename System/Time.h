@@ -30,11 +30,11 @@
 #define TIME_H
 
 #include <math.h>
+#include <stdlib.h>
 #include <util/delay.h>
 
 #include <avr/wdt.h>
 #include <avr/interrupt.h>
-
 
 volatile uint32_t milliseconds = 0;
 

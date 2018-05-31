@@ -31,8 +31,6 @@
 
 #include "./Time.h"
 
-#include <stdlib.h>
-
 #define MAX_TASK 8
 
 struct taskInfo

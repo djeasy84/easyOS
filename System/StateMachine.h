@@ -31,8 +31,6 @@
 
 #include "./Time.h"
 
-#include <stdlib.h>
-
 #define MAX_STATE 8
 
 struct stateInfo
