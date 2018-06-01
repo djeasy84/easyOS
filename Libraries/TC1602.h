@@ -29,6 +29,8 @@
 #ifndef TC1602_H
 #define TC1602_H
 
+#include <stdio.h>
+
 #define CMD_DISPLAY_CLEAR 0x01
 #define CMD_CURSOR_HOME 0x02
 #define CMD_DISPLAY_ENTRY 0x04
@@ -40,7 +42,9 @@ class Display
     public:
         bool setup(uint8_t dc /*ARDUINO_PIN_8*/, uint8_t en /*ARDUINO_PIN_9*/, uint8_t data0 /*ARDUINO_PIN_4*/, uint8_t data1 /*ARDUINO_PIN_5*/, uint8_t data2 /*ARDUINO_PIN_6*/, uint8_t data3 /*ARDUINO_PIN_7*/, uint8_t led /*ARDUINO_PIN_10*/, uint8_t rows, uint8_t cols);
 
-        void write(char *row1, char *row2=0, char *row3=0, char *row4=0);
+        void write(const char *row0=0, const char *row1=0, const char *row2=0, const char *row3=0);
+
+        void printf(uint8_t row, const char *format, ...);
 
     private:
         void data(uint8_t value);
@@ -104,14 +108,14 @@ bool Display::setup(uint8_t dc, uint8_t en, uint8_t data0, uint8_t data1, uint8_
     return true;
 }
 
-void Display::write(char *row1, char *row2, char *row3, char *row4)
+void Display::write(const char *row0, const char *row1, const char *row2, const char *row3)
 {
-    char *tmpData[4] = {row1, row2, row3, row4};
+    const char *tmpData[4] = {row0, row1, row2, row3};
     command(CMD_CURSOR_HOME);
     for (uint8_t i=0; i<nRows; i++)
     {
         if (tmpData[i] == 0)
-            break;
+            continue;
         command(CMD_CURSOR_ADDRESS, rowsOffset[i]);
         bool foundTerminator = false;
         for (uint8_t j=0; j<nCols; j++)
@@ -124,6 +128,20 @@ void Display::write(char *row1, char *row2, char *row3, char *row4)
                 data(tmpData[i][j]);
         }
     }
+}
+
+void Display::printf(uint8_t row, const char *format, ...)
+{
+    if (row >= nRows)
+        return;
+    char *tmpRows[4] = {0, 0, 0, 0};
+    char buffer[nCols+1];
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, nCols+1, format, args);
+    tmpRows[row] = buffer;
+    write(tmpRows[0], tmpRows[1], tmpRows[2], tmpRows[3]);
+    va_end(args);
 }
 
 void Display::data(uint8_t value)
@@ -154,9 +172,7 @@ void Display::send(uint8_t value)
     _delay_us(5);
 
     for (uint8_t i=0; i<4; i++)
-    {
         DP.write(dataPin[i], (value >> i) & 0x01);
-    }
     _delay_us(5);
 
     DP.write(enPin, true);
