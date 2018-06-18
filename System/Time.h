@@ -36,7 +36,7 @@
 #include <avr/wdt.h>
 #include <avr/interrupt.h>
 
-volatile uint32_t milliseconds = 0xFFFFF000;
+volatile uint32_t milliseconds = 0;
 
 ISR(TIMER1_COMPA_vect)
 {
