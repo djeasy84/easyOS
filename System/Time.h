@@ -36,7 +36,7 @@
 #include <avr/wdt.h>
 #include <avr/interrupt.h>
 
-volatile uint32_t milliseconds = 0;
+volatile uint32_t milliseconds = 0xFFFFF000;
 
 ISR(TIMER1_COMPA_vect)
 {
@@ -76,6 +76,8 @@ class Time
 
         uint32_t millisec();
         void wait_millisec(uint32_t value);
+
+		uint32_t time_diff(uint32_t stop, uint32_t start);
 
     private:
         uint8_t restartReason;
@@ -189,6 +191,13 @@ void Time::wait_millisec(uint32_t value)
 {
     uint32_t start = millisec();
     while((millisec() - start) < value);
+}
+
+uint32_t Time::time_diff(uint32_t stop, uint32_t start)
+{
+	if (stop >= start)
+		return stop - start;
+	return (0xFFFFFFFF - start) + stop;
 }
 
 #endif

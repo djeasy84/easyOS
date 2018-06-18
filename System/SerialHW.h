@@ -163,7 +163,7 @@ bool SerialHW0::read(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-        if (labs(ST.microsec()-start_microsec) > 5)
+		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
             break;
         if (read(&data[*len]))
             (*len)++;
@@ -341,7 +341,7 @@ bool SerialHW0::readln(char *data, uint8_t max)
             if (data[len-2] == '\r' && data[len-1] == '\n')
                 break;
         }
-        if (labs(ST.microsec()-start_microsec) > 5000)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
             return false;
         start_microsec = ST.microsec();
     }
@@ -472,7 +472,7 @@ bool SerialHW1::read(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-        if (labs(ST.microsec()-start_microsec) > 5)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
             break;
         if (read(&data[*len]))
             (*len)++;
@@ -650,7 +650,7 @@ bool SerialHW1::readln(char *data, uint8_t max)
             if (data[len-2] == '\r' && data[len-1] == '\n')
                 break;
         }
-        if (labs(ST.microsec()-start_microsec) > 5000)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
             return false;
         start_microsec = ST.microsec();
     }
@@ -778,7 +778,7 @@ bool SerialHW2::read(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-        if (labs(ST.microsec()-start_microsec) > 5)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
             break;
         if (read(&data[*len]))
             (*len)++;
@@ -956,7 +956,7 @@ bool SerialHW2::readln(char *data, uint8_t max)
             if (data[len-2] == '\r' && data[len-1] == '\n')
                 break;
         }
-        if (labs(ST.microsec()-start_microsec) > 5000)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
             return false;
         start_microsec = ST.microsec();
     }
@@ -1084,7 +1084,7 @@ bool SerialHW3::read(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-        if (labs(ST.microsec()-start_microsec) > 5)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
             break;
         if (read(&data[*len]))
             (*len)++;
@@ -1262,7 +1262,7 @@ bool SerialHW3::readln(char *data, uint8_t max)
             if (data[len-2] == '\r' && data[len-1] == '\n')
                 break;
         }
-        if (labs(ST.microsec()-start_microsec) > 5000)
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
             return false;
         start_microsec = ST.microsec();
     }

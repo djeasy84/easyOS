@@ -86,7 +86,7 @@ void MultiTasking::runTask()
 {
     for (uint8_t i=0; i<MAX_TASK && taskList[i].taskLoop!=0x0000; i++)
     {
-        if (labs(ST.microsec()-taskList[i].lastRun) >= taskList[i].timeInterval)
+		if (ST.time_diff(ST.microsec(), taskList[i].lastRun) >= taskList[i].timeInterval)
         {
             taskList[i].taskLoop();
             taskList[i].lastRun = ST.microsec();

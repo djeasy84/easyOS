@@ -312,7 +312,7 @@ bool ModBusMaster::receiveResponse(uint8_t address, uint8_t *data, uint8_t len)
     uint8_t idx = 0;
     while(true)
     {
-        if (labs(ST.millisec() - time) > 250)
+        if (ST.time_diff(ST.millisec(), time) > 250)
             return false;
         if (SHW1.read(&buffer[idx]))
             idx++;

@@ -79,7 +79,7 @@ bool Temperature::setup(uint8_t pin, uint32_t refresh)
 bool Temperature::read(float *temp)
 {
     uint32_t currTime = ST.millisec();
-    if (labs(currTime - lastUpdate) > 1000 && labs(currTime - lastUpdate) < tempRefresh && firstDone == true)
+    if (ST.time_diff(currTime, lastUpdate) > 1000 && ST.time_diff(currTime, lastUpdate) < tempRefresh && firstDone == true)
     {
         if (tempReaded == false)
         {
@@ -114,7 +114,7 @@ bool Temperature::read(float *temp)
 
 bool Temperature::update()
 {
-    if (labs(ST.millisec() - lastUpdate) > tempRefresh)
+	if (ST.time_diff(ST.millisec(), lastUpdate) > tempRefresh)
     {
         if (!reset())
             return false;

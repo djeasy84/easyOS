@@ -55,7 +55,7 @@ ProportionalIntegralDerivative::ProportionalIntegralDerivative()
 
 float ProportionalIntegralDerivative::runPID(float input, float target, float kP, float kI, float kD, float min, float max)
 {
-    float interval = labs(ST.microsec() - lastTime) / 1000000.0;
+    float interval = ST.time_diff(ST.microsec(), lastTime) / 1000000.0;
     lastTime = ST.microsec();
 
     float error = target - input;

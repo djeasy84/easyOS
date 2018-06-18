@@ -63,8 +63,8 @@ bool InterIntegratedCircuit::sendStart()
     uint32_t start_microsec = ST.microsec();
     while((TWCR & (1<<TWINT)) == false)
     {
-         if (labs(ST.microsec()-start_microsec) > 5)
-            return false;
+		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+			return false;
     }
     if ((TWSR & 0xF8) != 0x08 && (TWSR & 0xF8) != 0x10)
         return false;
@@ -79,8 +79,8 @@ bool InterIntegratedCircuit::sendDeviceAddressWithReadWrite(uint8_t devAddr, boo
     uint32_t start_microsec = ST.microsec();
     while((TWCR & (1<<TWINT)) == false)
     {
-         if (labs(ST.microsec()-start_microsec) > 5)
-            return false;
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+			return false;
     }
     if (!writeRead)
     {
@@ -102,8 +102,8 @@ bool InterIntegratedCircuit::sendData(uint8_t data)
     uint32_t start_microsec = ST.microsec();
     while((TWCR & (1<<TWINT)) == false)
     {
-         if (labs(ST.microsec()-start_microsec) > 5)
-            return false;
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+			return false;
     }
     if ((TWSR & 0xF8) != 0x28 && (TWSR & 0xF8) != 0x30)
         return false;
@@ -119,8 +119,8 @@ bool InterIntegratedCircuit::readData(uint8_t *data, bool noAck)
     uint32_t start_microsec = ST.microsec();
     while((TWCR & (1<<TWINT)) == false)
     {
-         if (labs(ST.microsec()-start_microsec) > 5)
-            return false;
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+			return false;
     }
     if ((TWSR & 0xF8) != 0x50 && (TWSR & 0xF8) != 0x58)
         return false;

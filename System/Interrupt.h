@@ -64,7 +64,7 @@ ISR(INT0_vect)
 {
 	if (intFunc[I0] == 0x0000)
 		return;
-	if (abs(ST.millisec()-lastTime[I0]) > debounceTime[I0])
+	if (ST.time_diff(ST.millisec(), lastTime[I0]) > debounceTime[I0])
 	{
 		lastTime[I0] = ST.millisec();
 		intFunc[I0]();
@@ -74,7 +74,7 @@ ISR(INT1_vect)
 {
 	if (intFunc[I1] == 0x0000)
 		return;
-	if (abs(ST.millisec()-lastTime[I1]) > debounceTime[I1])
+	if (ST.time_diff(ST.millisec(), lastTime[I1]) > debounceTime[I1])
 	{
 		lastTime[I1] = ST.millisec();
 		intFunc[I1]();
@@ -169,7 +169,7 @@ ISR(INT4_vect)
 {
 	if (intFunc[I0] == 0x0000)
 		return;
-	if (abs(ST.millisec()-lastTime[I0]) > debounceTime[I0])
+	if (ST.time_diff(ST.millisec(), lastTime[I0]) > debounceTime[I0])
 	{
 		lastTime[I0] = ST.millisec();
 		intFunc[I0]();
@@ -179,7 +179,7 @@ ISR(INT5_vect)
 {
 	if (intFunc[I1] == 0x0000)
 		return;
-	if (abs(ST.millisec()-lastTime[I1]) > debounceTime[I1])
+	if (ST.time_diff(ST.millisec(), lastTime[I1]) > debounceTime[I1])
 	{
 		lastTime[I1] = ST.millisec();
 		intFunc[I1]();
