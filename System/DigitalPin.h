@@ -582,56 +582,46 @@ void DigitalPin::write(uint8_t id, bool status)
     #define ARDUINO_PIN_A15 115
 #endif
 #if defined (__BOARD_easyHOME__)
-    #define EASYHOME_DIP_1 9
-    #define EASYHOME_DIP_2 8
-    #define EASYHOME_DIP_3 7
-    #define EASYHOME_DIP_4 6
-    #define EASYHOME_WE_485 34
-    #define EASYHOME_CE_RF 4
-    #define EASYHOME_CS_RF 5
-    #define EASYHOME_CS_SD 3
-    #define EASYHOME_CS_CB 27
-    #define EASYHOME_CS_ETH 2
-    #define EASYHOME_AUX_1 33
-    #define EASYHOME_AUX_2 32
-    #define EASYHOME_AUX_3 31
-    #define EASYHOME_AUX_4 36
-    #define EASYHOME_AUX_5 35
-    #define EASYHOME_AUX_6 30
-    #define EASYHOME_LED_CPU 18
-    #define EASYHOME_IN_1 113
-    #define EASYHOME_IN_2 112
-    #define EASYHOME_IN_3 111
-    #define EASYHOME_IN_4 110
-    #define EASYHOME_IN_5 109
-    #define EASYHOME_IN_6 108
-    #define EASYHOME_IN_7 107
-    #define EASYHOME_IN_8 106
-    #define EASYHOME_IN_9 105
-    #define EASYHOME_IN_10 104
-    #define EASYHOME_IN_11 103
-    #define EASYHOME_IN_12 102
-    #define EASYHOME_IN_13 101
-    #define EASYHOME_IN_14 100
-    #define EASYHOME_IN_15 28
-    #define EASYHOME_IN_16 29
-    #define EASYHOME_IN_12V 115
-    #define EASYHOME_OUT_1 15
-    #define EASYHOME_OUT_2 16
-    #define EASYHOME_OUT_3 17
-    #define EASYHOME_OUT_4 210
-    #define EASYHOME_OUT_5 209
-    #define EASYHOME_OUT_6 208
-    #define EASYHOME_OUT_7 47
-    #define EASYHOME_OUT_8 207
-    #define EASYHOME_OUT_9 46
-    #define EASYHOME_OUT_10 206
-    #define EASYHOME_OUT_11 205
-    #define EASYHOME_OUT_12 204
-    #define EASYHOME_OUT_13 201
-    #define EASYHOME_OUT_14 200
-    #define EASYHOME_OUT_15 203
-    #define EASYHOME_OUT_16 202
+    #define EASYHOME_LED_CPU 202
+    #define EASYHOME_010V_1 210
+    #define EASYHOME_010V_2 23
+    #define EASYHOME_010V_3 22
+    #define EASYHOME_010V_4 209
+    #define EASYHOME_RS232_RX 38
+    #define EASYHOME_RS232_TX 37
+    #define EASYHOME_RS485_RX 36
+    #define EASYHOME_RS485_TX 35
+    #define EASYHOME_RS485_WE 30
+    #define EASYHOME_EX2 39
+    #define EASYHOME_EX1 40
+    #define EASYHOME_SDA 41
+    #define EASYHOME_SCL 42
+    #define EASYHOME_IN_1 115
+    #define EASYHOME_IN_2 114
+    #define EASYHOME_IN_3 113
+    #define EASYHOME_IN_4 112
+    #define EASYHOME_IN_5 111
+    #define EASYHOME_IN_6 110
+    #define EASYHOME_IN_7 109
+    #define EASYHOME_IN_5V 107
+    #define EASYHOME_IN_12V 100
+    #define EASYHOME_OUT_5V 4
+    #define EASYHOME_OUT_12V 21
+    #define EASYHOME_OUT_1 48
+    #define EASYHOME_OUT_2 19
+    #define EASYHOME_OUT_3 9
+    #define EASYHOME_OUT_4 8
+    #define EASYHOME_OUT_5 7
+    #define EASYHOME_OUT_6 6
+    #define EASYHOME_OUT_7 5
+    #define EASYHOME_CAN_RESET 206
+    #define EASYHOME_ETH_RESET 46
+    #define EASYHOME_CAN_CS 47
+    #define EASYHOME_ETH_CS 27
+    #define EASYHOME_SD_CS 0
+    #define EASYHOME_SPI_SCK 45
+    #define EASYHOME_SPI_MISO 43
+    #define EASYHOME_SPI_MOSI 44
 #endif
 
 bool DigitalPin::read(uint8_t id, bool pullup)
@@ -1233,6 +1223,18 @@ bool DigitalPin::read(uint8_t id, bool pullup)
                 PORTB &= ~(1<<4);
             asm("nop");
             if(PINB & (1<<4))
+                return true;
+        }
+        break;
+        case 48:
+        {
+            DDRJ &= ~(1<<6);
+            if (pullup)
+                PORTJ |= (1<<6);
+            else
+                PORTJ &= ~(1<<6);
+            asm("nop");
+            if(PINJ & (1<<6))
                 return true;
         }
         break;
@@ -2042,6 +2044,15 @@ void DigitalPin::write(uint8_t id, bool status)
                 PORTB |= (1<<4);
             else
                 PORTB &= ~(1<<4);
+        }
+        break;
+        case 48:
+        {
+            DDRJ |= (1<<6);
+            if (status)
+                PORTJ |= (1<<6);
+            else
+                PORTJ &= ~(1<<6);
         }
         break;
         case 100:

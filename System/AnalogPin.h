@@ -141,21 +141,15 @@ uint16_t AnalogPin::read(uint8_t id)
     #define ARDUINO_PIN_A15 115
 #endif
 #if defined (__BOARD_easyHOME__)
-    #define EASYHOME_IN_1 113
-    #define EASYHOME_IN_2 112
-    #define EASYHOME_IN_3 111
-    #define EASYHOME_IN_4 110
-    #define EASYHOME_IN_5 109
-    #define EASYHOME_IN_6 108
-    #define EASYHOME_IN_7 107
-    #define EASYHOME_IN_8 106
-    #define EASYHOME_IN_9 105
-    #define EASYHOME_IN_10 104
-    #define EASYHOME_IN_11 103
-    #define EASYHOME_IN_12 102
-    #define EASYHOME_IN_13 101
-    #define EASYHOME_IN_14 100
-    #define EASYHOME_IN_12V 115
+    #define EASYHOME_IN_1 115
+    #define EASYHOME_IN_2 114
+    #define EASYHOME_IN_3 113
+    #define EASYHOME_IN_4 112
+    #define EASYHOME_IN_5 111
+    #define EASYHOME_IN_6 110
+    #define EASYHOME_IN_7 109
+    #define EASYHOME_IN_5V 107
+    #define EASYHOME_IN_12V 100
 #endif
 
 uint16_t AnalogPin::read(uint8_t id)
