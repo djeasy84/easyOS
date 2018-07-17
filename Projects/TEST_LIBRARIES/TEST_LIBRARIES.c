@@ -50,7 +50,7 @@ ProportionalIntegralDerivative PID;
 #include "./../../Libraries/MPU6050.h"
 #include "./../../Libraries/MCP2515.h"
 #include "./../../Libraries/DS1307.h"
-#include "./../../Libraries/W5100.h"
+#include "./../../Libraries/W5500.h"
 #include "./../../Libraries/NRF24L01.h"
 #include "./../../Libraries/DS18B20.h"
 #include "./../../Libraries/WS2812B.h"

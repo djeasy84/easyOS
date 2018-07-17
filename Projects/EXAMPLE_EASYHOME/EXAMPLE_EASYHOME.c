@@ -42,8 +42,15 @@
 
 int main()
 {
+    if (!EH.setup())
+        return 0;
+
     while(true)
     {
+        SHW0.print("A");
+        ST.wait_millisec(500);
+
+        // ----------------------
         EH.update();
     }
     return 0;

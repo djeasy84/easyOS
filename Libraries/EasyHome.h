@@ -29,10 +29,16 @@
 #ifndef EASYHOME_H
 #define EASYHOME_H
 
+#include "./DS1307.h"
+#include "./MCP2515.h"
+#include "./W5500.h"
+
 class EasyHome
 {
     public:
         EasyHome();
+
+        bool setup();
 
         bool update();
 
@@ -66,8 +72,10 @@ EasyHome::EasyHome()
     SHW3.setup();
     DP.write(EASYHOME_RS485_WE, false);
 
-    // UART "EX" CONNECTOR
-    SHW1.setup();
+    // UART or GPIO on "EX" CONNECTOR
+    //SHW1.setup();
+    //DP.write(EASYHOME_EX1, false);
+    //DP.write(EASYHOME_EX2, false);
 
     // ANALOG INPUT
     DP.read(EASYHOME_IN_1, false);
@@ -110,6 +118,28 @@ EasyHome::EasyHome()
     DP.write(EASYHOME_CAN_CS, true);
     DP.write(EASYHOME_ETH_CS, true);
     DP.write(EASYHOME_SD_CS, true);
+
+}
+
+bool EasyHome::setup()
+{
+    // RTC
+    if (!RTC.setup())
+        return false;
+
+    // CAN-BUS
+    ST.wait_millisec(250);
+    DP.write(EASYHOME_CAN_RESET, true);
+    ST.wait_millisec(250);
+    if (!CB.setup(EASYHOME_CAN_CS, NORMAL_MODE, 500))
+        return false;
+
+    // ETH
+    ST.wait_millisec(250);
+    DP.write(EASYHOME_ETH_RESET, true);
+    ST.wait_millisec(250);
+    if (!ETH.setup(EASYHOME_ETH_CS))
+        return false;
 }
 
 bool EasyHome::update()
