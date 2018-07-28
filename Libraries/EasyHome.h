@@ -85,6 +85,7 @@ class EasyHome
         RTCClock CLOCK();
         CanBus CANBUS();
         Ethernet ETHERNET();
+        ExternalEEPROM EXEEPROM();
 
         void update();
 
@@ -389,6 +390,11 @@ CanBus EasyHome::CANBUS()
 Ethernet EasyHome::ETHERNET()
 {
     return ETH;
+}
+
+ExternalEEPROM EasyHome::EXEEPROM()
+{
+    return ExEEPROM;
 }
 
 /****************************************************************************************/

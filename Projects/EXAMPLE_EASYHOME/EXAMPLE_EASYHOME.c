@@ -29,6 +29,7 @@
 #define TIME_M
 #define DIGITAL_PIN_M
 #define ANALOG_PIN_M
+#define PWM_M
 #define SPI_M
 #define I2C_M
 #define SERIAL_HW_M

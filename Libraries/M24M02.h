@@ -33,7 +33,7 @@
 
 #define BANK_SIZE (2UL*((1024UL*1024UL)/8UL))
 
-class ExternalElectricallyErasableProgrammableROM
+class ExternalEEPROM
 {
     public:
         bool setup(bool twoBank=false);
@@ -51,17 +51,17 @@ class ExternalElectricallyErasableProgrammableROM
         uint32_t maxAddr;
 };
 
-ExternalElectricallyErasableProgrammableROM ExEEPROM;
+ExternalEEPROM ExEEPROM;
 
 /****************************************************************************************/
 
-bool ExternalElectricallyErasableProgrammableROM::setup(bool twoBank)
+bool ExternalEEPROM::setup(bool twoBank)
 {
     maxAddr = (BANK_SIZE - 1) * ((twoBank) ? 2 : 1);
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::read(uint32_t addr, uint8_t *data)
+bool ExternalEEPROM::read(uint32_t addr, uint8_t *data)
 {
     if (addr > maxAddr)
         return false;
@@ -73,7 +73,7 @@ bool ExternalElectricallyErasableProgrammableROM::read(uint32_t addr, uint8_t *d
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::write(uint32_t addr, uint8_t data)
+bool ExternalEEPROM::write(uint32_t addr, uint8_t data)
 {
     if (addr > maxAddr)
         return false;
@@ -90,7 +90,7 @@ bool ExternalElectricallyErasableProgrammableROM::write(uint32_t addr, uint8_t d
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::read(uint32_t addr, uint8_t *data, uint32_t len)
+bool ExternalEEPROM::read(uint32_t addr, uint8_t *data, uint32_t len)
 {
     for (uint32_t i=0; i<len; i++)
     {
@@ -100,7 +100,7 @@ bool ExternalElectricallyErasableProgrammableROM::read(uint32_t addr, uint8_t *d
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::write(int32_t addr, uint8_t *data, uint32_t len)
+bool ExternalEEPROM::write(int32_t addr, uint8_t *data, uint32_t len)
 {
     for (uint32_t i=0; i<len; i++)
     {
@@ -110,7 +110,7 @@ bool ExternalElectricallyErasableProgrammableROM::write(int32_t addr, uint8_t *d
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::setRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t data)
+bool ExternalEEPROM::setRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t data)
 {
     if (!I2C.sendStart())
         return false;
@@ -128,7 +128,7 @@ bool ExternalElectricallyErasableProgrammableROM::setRegistry(uint8_t devAddrCmd
     return true;
 }
 
-bool ExternalElectricallyErasableProgrammableROM::getRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t *data)
+bool ExternalEEPROM::getRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t *data)
 {
     if (!I2C.sendStart())
         return false;
