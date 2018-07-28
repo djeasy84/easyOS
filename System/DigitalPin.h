@@ -484,24 +484,20 @@ void DigitalPin::write(uint8_t id, bool status)
         break;
         case 200:
         {
-            #if !defined (PWM_M)
             DDRD |= (1<<5);
             if (status)
                 PORTD |= (1<<5);
             else
                 PORTD &= ~(1<<5);
-            #endif
         }
         break;
         case 201:
         {
-            #if !defined (PWM_M)
             DDRD |= (1<<6);
             if (status)
                 PORTD |= (1<<6);
             else
                 PORTD &= ~(1<<6);
-            #endif
         }
         break;
     }
@@ -2201,123 +2197,101 @@ void DigitalPin::write(uint8_t id, bool status)
         break;
         case 200:
         {
-            #if !defined (PWM_M)
             DDRE |= (1<<4);
             if (status)
                 PORTE |= (1<<4);
             else
                 PORTE &= ~(1<<4);
-            #endif
         }
         break;
         case 201:
         {
-            #if !defined (PWM_M)
             DDRE |= (1<<5);
             if (status)
                 PORTE |= (1<<5);
             else
                 PORTE &= ~(1<<5);
-            #endif
         }
         break;
         case 202:
         {
-            #if !defined (PWM_M)
             DDRG |= (1<<5);
             if (status)
                 PORTG |= (1<<5);
             else
                 PORTG &= ~(1<<5);
-            #endif
         }
         break;
         case 203:
         {
-            #if !defined (PWM_M)
             DDRE |= (1<<3);
             if (status)
                 PORTE |= (1<<3);
             else
                 PORTE &= ~(1<<3);
-            #endif
         }
         break;
         case 204:
         {
-            #if !defined (PWM_M)
             DDRH |= (1<<3);
             if (status)
                 PORTH |= (1<<3);
             else
                 PORTH &= ~(1<<3);
-            #endif
         }
         break;
         case 205:
         {
-            #if !defined (PWM_M)
             DDRH |= (1<<4);
             if (status)
                 PORTH |= (1<<4);
             else
                 PORTH &= ~(1<<4);
-            #endif
         }
         break;
         case 206:
         {
-            #if !defined (PWM_M)
             DDRH |= (1<<5);
             if (status)
                 PORTH |= (1<<5);
             else
                 PORTH &= ~(1<<5);
-            #endif
         }
         break;
         case 207:
         {
-            #if !defined (PWM_M)
             DDRB |= (1<<7);
             if (status)
                 PORTB |= (1<<7);
             else
                 PORTB &= ~(1<<7);
-            #endif
         }
         break;
         case 208:
         {
-            #if !defined (PWM_M)
             DDRL |= (1<<3);
             if (status)
                 PORTL |= (1<<3);
             else
                 PORTL &= ~(1<<3);
-            #endif
         }
         break;
         case 209:
         {
-            #if !defined (PWM_M)
             DDRL |= (1<<4);
             if (status)
                 PORTL |= (1<<4);
             else
                 PORTL &= ~(1<<4);
-            #endif
         }
         break;
         case 210:
         {
-            #if !defined (PWM_M)
             DDRL |= (1<<5);
             if (status)
                 PORTL |= (1<<5);
             else
                 PORTL &= ~(1<<5);
-            #endif
         }
         break;
     }

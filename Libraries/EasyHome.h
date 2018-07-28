@@ -85,7 +85,7 @@ class EasyHome
         CanBus CANBUS();
         Ethernet ETHERNET();
 
-        bool update();
+        void update();
 
     private:
         bool cpuLedStatus;
@@ -386,7 +386,9 @@ Ethernet EasyHome::ETHERNET()
     return ETH;
 }
 
-bool EasyHome::update()
+/****************************************************************************************/
+
+void EasyHome::update()
 {
     if (ST.time_diff(ST.millisec(), cpuLedTime) >= 500)
     {
