@@ -36,6 +36,7 @@
 #include "./DS1307.h"
 #include "./MCP2515.h"
 #include "./W5500.h"
+#include "./M24M02.h"
 
 class SerialRS485 :  public SerialHW3
 {
@@ -202,6 +203,10 @@ bool EasyHome::setup()
 {
     // RTC
     if (!RTC.setup())
+        return false;
+
+    // ExEEPROM
+    if (!ExEEPROM.setup(true))
         return false;
 
     // CAN-BUS
