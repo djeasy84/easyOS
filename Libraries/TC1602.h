@@ -29,13 +29,13 @@
 #ifndef TC1602_H
 #define TC1602_H
 
-#include <stdio.h>
-
 #define CMD_DISPLAY_CLEAR 0x01
 #define CMD_CURSOR_HOME 0x02
 #define CMD_DISPLAY_ENTRY 0x04
 #define CMD_DISPLAY_CONTROL 0x08
 #define CMD_CURSOR_ADDRESS 0x80
+
+#include <stdio.h>
 
 class Display
 {
