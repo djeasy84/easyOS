@@ -56,6 +56,7 @@ ProportionalIntegralDerivative PID;
 #include "./../../Libraries/WS2812B.h"
 #include "./../../Libraries/MAX6675.h"
 #include "./../../Libraries/TC1602.h"
+#include "./../../Libraries/M24M02.h"
 
 bool init()
 {
