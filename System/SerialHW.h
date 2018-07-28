@@ -367,8 +367,8 @@ class SerialHW1
 
         void flush();
 
-        bool write(uint8_t data);
-        bool read(uint8_t *data);
+        virtual bool write(uint8_t data);
+        virtual bool read(uint8_t *data);
 
         bool write(uint8_t *data, uint8_t len);
         bool read(uint8_t *data, uint8_t *len, uint8_t max);
@@ -673,8 +673,8 @@ class SerialHW2
 
         void flush();
 
-        bool write(uint8_t data);
-        bool read(uint8_t *data);
+        virtual bool write(uint8_t data);
+        virtual bool read(uint8_t *data);
 
         bool write(uint8_t *data, uint8_t len);
         bool read(uint8_t *data, uint8_t *len, uint8_t max);
@@ -979,8 +979,8 @@ class SerialHW3
 
         void flush();
 
-        bool write(uint8_t data);
-        bool read(uint8_t *data);
+        virtual bool write(uint8_t data);
+        virtual bool read(uint8_t *data);
 
         bool write(uint8_t *data, uint8_t len);
         bool read(uint8_t *data, uint8_t *len, uint8_t max);

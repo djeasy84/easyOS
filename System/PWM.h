@@ -193,17 +193,10 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
     #define ARDUINO_PIN_46 208
 #endif
 #if defined (__BOARD_easyHOME__)
-    #define EASYHOME_OUT_4 210
-    #define EASYHOME_OUT_5 209
-    #define EASYHOME_OUT_6 208
-    #define EASYHOME_OUT_8 207
-    #define EASYHOME_OUT_10 206
-    #define EASYHOME_OUT_11 205
-    #define EASYHOME_OUT_12 204
-    #define EASYHOME_OUT_13 201
-    #define EASYHOME_OUT_14 200
-    #define EASYHOME_OUT_15 203
-    #define EASYHOME_OUT_16 202
+    #define EASYHOME_010V_1 210
+    #define EASYHOME_010V_2 23
+    #define EASYHOME_010V_3 22
+    #define EASYHOME_010V_4 209
 #endif
 
 PulseWidthModulation::PulseWidthModulation()
