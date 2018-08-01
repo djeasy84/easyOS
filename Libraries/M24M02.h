@@ -82,12 +82,16 @@ bool ExternalEEPROM::write(uint32_t addr, uint8_t data)
     uint8_t dsc = I2C_EEPROM_ID | (nBank << 2) | (intAddr >> 16);
     if (!setRegistry(dsc, intAddr, data))
         return false;
-    uint8_t value = 0;
-    if (!getRegistry(dsc, intAddr, &value))
-        return false;
-    if (value != data)
-        return false;
-    return true;
+	uint8_t value = 0;
+    for (uint8_t i=0; i<0xFF; i++)
+	{
+		if (getRegistry(dsc, intAddr, &value))
+		{
+			if (value == data)
+				return true;
+		}
+	}
+	return false;
 }
 
 bool ExternalEEPROM::read(uint32_t addr, uint8_t *data, uint32_t len)
@@ -124,7 +128,6 @@ bool ExternalEEPROM::setRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t d
         return false;
     if (!I2C.sendStop())
         return false;
-    ST.wait_millisec(15);
     return true;
 }
 
@@ -143,7 +146,10 @@ bool ExternalEEPROM::getRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t *
     if (!I2C.sendDeviceAddressWithReadWrite(devAddrCmd, true))
         return false;
     if (!I2C.readData(data, true))
+	{
+		I2C.sendStop();
         return false;
+	}
     if (!I2C.sendStop())
         return false;
     return true;

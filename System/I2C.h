@@ -73,7 +73,7 @@ bool InterIntegratedCircuit::sendStart()
 
 bool InterIntegratedCircuit::sendDeviceAddressWithReadWrite(uint8_t devAddr, bool writeRead)
 {
-    TWDR = writeRead;
+    TWDR = (writeRead)?0b00000001:0b00000000;
     TWDR |= devAddr<<1;
     TWCR = (1<<TWINT) | (1<<TWEN);
     uint32_t start_microsec = ST.microsec();
