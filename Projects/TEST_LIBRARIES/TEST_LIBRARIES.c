@@ -30,6 +30,8 @@
 #define MEMORY_M
 #define SERIAL_HW_M
 #define SERIAL_HW_1_M
+#define SERIAL_HW_2_M
+#define SERIAL_HW_3_M
 #define SPI_M
 #define I2C_M
 #define INTERRUPT_M
@@ -57,6 +59,7 @@ ProportionalIntegralDerivative PID;
 #include "./../../Libraries/MAX6675.h"
 #include "./../../Libraries/TC1602.h"
 #include "./../../Libraries/M24M02.h"
+#include "./../../Libraries/DMX512.h"
 
 bool init()
 {
