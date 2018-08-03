@@ -363,7 +363,7 @@ class SerialHW1
     public:
         SerialHW1();
 
-        void setup(uint32_t speed=9600);
+        void setup(uint32_t speed=9600, bool dStop=false);
 
         void flush();
 
@@ -411,7 +411,7 @@ SerialHW1::SerialHW1()
     setup();
 }
 
-void SerialHW1::setup(uint32_t speed)
+void SerialHW1::setup(uint32_t speed, bool dStop)
 {
     serial_buffer1_start_idx = 0;
     serial_buffer1_stop_idx = 0;
@@ -421,7 +421,7 @@ void SerialHW1::setup(uint32_t speed)
     UCSR1C = 0x00;
     UCSR1A |= (1<<U2X1);
     UCSR1B |= (1<<RXEN1) | (1<<TXEN1) | (1<<RXCIE1);
-    UCSR1C |= (1<<UCSZ10) | (1<<UCSZ11);
+    UCSR1C |= (1<<UCSZ10) | (1<<UCSZ11) | ((dStop)?(1<<USBS1):(0<<USBS1));
     UBRR1H = (((F_CPU/(speed*8)))-1) >> 8;
     UBRR1L = (((F_CPU/(speed*8)))-1);
 
@@ -669,7 +669,7 @@ class SerialHW2
     public:
         SerialHW2();
 
-        void setup(uint32_t speed=9600);
+        void setup(uint32_t speed=9600, bool dStop=false);
 
         void flush();
 
@@ -717,7 +717,7 @@ SerialHW2::SerialHW2()
     setup();
 }
 
-void SerialHW2::setup(uint32_t speed)
+void SerialHW2::setup(uint32_t speed, bool dStop)
 {
     serial_buffer2_start_idx = 0;
     serial_buffer2_stop_idx = 0;
@@ -727,7 +727,7 @@ void SerialHW2::setup(uint32_t speed)
     UCSR2C = 0x00;
     UCSR2A |= (1<<U2X2);
     UCSR2B |= (1<<RXEN2) | (1<<TXEN2) | (1<<RXCIE2);
-    UCSR2C |= (1<<UCSZ20) | (1<<UCSZ21);
+    UCSR2C |= (1<<UCSZ20) | (1<<UCSZ21) | ((dStop)?(1<<USBS2):(0<<USBS2));
     UBRR2H = (((F_CPU/(speed*8)))-1) >> 8;
     UBRR2L = (((F_CPU/(speed*8)))-1);
 
@@ -975,7 +975,7 @@ class SerialHW3
     public:
         SerialHW3();
 
-        void setup(uint32_t speed=9600);
+        void setup(uint32_t speed=9600, bool dStop=false);
 
         void flush();
 
@@ -1023,7 +1023,7 @@ SerialHW3::SerialHW3()
     setup();
 }
 
-void SerialHW3::setup(uint32_t speed)
+void SerialHW3::setup(uint32_t speed, bool dStop)
 {
     serial_buffer3_start_idx = 0;
     serial_buffer3_stop_idx = 0;
@@ -1033,7 +1033,7 @@ void SerialHW3::setup(uint32_t speed)
     UCSR3C = 0x00;
     UCSR3A |= (1<<U2X3);
     UCSR3B |= (1<<RXEN3) | (1<<TXEN3) | (1<<RXCIE3);
-    UCSR3C |= (1<<UCSZ30) | (1<<UCSZ31);
+    UCSR3C |= (1<<UCSZ30) | (1<<UCSZ31) | ((dStop)?(1<<USBS3):(0<<USBS3));
     UBRR3H = (((F_CPU/(speed*8)))-1) >> 8;
     UBRR3L = (((F_CPU/(speed*8)))-1);
 
