@@ -50,7 +50,6 @@ class RTCClock
 
         bool getRegistry(uint8_t devAddr, uint8_t regAddr, uint8_t *data);
         bool getRegistry(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint8_t len);
-
 };
 
 RTCClock RTC;

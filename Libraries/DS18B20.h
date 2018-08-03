@@ -53,7 +53,6 @@ class Temperature
         bool tempReaded;
         bool firstDone;
         float lastTemp;
-
 };
 
 Temperature DTS;

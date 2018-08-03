@@ -156,7 +156,6 @@ class LightEmittingDiode
         uint8_t *dataLED;
 
         uint32_t lastUpdate;
-
 };
 
 LightEmittingDiode LED;

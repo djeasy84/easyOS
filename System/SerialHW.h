@@ -392,7 +392,6 @@ class SerialHW1
         bool println(const char *data);
 
         bool readln(char *data, uint8_t max);
-
 };
 
 SerialHW1 SHW1;
@@ -698,7 +697,6 @@ class SerialHW2
         bool println(const char *data);
 
         bool readln(char *data, uint8_t max);
-
 };
 
 SerialHW2 SHW2;
@@ -1004,7 +1002,6 @@ class SerialHW3
         bool println(const char *data);
 
         bool readln(char *data, uint8_t max);
-
 };
 
 SerialHW3 SHW3;
