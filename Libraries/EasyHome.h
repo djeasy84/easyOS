@@ -40,7 +40,8 @@
 
 class SerialRS485 :  public SerialHW3
 {
-    bool write(uint8_t data);
+    public:
+        bool write(uint8_t data);
 };
 
 /****************************************************************************************/
