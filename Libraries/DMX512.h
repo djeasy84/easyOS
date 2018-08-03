@@ -40,7 +40,7 @@ class DigitalMultipleX
 
     private:
         uint8_t portNUM;
-        uint8_t dataLED[512];
+        uint8_t dataLED[1+512];
 
         uint32_t lastUpdate;
 };
@@ -68,14 +68,14 @@ bool DigitalMultipleX::setup(uint8_t port, uint8_t we)
             SHW3.setup(100000, true);
         break;
     }
-    memset(dataLED, 0, 512);
+    memset(dataLED, 0, 1+512);
     lastUpdate = 0;
     return true;
 }
 
 bool DigitalMultipleX::write(uint16_t addr, uint8_t val)
 {
-    if (addr >= 512 || portNUM == 0)
+    if (addr == 0 || addr >= 1+512 || portNUM == 0)
         return false;
 
     dataLED[addr] = val;
@@ -127,7 +127,7 @@ bool DigitalMultipleX::update()
                 SHW3.setup(250000, true);
             break;
         }
-        for (uint16_t i=0; i<512; i++)
+        for (uint16_t i=1; i<1+512; i++)
         {
             switch(portNUM)
             {
