@@ -54,8 +54,8 @@ bool DigitalMultipleX::setup(uint8_t port, uint8_t we)
     portNUM = 0;
     if (port != 1 && port != 2 && port != 3)
         return false;
-    DP.write(we, true);
     portNUM = port;
+    DP.write(we, true);
     switch(portNUM)
     {
         case 1:
@@ -77,9 +77,7 @@ bool DigitalMultipleX::write(uint16_t addr, uint8_t val)
 {
     if (addr == 0 || addr >= 1+512 || portNUM == 0)
         return false;
-
     dataLED[addr] = val;
-
     return true;
 }
 
@@ -87,60 +85,32 @@ bool DigitalMultipleX::update()
 {
     if (portNUM == 0)
         return false;
-
 	if (ST.time_diff(ST.millisec(), lastUpdate) > 40)
     {
         lastUpdate = ST.millisec();
         switch(portNUM)
         {
             case 1:
-                SHW1.setup(100000, true);
-            break;
-            case 2:
-                SHW2.setup(100000, true);
-            break;
-            case 3:
-                SHW3.setup(100000, true);
-            break;
-        }
-        switch(portNUM)
-        {
-            case 1:
+                UBRR1L = 19;
                 SHW1.write(0);
-            break;
-            case 2:
-                SHW2.write(0);
-            break;
-            case 3:
-                SHW3.write(0);
-            break;
-        }
-        switch(portNUM)
-        {
-            case 1:
-                SHW1.setup(250000, true);
-            break;
-            case 2:
-                SHW2.setup(250000, true);
-            break;
-            case 3:
-                SHW3.setup(250000, true);
-            break;
-        }
-        for (uint16_t i=1; i<1+512; i++)
-        {
-            switch(portNUM)
-            {
-                case 1:
+                UBRR1L = 7;
+                for (uint16_t i=0; i<1+2; i++)
                     SHW1.write(dataLED[i]);
-                break;
-                case 2:
+            break;
+            case 2:
+                UBRR2L = 19;
+                SHW2.write(0);
+                UBRR2L = 7;
+                for (uint16_t i=0; i<1+2; i++)
                     SHW2.write(dataLED[i]);
-                break;
-                case 3:
+            break;
+            case 3:
+                UBRR3L = 19;
+                SHW3.write(0);
+                UBRR3L = 7;
+                for (uint16_t i=0; i<1+512; i++)
                     SHW3.write(dataLED[i]);
-                break;
-            }
+            break;
         }
     }
     return true;
