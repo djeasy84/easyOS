@@ -579,10 +579,10 @@ void DigitalPin::write(uint8_t id, bool status)
 #endif
 #if defined (__BOARD_easyHOME__)
     #define EASYHOME_LED_CPU 202
-    #define EASYHOME_010V_1 210
-    #define EASYHOME_010V_2 23
-    #define EASYHOME_010V_3 22
-    #define EASYHOME_010V_4 209
+    #define EASYHOME_010V_1 209
+    #define EASYHOME_010V_2 208
+    #define EASYHOME_010V_3 207
+    #define EASYHOME_010V_4 210
     #define EASYHOME_RS232_RX 38
     #define EASYHOME_RS232_TX 37
     #define EASYHOME_RS485_RX 36

@@ -342,17 +342,21 @@ void EasyHome::OUT010V(unsigned int idx, float value)
     idx = idx - 1;
     if (idx >= OUT010V_NUM)
         return;
-    OUT010V_fStatus[idx] = value;
+    if (value < 0.0)
+        value = 0.0;
+     if (value > 100.0)
+        value = 100.0;
+    OUT010V_fStatus[idx] = (255.0 / 100.0) * value;
     switch (idx)
     {
         case 0:
             PWM.write(EASYHOME_010V_1, OUT010V_fStatus[idx]);
             break;
         case 1:
-            DP.write(EASYHOME_010V_2, (OUTPUT_bStatus[idx]>127)?true:false);
+            PWM.write(EASYHOME_010V_2, OUT010V_fStatus[idx]);
             break;
         case 2:
-            DP.write(EASYHOME_010V_3, (OUTPUT_bStatus[idx]>127)?true:false);
+            PWM.write(EASYHOME_010V_3, OUT010V_fStatus[idx]);
             break;
         case 3:
             PWM.write(EASYHOME_010V_4, OUT010V_fStatus[idx]);
