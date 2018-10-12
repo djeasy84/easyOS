@@ -36,7 +36,7 @@ GOTO :MAIN
     ECHO     build.bat [board] [project] {COM}
     ECHO:
     ECHO     Mandatory fields:
-    ECHO         board: arduinoUNO, arduinoUNO_8MHz, arduinoNANO, arduinoMEGA, easyHOME
+    ECHO         board: arduinoUNO, arduinoUNO_8MHz, arduinoNANO, arduinoNANO_8MHz, arduinoMEGA, easyHOME
     ECHO         project: name of your project
     ECHO:
     ECHO     Optional field:
@@ -87,8 +87,14 @@ IF "%1%"=="arduinoUNO" (
     SET processor_type=atmega328p
     SET board_type=__BOARD_arduinoNANO__
 	SET upload_type=arduino
-	SET upload_speed=57600
+	SET upload_speed=115200
 	SET cpu_speed=__FCPU_16MHz__
+) ELSE IF "%1%"=="arduinoNANO_8MHz" (
+    SET processor_type=atmega328p
+    SET board_type=__BOARD_arduinoNANO__
+	SET upload_type=arduino
+	SET upload_speed=57600
+	SET cpu_speed=__FCPU_8MHz__
 ) ELSE IF "%1%"=="arduinoMEGA" (
     SET processor_type=atmega2560
     SET board_type=__BOARD_arduinoMEGA__

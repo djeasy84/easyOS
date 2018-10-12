@@ -33,7 +33,7 @@ function help
     echo
     echo "build command syntax:"
     echo "     --help          to show this help"
-    echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoMEGA - easyHOME]"
+    echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoNANO_8MHz - arduinoMEGA - easyHOME]"
     echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
@@ -100,8 +100,16 @@ do
             board_type=__BOARD_arduinoNANO__
             processor_type=atmega328p
             upload_type=arduino
-            upload_speed=57600
+            upload_speed=115200
             cpu_speed=__FCPU_16MHz__
+        fi
+        if [[ $1 == "arduinoNANO_8MHz" ]]
+        then
+            board_type=__BOARD_arduinoNANO__
+            processor_type=atmega328p
+            upload_type=arduino
+            upload_speed=57600
+            cpu_speed=__FCPU_8MHz__
         fi
         if [[ $1 == "arduinoMEGA" ]]
         then
