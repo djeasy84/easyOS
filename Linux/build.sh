@@ -34,10 +34,10 @@ function help
     echo "build command syntax:"
     echo "     --help          to show this help"
     echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoMEGA - easyHOME]"
-    echo "     --upload        to specify the port name for upload [/dev#** - blank if you want only compiling]"
+    echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
-    echo "./build --board arduinoUNO --upload /dev#** --file example_project_name"
+    echo "./build --board arduinoUNO --upload /dev/*** --file example_project_name"
     echo
     exit 1
 }
