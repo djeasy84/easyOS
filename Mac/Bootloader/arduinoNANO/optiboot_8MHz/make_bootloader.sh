@@ -6,6 +6,6 @@ make clean
 
 make atmega328_8mhz
 
-cp optiboot_atmega328_8mhz.hex ../../../../Bootloader/arduinoUNO/optiboot_8MHz/
+cp optiboot_atmega328_8mhz.hex ../../../../Bootloader/arduinoNANO/optiboot_8MHz/
 
 make clean

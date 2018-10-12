@@ -6,6 +6,6 @@ make clean
 
 make atmega328
 
-cp optiboot_atmega328.hex ../../../../Bootloader/arduinoUNO/optiboot_16MHz/
+cp optiboot_atmega328.hex ../../../../Bootloader/arduinoNANO/optiboot_16MHz/
 
 make clean
