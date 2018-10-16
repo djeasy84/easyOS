@@ -37,7 +37,9 @@ function help
     echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
-    echo "./build --board arduinoUNO --upload /dev/*** --file example_project_name"
+    echo "     --nobootloader  to specify to upload withou bootloader (it will erase a previous bootloader if present)"
+    echo
+    echo "./build --board arduinoUNO --file example_project_name [--upload /dev/***] [--nobootloader]"
     echo
     exit 1
 }
@@ -73,6 +75,7 @@ file_name=null
 cpu_speed=null
 upload_type=null
 upload_speed=null
+no_bootloader=false
 
 while (( $# > 0 ))
 do
@@ -138,6 +141,11 @@ do
         shift 1
         file_name=$1
     fi
+    if [[ $1 == "--nobootloader" ]]
+    then
+        shift 1
+        no_bootloader=true
+    fi
     shift 1
 done
 
@@ -197,7 +205,21 @@ fi
 
 if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
 then
-    ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
+    if [[ $no_bootloader == true ]]
+    then
+        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
+        if [[ $? != 0 ]]
+        then
+            upload_ko
+        fi
+        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
+        if [[ $? != 0 ]]
+        then
+            upload_ko
+        fi
+    else
+        ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
+    fi
 fi
 if [[ $? != 0 ]]
 then
