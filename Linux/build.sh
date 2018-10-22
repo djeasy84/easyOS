@@ -37,7 +37,7 @@ function help
     echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
-    echo "     --nobootloader  to specify to upload withou bootloader (it will erase a previous bootloader if present)"
+    echo "     --nobootloader  to upload without bootloader (it will erase a previous bootloader if present)"
     echo
     echo "./build --board arduinoUNO --file example_project_name [--upload /dev/***] [--nobootloader]"
     echo
@@ -76,6 +76,9 @@ cpu_speed=null
 upload_type=null
 upload_speed=null
 no_bootloader=false
+fuse_ext=null
+fuse_high=null
+fuse_low=null
 
 while (( $# > 0 ))
 do
@@ -89,6 +92,9 @@ do
             upload_type=arduino
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
+			fuse_ext=0xFD
+            fuse_high=0xDE
+            fuse_low=0xFF
         fi
         if [[ $1 == "arduinoUNO_8MHz" ]]
         then
@@ -97,6 +103,9 @@ do
             upload_type=arduino
             upload_speed=57600
             cpu_speed=__FCPU_8MHz__
+			fuse_ext=0xFD
+            fuse_high=0xDE
+            fuse_low=0xE2
         fi
         if [[ $1 == "arduinoNANO" ]]
         then
@@ -105,6 +114,9 @@ do
             upload_type=arduino
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
+			fuse_ext=0xFD
+            fuse_high=0xDE
+            fuse_low=0xFF
         fi
         if [[ $1 == "arduinoNANO_8MHz" ]]
         then
@@ -113,6 +125,9 @@ do
             upload_type=arduino
             upload_speed=57600
             cpu_speed=__FCPU_8MHz__
+			fuse_ext=0xFD
+            fuse_high=0xDE
+            fuse_low=0xE2
         fi
         if [[ $1 == "arduinoMEGA" ]]
         then
@@ -121,6 +136,9 @@ do
             upload_type=wiring
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
+			fuse_ext=0xFD
+            fuse_high=0xD8
+            fuse_low=0xFF
         fi
         if [[ $1 == "easyHOME" ]]
         then
@@ -129,6 +147,9 @@ do
             upload_type=wiring
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
+			fuse_ext=0xFD
+            fuse_high=0xD8
+            fuse_low=0xFF
         fi
     fi
     if [[ $1 == "--upload" ]]
@@ -219,11 +240,11 @@ then
         fi
     else
         ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
+        if [[ $? != 0 ]]
+        then
+            build_ko
+        fi
     fi
-fi
-if [[ $? != 0 ]]
-then
-    build_ko
 fi
 
 upload_ok
