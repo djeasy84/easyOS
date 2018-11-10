@@ -36,23 +36,15 @@
 
 #define BUFFER_SIZE 32
 
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
-
-volatile uint8_t serial_buffer0[BUFFER_SIZE];
-volatile uint8_t serial_buffer0_start_idx;
-volatile uint8_t serial_buffer0_stop_idx;
-
-class SerialHW0
+class SerialHW
 {
     public:
-        SerialHW0();
-
-        void setup(uint32_t speed=9600);
+        virtual void setup(uint32_t speed=9600, bool dStop=false)=0;
 
         void flush();
 
-        bool write(uint8_t data);
-        bool read(uint8_t *data);
+        virtual bool write(uint8_t data)=0;
+        virtual bool read(uint8_t *data)=0;
 
         bool write(uint8_t *data, uint8_t len);
         bool read(uint8_t *data, uint8_t *len, uint8_t max);
@@ -78,6 +70,237 @@ class SerialHW0
         bool readln(char *data, uint8_t max);
 };
 
+/****************************************************************************************/
+
+void SerialHW::flush()
+{
+    uint8_t buffer;
+    while(read(&buffer));
+}
+
+bool SerialHW::write(uint8_t *data, uint8_t len)
+{
+    for (uint8_t i=0; i<len; i++)
+    {
+        if (!write(data[i]))
+            return false;
+    }
+    return true;
+}
+
+bool SerialHW::read(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    *len = 0;
+    //*data = 0;
+    uint32_t start_microsec = ST.microsec();
+    while(*len < max)
+    {
+		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+            break;
+        if (read(&data[*len]))
+            (*len)++;
+    }
+    return true;
+}
+
+bool SerialHW::print(unsigned char data)
+{
+    uint8_t buffer[4];
+    sprintf((char *)buffer, "%u", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(unsigned int data)
+{
+    uint8_t buffer[6];
+    sprintf((char *)buffer, "%u", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(unsigned long data)
+{
+    uint8_t buffer[11];
+    sprintf((char *)buffer, "%lu", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(char data)
+{
+    uint8_t buffer[4];
+    sprintf((char *)buffer, "%c", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(int data)
+{
+    uint8_t buffer[6];
+    sprintf((char *)buffer, "%d", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(long data)
+{
+    uint8_t buffer[11];
+    sprintf((char *)buffer, "%ld", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(double data)
+{
+    uint8_t buffer[32];
+    sprintf((char *)buffer, "%.2f", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    return true;
+}
+
+bool SerialHW::print(const char *data)
+{
+    if (!write((uint8_t *)data, strlen((const char *)data)))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(unsigned char data)
+{
+    uint8_t buffer[4];
+    sprintf((char *)buffer, "%u", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(unsigned int data)
+{
+    uint8_t buffer[6];
+    sprintf((char *)buffer, "%u", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(unsigned long data)
+{
+    uint8_t buffer[11];
+    sprintf((char *)buffer, "%lu", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(char data)
+{
+    uint8_t buffer[4];
+    sprintf((char *)buffer, "%u", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(int data)
+{
+    uint8_t buffer[6];
+    sprintf((char *)buffer, "%d", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(long data)
+{
+    uint8_t buffer[11];
+    sprintf((char *)buffer, "%ld", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(double data)
+{
+    uint8_t buffer[32];
+    sprintf((char *)buffer, "%.2f", data);
+    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::println(const char *data)
+{
+    if (!write((uint8_t *)data, strlen((const char *)data)))
+        return false;
+    if (!write((uint8_t *)"\r\n", 2))
+        return false;
+    return true;
+}
+
+bool SerialHW::readln(char *data, uint8_t max)
+{
+    uint8_t len = 0;
+    *data = 0;
+    uint32_t start_microsec = ST.microsec();
+    while(len < max)
+    {
+        if (read((uint8_t *)&data[len]))
+            len++;
+        if (len > 2)
+        {
+            if (data[len-2] == '\r' && data[len-1] == '\n')
+                break;
+        }
+        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
+            return false;
+        start_microsec = ST.microsec();
+    }
+    data[len-2] = 0;
+    return true;
+}
+
+/****************************************************************************************/
+/****************************************************************************************/
+
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__)
+
+volatile uint8_t serial_buffer0[BUFFER_SIZE];
+volatile uint8_t serial_buffer0_start_idx;
+volatile uint8_t serial_buffer0_stop_idx;
+
+class SerialHW0 : public SerialHW
+{
+    public:
+        SerialHW0();
+
+        void setup(uint32_t speed=9600, bool dStop=false);
+
+        bool write(uint8_t data);
+        bool read(uint8_t *data);
+};
+
 SerialHW0 SHW0;
 
 /****************************************************************************************/
@@ -98,7 +321,7 @@ SerialHW0::SerialHW0()
     setup();
 }
 
-void SerialHW0::setup(uint32_t speed)
+void SerialHW0::setup(uint32_t speed, bool dStop)
 {
     serial_buffer0_start_idx = 0;
     serial_buffer0_stop_idx = 0;
@@ -117,12 +340,6 @@ void SerialHW0::setup(uint32_t speed)
     #elif defined (__AVR_ATmega2560__)
     PORTE |= (1<<0);
     #endif
-}
-
-void SerialHW0::flush()
-{
-    uint8_t buffer;
-    while(read(&buffer));
 }
 
 bool SerialHW0::write(uint8_t data)
@@ -146,209 +363,6 @@ bool SerialHW0::read(uint8_t *data)
     return false;
 }
 
-bool SerialHW0::write(uint8_t *data, uint8_t len)
-{
-    for (uint8_t i=0; i<len; i++)
-    {
-        if (!write(data[i]))
-            return false;
-    }
-    return true;
-}
-
-bool SerialHW0::read(uint8_t *data, uint8_t *len, uint8_t max)
-{
-    *len = 0;
-    //*data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(*len < max)
-    {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
-            break;
-        if (read(&data[*len]))
-            (*len)++;
-    }
-    return true;
-}
-
-bool SerialHW0::print(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%c", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::print(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::println(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW0::readln(char *data, uint8_t max)
-{
-    uint8_t len = 0;
-    *data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(len < max)
-    {
-        if (read((uint8_t *)&data[len]))
-            len++;
-        if (len > 2)
-        {
-            if (data[len-2] == '\r' && data[len-1] == '\n')
-                break;
-        }
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
-            return false;
-        start_microsec = ST.microsec();
-    }
-    data[len-2] = 0;
-    return true;
-}
-
 #endif
 
 #if defined (__AVR_ATmega2560__)
@@ -358,40 +372,15 @@ volatile uint8_t serial_buffer1[BUFFER_SIZE];
 volatile uint8_t serial_buffer1_start_idx;
 volatile uint8_t serial_buffer1_stop_idx;
 
-class SerialHW1
+class SerialHW1 : public SerialHW
 {
     public:
         SerialHW1();
 
         void setup(uint32_t speed=9600, bool dStop=false);
 
-        void flush();
-
-        virtual bool write(uint8_t data);
-        virtual bool read(uint8_t *data);
-
-        bool write(uint8_t *data, uint8_t len);
-        bool read(uint8_t *data, uint8_t *len, uint8_t max);
-
-        bool print(unsigned char data);
-        bool print(unsigned int data);
-        bool print(unsigned long data);
-        bool print(char data);
-        bool print(int data);
-        bool print(long data);
-        bool print(double data);
-        bool print(const char *data);
-
-        bool println(unsigned char data);
-        bool println(unsigned int data);
-        bool println(unsigned long data);
-        bool println(char data);
-        bool println(int data);
-        bool println(long data);
-        bool println(double data);
-        bool println(const char *data);
-
-        bool readln(char *data, uint8_t max);
+        bool write(uint8_t data);
+        bool read(uint8_t *data);
 };
 
 SerialHW1 SHW1;
@@ -427,12 +416,6 @@ void SerialHW1::setup(uint32_t speed, bool dStop)
     PORTD |= (1<<2);
 }
 
-void SerialHW1::flush()
-{
-    uint8_t buffer;
-    while(read(&buffer));
-}
-
 bool SerialHW1::write(uint8_t data)
 {
     UCSR1A |= (1<<TXC1);
@@ -454,208 +437,6 @@ bool SerialHW1::read(uint8_t *data)
     return false;
 }
 
-bool SerialHW1::write(uint8_t *data, uint8_t len)
-{
-    for (uint8_t i=0; i<len; i++)
-    {
-        if (!write(data[i]))
-            return false;
-    }
-    return true;
-}
-
-bool SerialHW1::read(uint8_t *data, uint8_t *len, uint8_t max)
-{
-    *len = 0;
-    //*data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(*len < max)
-    {
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
-            break;
-        if (read(&data[*len]))
-            (*len)++;
-    }
-    return true;
-}
-
-bool SerialHW1::print(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%c", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::print(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::println(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW1::readln(char *data, uint8_t max)
-{
-    uint8_t len = 0;
-    *data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(len < max)
-    {
-        if (read((uint8_t *)&data[len]))
-            len++;
-        if (len > 2)
-        {
-            if (data[len-2] == '\r' && data[len-1] == '\n')
-                break;
-        }
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
-            return false;
-        start_microsec = ST.microsec();
-    }
-    data[len-2] = 0;
-    return true;
-}
 #endif
 
 #if defined (SERIAL_HW_2_M)
@@ -663,40 +444,15 @@ volatile uint8_t serial_buffer2[BUFFER_SIZE];
 volatile uint8_t serial_buffer2_start_idx;
 volatile uint8_t serial_buffer2_stop_idx;
 
-class SerialHW2
+class SerialHW2 : public SerialHW
 {
     public:
         SerialHW2();
 
         void setup(uint32_t speed=9600, bool dStop=false);
 
-        void flush();
-
-        virtual bool write(uint8_t data);
-        virtual bool read(uint8_t *data);
-
-        bool write(uint8_t *data, uint8_t len);
-        bool read(uint8_t *data, uint8_t *len, uint8_t max);
-
-        bool print(unsigned char data);
-        bool print(unsigned int data);
-        bool print(unsigned long data);
-        bool print(char data);
-        bool print(int data);
-        bool print(long data);
-        bool print(double data);
-        bool print(const char *data);
-
-        bool println(unsigned char data);
-        bool println(unsigned int data);
-        bool println(unsigned long data);
-        bool println(char data);
-        bool println(int data);
-        bool println(long data);
-        bool println(double data);
-        bool println(const char *data);
-
-        bool readln(char *data, uint8_t max);
+        bool write(uint8_t data);
+        bool read(uint8_t *data);
 };
 
 SerialHW2 SHW2;
@@ -732,12 +488,6 @@ void SerialHW2::setup(uint32_t speed, bool dStop)
     PORTH |= (1<<0);
 }
 
-void SerialHW2::flush()
-{
-    uint8_t buffer;
-    while(read(&buffer));
-}
-
 bool SerialHW2::write(uint8_t data)
 {
     UCSR2A |= (1<<TXC2);
@@ -759,208 +509,6 @@ bool SerialHW2::read(uint8_t *data)
     return false;
 }
 
-bool SerialHW2::write(uint8_t *data, uint8_t len)
-{
-    for (uint8_t i=0; i<len; i++)
-    {
-        if (!write(data[i]))
-            return false;
-    }
-    return true;
-}
-
-bool SerialHW2::read(uint8_t *data, uint8_t *len, uint8_t max)
-{
-    *len = 0;
-    //*data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(*len < max)
-    {
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
-            break;
-        if (read(&data[*len]))
-            (*len)++;
-    }
-    return true;
-}
-
-bool SerialHW2::print(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%c", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::print(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::println(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW2::readln(char *data, uint8_t max)
-{
-    uint8_t len = 0;
-    *data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(len < max)
-    {
-        if (read((uint8_t *)&data[len]))
-            len++;
-        if (len > 2)
-        {
-            if (data[len-2] == '\r' && data[len-1] == '\n')
-                break;
-        }
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
-            return false;
-        start_microsec = ST.microsec();
-    }
-    data[len-2] = 0;
-    return true;
-}
 #endif
 
 #if defined (SERIAL_HW_3_M)
@@ -968,40 +516,15 @@ volatile uint8_t serial_buffer3[BUFFER_SIZE];
 volatile uint8_t serial_buffer3_start_idx;
 volatile uint8_t serial_buffer3_stop_idx;
 
-class SerialHW3
+class SerialHW3 : public SerialHW
 {
     public:
         SerialHW3();
 
         void setup(uint32_t speed=9600, bool dStop=false);
 
-        void flush();
-
-        virtual bool write(uint8_t data);
-        virtual bool read(uint8_t *data);
-
-        bool write(uint8_t *data, uint8_t len);
-        bool read(uint8_t *data, uint8_t *len, uint8_t max);
-
-        bool print(unsigned char data);
-        bool print(unsigned int data);
-        bool print(unsigned long data);
-        bool print(char data);
-        bool print(int data);
-        bool print(long data);
-        bool print(double data);
-        bool print(const char *data);
-
-        bool println(unsigned char data);
-        bool println(unsigned int data);
-        bool println(unsigned long data);
-        bool println(char data);
-        bool println(int data);
-        bool println(long data);
-        bool println(double data);
-        bool println(const char *data);
-
-        bool readln(char *data, uint8_t max);
+        bool write(uint8_t data);
+        bool read(uint8_t *data);
 };
 
 SerialHW3 SHW3;
@@ -1037,12 +560,6 @@ void SerialHW3::setup(uint32_t speed, bool dStop)
     PORTJ |= (1<<0);
 }
 
-void SerialHW3::flush()
-{
-    uint8_t buffer;
-    while(read(&buffer));
-}
-
 bool SerialHW3::write(uint8_t data)
 {
     UCSR3A |= (1<<TXC3);
@@ -1064,208 +581,6 @@ bool SerialHW3::read(uint8_t *data)
     return false;
 }
 
-bool SerialHW3::write(uint8_t *data, uint8_t len)
-{
-    for (uint8_t i=0; i<len; i++)
-    {
-        if (!write(data[i]))
-            return false;
-    }
-    return true;
-}
-
-bool SerialHW3::read(uint8_t *data, uint8_t *len, uint8_t max)
-{
-    *len = 0;
-    //*data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(*len < max)
-    {
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5)
-            break;
-        if (read(&data[*len]))
-            (*len)++;
-    }
-    return true;
-}
-
-bool SerialHW3::print(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%c", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::print(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(unsigned char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(unsigned int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(unsigned long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%lu", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(char data)
-{
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%u", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(int data)
-{
-    uint8_t buffer[6];
-    sprintf((char *)buffer, "%d", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(long data)
-{
-    uint8_t buffer[11];
-    sprintf((char *)buffer, "%ld", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(double data)
-{
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
-    if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::println(const char *data)
-{
-    if (!write((uint8_t *)data, strlen((const char *)data)))
-        return false;
-    if (!write((uint8_t *)"\r\n", 2))
-        return false;
-    return true;
-}
-
-bool SerialHW3::readln(char *data, uint8_t max)
-{
-    uint8_t len = 0;
-    *data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(len < max)
-    {
-        if (read((uint8_t *)&data[len]))
-            len++;
-        if (len > 2)
-        {
-            if (data[len-2] == '\r' && data[len-1] == '\n')
-                break;
-        }
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
-            return false;
-        start_microsec = ST.microsec();
-    }
-    data[len-2] = 0;
-    return true;
-}
 #endif
 
 #endif
