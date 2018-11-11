@@ -36,7 +36,7 @@ struct pinInfo
     volatile uint8_t *ddr;
     volatile uint8_t *port;
     volatile uint8_t *pin;
-    uint16_t mask;
+    uint8_t mask;
 };
 
 class DigitalPin
@@ -102,8 +102,7 @@ DigitalPin DP;
 
     DigitalPin::DigitalPin()
     {
-        digList = (pinInfo *)malloc(sizeof(pinInfo)*10);
-        memset(digList, 0, sizeof(digList));
+        digList = (pinInfo *)malloc(sizeof(pinInfo)*10);  memset(digList, 0, sizeof(pinInfo)*10);
         digList[0].ddr = &DDRD;  digList[0].port = &PORTD;  digList[0].pin = &PIND;  digList[0].mask = 2;
         digList[1].ddr = &DDRD;  digList[1].port = &PORTD;  digList[1].pin = &PIND;  digList[1].mask = 3;
         digList[2].ddr = &DDRD;  digList[2].port = &PORTD;  digList[2].pin = &PIND;  digList[2].mask = 4;
@@ -117,8 +116,7 @@ DigitalPin DP;
         digList[9].ddr = &DDRB;  digList[9].port = &PORTB;  digList[9].pin = &PINB;  digList[9].mask = 5;
         #endif
 
-        anaList = (pinInfo *)malloc(sizeof(pinInfo)*6);
-        memset(anaList, 0, sizeof(anaList));
+        anaList = (pinInfo *)malloc(sizeof(pinInfo)*6);  memset(anaList, 0, sizeof(pinInfo)*6);
         anaList[0].ddr = &DDRC;  anaList[0].port = &PORTC;  anaList[0].pin = &PINC;  anaList[0].mask = 0;
         anaList[1].ddr = &DDRC;  anaList[1].port = &PORTC;  anaList[1].pin = &PINC;  anaList[1].mask = 1;
         anaList[2].ddr = &DDRC;  anaList[2].port = &PORTC;  anaList[2].pin = &PINC;  anaList[2].mask = 2;
@@ -128,8 +126,7 @@ DigitalPin DP;
         anaList[5].ddr = &DDRC;  anaList[5].port = &PORTC;  anaList[5].pin = &PINC;  anaList[5].mask = 5;
         #endif
 
-        pwmList = (pinInfo *)malloc(sizeof(pinInfo)*2);
-        memset(pwmList, 0, sizeof(pwmList));
+        pwmList = (pinInfo *)malloc(sizeof(pinInfo)*2);  memset(pwmList, 0, sizeof(pinInfo)*2);
         #if !defined (PWM_M)
         pwmList[0].ddr = &DDRD;  pwmList[0].port = &PORTD;  pwmList[0].pin = &PIND;  pwmList[0].mask = 5;
         pwmList[1].ddr = &DDRD;  pwmList[1].port = &PORTD;  pwmList[1].pin = &PIND;  pwmList[1].mask = 6;
@@ -252,10 +249,9 @@ DigitalPin DP;
     #define EASYHOME_SPI_MOSI 44
 #endif
 
-DigitalPin::DigitalPin()
+    DigitalPin::DigitalPin()
     {
-        digList = (pinInfo *)malloc(sizeof(pinInfo)*10);
-        memset(digList, 0, sizeof(digList));
+        digList = (pinInfo *)malloc(sizeof(pinInfo)*49);  memset(digList, 0, sizeof(sizeof(pinInfo)*49));
         digList[0].ddr  = &DDRB;  digList[0].port  = &PORTB;  digList[0].pin  = &PINB;  digList[0].mask  = 5;
         digList[1].ddr  = &DDRB;  digList[1].port  = &PORTB;  digList[1].pin  = &PINB;  digList[1].mask  = 6;
         digList[2].ddr  = &DDRA;  digList[2].port  = &PORTA;  digList[2].pin  = &PINA;  digList[2].mask  = 0;
@@ -265,7 +261,7 @@ DigitalPin::DigitalPin()
         digList[6].ddr  = &DDRA;  digList[6].port  = &PORTA;  digList[6].pin  = &PINA;  digList[6].mask  = 4;
         digList[7].ddr  = &DDRA;  digList[7].port  = &PORTA;  digList[7].pin  = &PINA;  digList[7].mask  = 5;
         digList[8].ddr  = &DDRA;  digList[8].port  = &PORTA;  digList[8].pin  = &PINA;  digList[8].mask  = 6;
-        digList[9].ddr  = &DDRA;  digList[9].port  = &PORTA;  digList[9].pin  = &PINA;  digList[9].mask = 7;
+        digList[9].ddr  = &DDRA;  digList[9].port  = &PORTA;  digList[9].pin  = &PINA;  digList[9].mask  = 7;
         digList[10].ddr = &DDRC;  digList[10].port = &PORTC;  digList[10].pin = &PINC;  digList[10].mask = 7;
         digList[11].ddr = &DDRC;  digList[11].port = &PORTC;  digList[11].pin = &PINC;  digList[11].mask = 6;
         digList[12].ddr = &DDRC;  digList[12].port = &PORTC;  digList[12].pin = &PINC;  digList[12].mask = 5;
@@ -316,8 +312,7 @@ DigitalPin::DigitalPin()
         digList[47].ddr = &DDRB;  digList[47].port = &PORTB;  digList[47].pin = &PINB;  digList[47].mask = 4;
         digList[48].ddr = &DDRJ;  digList[48].port = &PORTJ;  digList[48].pin = &PINJ;  digList[48].mask = 6;
 
-        anaList = (pinInfo *)malloc(sizeof(pinInfo)*16);
-        memset(anaList, 0, sizeof(anaList));
+        anaList = (pinInfo *)malloc(sizeof(pinInfo)*16);  memset(anaList, 0, sizeof(sizeof(pinInfo)*16));
         anaList[0].ddr  = &DDRF;  anaList[0].port  = &PORTF;  anaList[0].pin  = &PINF;  anaList[0].mask  = 0;
         anaList[1].ddr  = &DDRF;  anaList[1].port  = &PORTF;  anaList[1].pin  = &PINF;  anaList[1].mask  = 1;
         anaList[2].ddr  = &DDRF;  anaList[2].port  = &PORTF;  anaList[2].pin  = &PINF;  anaList[2].mask  = 2;
@@ -335,8 +330,7 @@ DigitalPin::DigitalPin()
         anaList[14].ddr = &DDRK;  anaList[14].port = &PORTK;  anaList[14].pin = &PINK;  anaList[14].mask = 6;
         anaList[15].ddr = &DDRK;  anaList[15].port = &PORTK;  anaList[15].pin = &PINK;  anaList[15].mask = 7;
 
-        pwmList = (pinInfo *)malloc(sizeof(pinInfo)*11);
-        memset(pwmList, 0, sizeof(pwmList));
+        pwmList = (pinInfo *)malloc(sizeof(pinInfo)*11);  memset(pwmList, 0, sizeof(sizeof(pinInfo)*11));
         pwmList[0].ddr  = &DDRE;  pwmList[0].port  = &PORTE;  pwmList[0].pin  = &PINE;  pwmList[0].mask  = 4;
         pwmList[1].ddr  = &DDRE;  pwmList[1].port  = &PORTE;  pwmList[1].pin  = &PINE;  pwmList[1].mask  = 5;
         pwmList[2].ddr  = &DDRG;  pwmList[2].port  = &PORTG;  pwmList[2].pin  = &PING;  pwmList[2].mask  = 5;
@@ -347,7 +341,7 @@ DigitalPin::DigitalPin()
         pwmList[7].ddr  = &DDRB;  pwmList[7].port  = &PORTB;  pwmList[7].pin  = &PINB;  pwmList[7].mask  = 7;
         pwmList[8].ddr  = &DDRL;  pwmList[8].port  = &PORTL;  pwmList[8].pin  = &PINL;  pwmList[8].mask  = 3;
         pwmList[9].ddr  = &DDRL;  pwmList[9].port  = &PORTL;  pwmList[9].pin  = &PINL;  pwmList[9].mask  = 4;
-        pwmList[10].ddr = &DDRL;   pwmList[10].port = &PORTL;  pwmList[10].pin = &PINL;  pwmList[10].mask = 5;
+        pwmList[10].ddr = &DDRL;  pwmList[10].port = &PORTL;  pwmList[10].pin = &PINL;  pwmList[10].mask = 5;
     }
 
 #endif
@@ -356,9 +350,9 @@ bool DigitalPin::read(uint8_t id, bool pullup)
 {
     if (id >= 0 && id <=99)
     {
+        id = id - 0;
         if (digList[id].ddr == 0)
             return false;
-        id = id - 0;
         *digList[id].ddr &= ~(1<<digList[id].mask);
         if (pullup)
             *digList[id].port |= (1<<digList[id].mask);
@@ -370,9 +364,9 @@ bool DigitalPin::read(uint8_t id, bool pullup)
     }
     else if (id >= 100 && id <=199)
     {
+        id = id - 100;
         if (anaList[id].ddr == 0)
             return false;
-        id = id - 100;
         *anaList[id].ddr |= (1<<anaList[id].mask);
         if (pullup)
             *anaList[id].port |= (1<<anaList[id].mask);
@@ -384,9 +378,9 @@ bool DigitalPin::read(uint8_t id, bool pullup)
     }
     else if (id >= 200 && id <=299)
     {
+        id = id - 200;
         if (pwmList[id].ddr == 0)
             return false;
-        id = id - 200;
         *pwmList[id].ddr |= (1<<pwmList[id].mask);
         if (pullup)
             *pwmList[id].port |= (1<<pwmList[id].mask);
@@ -403,9 +397,9 @@ void DigitalPin::write(uint8_t id, bool status)
 {
     if (id >= 0 && id <=99)
     {
+        id = id - 0;
         if (digList[id].ddr == 0)
             return;
-        id = id - 0;
         *digList[id].ddr |= (1<<digList[id].mask);
         if (status)
             *digList[id].port |= (1<<digList[id].mask);
@@ -414,9 +408,9 @@ void DigitalPin::write(uint8_t id, bool status)
     }
     else if (id >= 100 && id <=199)
     {
+        id = id - 100;
         if (anaList[id].ddr == 0)
             return;
-        id = id - 100;
         *anaList[id].ddr |= (1<<anaList[id].mask);
         if (status)
             *anaList[id].port |= (1<<anaList[id].mask);
@@ -425,9 +419,9 @@ void DigitalPin::write(uint8_t id, bool status)
     }
     else if (id >= 200 && id <=299)
     {
+        id = id - 200;
         if (pwmList[id].ddr == 0)
             return;
-        id = id - 200;
         *pwmList[id].ddr |= (1<<pwmList[id].mask);
         if (status)
             *pwmList[id].port |= (1<<pwmList[id].mask);
