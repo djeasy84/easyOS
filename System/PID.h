@@ -34,50 +34,58 @@
 class ProportionalIntegralDerivative
 {
     public:
-        ProportionalIntegralDerivative();
+        ProportionalIntegralDerivative(uint16_t interval);
 
-        float runPID(float input, float target, float kP, float kI, float kD, float min, float max);
+        float runPID(float input, float target, float kP, float kI, float kD, float maxP, float maxI, float maxD, float min, float max);
 
     private:
         float lastError;
         float historyError;
+        float lastOutput;
         uint32_t lastTime;
+        uint32_t pidInterval;
 };
 
 /****************************************************************************************/
 
-ProportionalIntegralDerivative::ProportionalIntegralDerivative()
+ProportionalIntegralDerivative::ProportionalIntegralDerivative(uint16_t interval)
 {
     lastError = 0.0;
     historyError = 0.0;
+    lastOutput = 0.0;
     lastTime = 0;
+    pidInterval = interval * 1000;
 }
 
-float ProportionalIntegralDerivative::runPID(float input, float target, float kP, float kI, float kD, float min, float max)
+float ProportionalIntegralDerivative::runPID(float input, float target, float kP, float kI, float kD, float maxP, float maxI, float maxD, float min, float max)
 {
-    float interval = ST.time_diff(ST.microsec(), lastTime) / 1000000.0;
+    uint32_t timeDiff = ST.time_diff(ST.microsec(), lastTime);
+    if (timeDiff < pidInterval)
+        return lastOutput;
+
+    float interval = (float)timeDiff / 1000000.0;
     lastTime = ST.microsec();
 
     float error = target - input;
 
     float P = error * kP;
-    P = (P < min) ? min : (P > max) ? max : P;
+    P = (P < -maxP) ? -maxP : (P > +maxP) ? +maxP : P;
 
     float D = ((error - lastError) / interval) * kD;
-    D = (D < min) ? min : (D > max) ? max : D;
+    D = (D < -maxD) ? -maxD : (D > +maxD) ? +maxD : D;
 
     float I = (historyError + (error * interval)) * kI;
-    I = (I < min) ? min : (I > max) ? max : I;
-
-    if ((P + I + D) > min && (P + I + D) < max)
+    if (I > -maxI && I < +maxI)
         historyError = historyError + (error * interval);
+    else
+        I = (I < -maxI) ? -maxI : (I > +maxI) ? +maxI : I;
 
     lastError = error;
 
-    float output = P + I + D;
-    output = (output < min) ? min : (output > max) ? max : output;
+    lastOutput = P + I + D;
+    lastOutput = (lastOutput < min) ? min : (lastOutput > max) ? max : lastOutput;
 
-    return output;
+    return lastOutput;
 }
 
 #endif

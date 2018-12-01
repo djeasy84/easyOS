@@ -31,8 +31,8 @@
 
 #include <avr/interrupt.h>
 
-volatile int counter_val = -1;
 volatile uint8_t counter_div = 0;
+volatile int16_t counter_val = -1;
 volatile uint8_t counter_count = 0;
 
 ISR(TIMER0_OVF_vect)

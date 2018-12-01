@@ -34,7 +34,7 @@
 class AnalogPin
 {
     public:
-        uint16_t read(uint8_t id);
+        uint16_t read(uint16_t id);
 };
 
 AnalogPin AP;
@@ -62,7 +62,7 @@ AnalogPin AP;
     #define ARDUINO_PIN_A7 107
 #endif
 
-uint16_t AnalogPin::read(uint8_t id)
+uint16_t AnalogPin::read(uint16_t id)
 {
     ADCSRA = ADCSRB = ADMUX = 0;
     switch(id)
@@ -152,7 +152,7 @@ uint16_t AnalogPin::read(uint8_t id)
     #define EASYHOME_IN_12V 100
 #endif
 
-uint16_t AnalogPin::read(uint8_t id)
+uint16_t AnalogPin::read(uint16_t id)
 {
     ADCSRA = ADCSRB = ADMUX = 0;
     switch(id)
