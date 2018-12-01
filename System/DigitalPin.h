@@ -353,11 +353,11 @@ bool DigitalPin::read(uint8_t id, bool pullup)
         id = id - 0;
         if (digList[id].ddr == 0)
             return false;
-        *digList[id].ddr &= ~(1<<digList[id].mask);
         if (pullup)
             *digList[id].port |= (1<<digList[id].mask);
         else
             *digList[id].port &= ~(1<<digList[id].mask);
+        *digList[id].ddr &= ~(1<<digList[id].mask);
         asm("nop");
         if(*digList[id].pin & (1<<digList[id].mask))
             return true;
@@ -367,11 +367,11 @@ bool DigitalPin::read(uint8_t id, bool pullup)
         id = id - 100;
         if (anaList[id].ddr == 0)
             return false;
-        *anaList[id].ddr |= (1<<anaList[id].mask);
         if (pullup)
             *anaList[id].port |= (1<<anaList[id].mask);
         else
             *anaList[id].port &= ~(1<<anaList[id].mask);
+        *anaList[id].ddr |= (1<<anaList[id].mask);
         asm("nop");
         if(*anaList[id].pin & (1<<anaList[id].mask))
             return true;
@@ -381,11 +381,11 @@ bool DigitalPin::read(uint8_t id, bool pullup)
         id = id - 200;
         if (pwmList[id].ddr == 0)
             return false;
-        *pwmList[id].ddr |= (1<<pwmList[id].mask);
         if (pullup)
             *pwmList[id].port |= (1<<pwmList[id].mask);
         else
             *pwmList[id].port &= ~(1<<pwmList[id].mask);
+        *pwmList[id].ddr |= (1<<pwmList[id].mask);
         asm("nop");
         if(*pwmList[id].pin & (1<<pwmList[id].mask))
             return true;
