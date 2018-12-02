@@ -35,18 +35,19 @@
 #define SPI_M
 #define I2C_M
 #define INTERRUPT_M
+#define COUNTER_M
 #define PWM_M
 #define DIGITAL_PIN_M
 #define ANALOG_PIN_M
 #define EEPROM_M
 #define MULTI_TASKING_M
-#define PID_M
 #define STATE_MACHINE_M
+#define PID_M
 
 #include "./../../easyOS.h"
 
 StateMachine SM;
-ProportionalIntegralDerivative PID;
+ProportionalIntegralDerivative PID(0);
 
 #include "./../../Libraries/ModBus.h"
 #include "./../../Libraries/MPU6050.h"
@@ -63,5 +64,35 @@ ProportionalIntegralDerivative PID;
 
 bool init()
 {
+    ST.wait_millisec(0);
+    calculateFreeMemory();
+    SHW0.println("");
+    SHW1.println("");
+    SHW2.println("");
+    SHW3.println("");
+    SPI.transfer(0);
+    I2C.sendStart();
+    IM.enableInterrupt(0,0,0);
+    CT.read();
+    PWM.write(0,0);
+    DP.read(0);
+    AP.read(0);
+    EEPROM.read(0,0);
+    SM.addState(0,0);
+    PID.runPID(0,0,0,0,0,0,0,0,0,0);
+
+    MBM.readSingleInputWP8024(0,0,0);
+    AG.read(0,0,0,0,0,0);
+    CB.read(0,0,0,0);
+    RTC.read(0,0,0,0,0,0);
+    ETH.close();
+    RF.read(0);
+    DTS.update();
+    LED.update();
+    TC.read();
+    LCD.write(0,0,0,0);
+    ExEEPROM.read(0,0);
+    DMX.update();
+
     return false;
 }
