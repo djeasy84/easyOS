@@ -46,8 +46,8 @@ class SerialHW
         virtual bool write(uint8_t data)=0;
         virtual bool read(uint8_t *data)=0;
 
-        bool write(uint8_t *data, uint8_t len);
-        bool read(uint8_t *data, uint8_t *len, uint8_t max);
+        virtual bool write(uint8_t *data, uint8_t len) = 0;
+        virtual bool read(uint8_t *data, uint8_t *len, uint8_t max) = 0;
 
         bool print(unsigned char data);
         bool print(unsigned int data);
@@ -68,6 +68,10 @@ class SerialHW
         bool println(const char *data);
 
         bool readln(char *data, uint8_t max);
+
+    protected:
+        bool writeMulti(uint8_t *data, uint8_t len);
+        bool readMulti(uint8_t *data, uint8_t *len, uint8_t max);
 };
 
 /****************************************************************************************/
@@ -76,31 +80,6 @@ void SerialHW::flush()
 {
     uint8_t buffer;
     while(read(&buffer));
-}
-
-bool SerialHW::write(uint8_t *data, uint8_t len)
-{
-    for (uint8_t i=0; i<len; i++)
-    {
-        if (!write(data[i]))
-            return false;
-    }
-    return true;
-}
-
-bool SerialHW::read(uint8_t *data, uint8_t *len, uint8_t max)
-{
-    *len = 0;
-    //*data = 0;
-    uint32_t start_microsec = ST.microsec();
-    while(*len < max)
-    {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
-            break;
-        if (read(&data[*len]))
-            (*len)++;
-    }
-    return true;
 }
 
 bool SerialHW::print(unsigned char data)
@@ -281,6 +260,31 @@ bool SerialHW::readln(char *data, uint8_t max)
     return true;
 }
 
+bool SerialHW::writeMulti(uint8_t *data, uint8_t len)
+{
+    for (uint8_t i=0; i<len; i++)
+    {
+        if (!write(data[i]))
+            return false;
+    }
+    return true;
+}
+
+bool SerialHW::readMulti(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    *len = 0;
+    //*data = 0;
+    uint32_t start_microsec = ST.microsec();
+    while(*len < max)
+    {
+		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+            break;
+        if (read(&data[*len]))
+            (*len)++;
+    }
+    return true;
+}
+
 /****************************************************************************************/
 /****************************************************************************************/
 
@@ -299,6 +303,10 @@ class SerialHW0 : public SerialHW
 
         bool write(uint8_t data);
         bool read(uint8_t *data);
+
+        bool write(uint8_t *data, uint8_t len);
+        bool read(uint8_t *data, uint8_t *len, uint8_t max);
+
 };
 
 SerialHW0 SHW0;
@@ -363,6 +371,16 @@ bool SerialHW0::read(uint8_t *data)
     return false;
 }
 
+bool SerialHW0::write(uint8_t *data, uint8_t len)
+{
+    return writeMulti(data, len);
+}
+
+bool SerialHW0::read(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    return readMulti(data, len, max);
+}
+
 #endif
 
 #if defined (__AVR_ATmega2560__)
@@ -381,6 +399,9 @@ class SerialHW1 : public SerialHW
 
         bool write(uint8_t data);
         bool read(uint8_t *data);
+
+        bool write(uint8_t *data, uint8_t len);
+        bool read(uint8_t *data, uint8_t *len, uint8_t max);
 };
 
 SerialHW1 SHW1;
@@ -437,6 +458,16 @@ bool SerialHW1::read(uint8_t *data)
     return false;
 }
 
+bool SerialHW1::write(uint8_t *data, uint8_t len)
+{
+    return writeMulti(data, len);
+}
+
+bool SerialHW1::read(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    return readMulti(data, len, max);
+}
+
 #endif
 
 #if defined (SERIAL_HW_2_M)
@@ -453,6 +484,10 @@ class SerialHW2 : public SerialHW
 
         bool write(uint8_t data);
         bool read(uint8_t *data);
+
+        bool write(uint8_t *data, uint8_t len);
+        bool read(uint8_t *data, uint8_t *len, uint8_t max);
+
 };
 
 SerialHW2 SHW2;
@@ -509,6 +544,16 @@ bool SerialHW2::read(uint8_t *data)
     return false;
 }
 
+bool SerialHW2::write(uint8_t *data, uint8_t len)
+{
+    return writeMulti(data, len);
+}
+
+bool SerialHW2::read(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    return readMulti(data, len, max);
+}
+
 #endif
 
 #if defined (SERIAL_HW_3_M)
@@ -525,6 +570,9 @@ class SerialHW3 : public SerialHW
 
         bool write(uint8_t data);
         bool read(uint8_t *data);
+
+        bool write(uint8_t *data, uint8_t len);
+        bool read(uint8_t *data, uint8_t *len, uint8_t max);
 };
 
 SerialHW3 SHW3;
@@ -579,6 +627,16 @@ bool SerialHW3::read(uint8_t *data)
         return true;
     }
     return false;
+}
+
+bool SerialHW3::write(uint8_t *data, uint8_t len)
+{
+    return writeMulti(data, len);
+}
+
+bool SerialHW3::read(uint8_t *data, uint8_t *len, uint8_t max)
+{
+    return readMulti(data, len, max);
 }
 
 #endif

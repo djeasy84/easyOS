@@ -31,10 +31,28 @@
 
 #include <avr/interrupt.h>
 
+#if defined (__AVR_ATmega328P__)
+#define ANALOG_SIZE 8
+#endif
+#if defined (__AVR_ATmega2560__)
+#define ANALOG_SIZE 16
+#endif
+
+struct adcInfo
+{
+    uint8_t admux_mask;
+    uint8_t adcsrb_mask;
+};
+
 class AnalogPin
 {
     public:
+        AnalogPin();
+
         uint16_t read(uint16_t id);
+
+    private:
+        adcInfo anaList[ANALOG_SIZE];
 };
 
 AnalogPin AP;
@@ -62,62 +80,17 @@ AnalogPin AP;
     #define ARDUINO_PIN_A7 107
 #endif
 
-uint16_t AnalogPin::read(uint16_t id)
-{
-    ADCSRA = ADCSRB = ADMUX = 0;
-    switch(id)
+    AnalogPin::AnalogPin()
     {
-        case 100:
-        {
-            ADMUX = (1<<REFS0);
-        }
-        break;
-        case 101:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX0);
-        }
-        break;
-        case 102:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1);
-        }
-        break;
-        case 103:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1) | (1<<MUX0);
-        }
-        break;
-        case 104:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2);
-        }
-        break;
-        case 105:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX0);
-        }
-        break;
-        case 106:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1);
-        }
-        break;
-        case 107:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
-        }
-        break;
-        default:
-        {
-            return 0;
-        }
+        anaList[0].admux_mask = 0;                                  anaList[0].adcsrb_mask = 0;
+        anaList[1].admux_mask = (1<<MUX0);                          anaList[1].adcsrb_mask = 0;
+        anaList[2].admux_mask = (1<<MUX1);                          anaList[2].adcsrb_mask = 0;
+        anaList[3].admux_mask = (1<<MUX1) | (1<<MUX0);              anaList[3].adcsrb_mask = 0;
+        anaList[4].admux_mask = (1<<MUX2);                          anaList[4].adcsrb_mask = 0;
+        anaList[5].admux_mask = (1<<MUX2) | (1<<MUX0);              anaList[5].adcsrb_mask = 0;
+        anaList[6].admux_mask = (1<<MUX2) | (1<<MUX1);              anaList[6].adcsrb_mask = 0;
+        anaList[7].admux_mask = (1<<MUX2) | (1<<MUX1) | (1<<MUX0);  anaList[7].adcsrb_mask = 0;
     }
-    ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADPS2) | (1<<ADPS0);
-    while (ADCSRA & (1<<ADSC));
-    ADCSRA = ADCSRB = ADMUX = 0;
-    return ADC;
-}
-
 #endif
 
 #if defined (__AVR_ATmega2560__)
@@ -152,110 +125,43 @@ uint16_t AnalogPin::read(uint16_t id)
     #define EASYHOME_IN_12V 100
 #endif
 
+    AnalogPin::AnalogPin()
+    {
+        anaList[0].admux_mask  = 0;                                  anaList[0].adcsrb_mask  = 0;
+        anaList[1].admux_mask  = (1<<MUX0);                          anaList[1].adcsrb_mask  = 0;
+        anaList[2].admux_mask  = (1<<MUX1);                          anaList[2].adcsrb_mask  = 0;
+        anaList[3].admux_mask  = (1<<MUX1) | (1<<MUX0);              anaList[3].adcsrb_mask  = 0;
+        anaList[4].admux_mask  = (1<<MUX2);                          anaList[4].adcsrb_mask  = 0;
+        anaList[5].admux_mask  = (1<<MUX2) | (1<<MUX0);              anaList[5].adcsrb_mask  = 0;
+        anaList[6].admux_mask  = (1<<MUX2) | (1<<MUX1);              anaList[6].adcsrb_mask  = 0;
+        anaList[7].admux_mask  = (1<<MUX2) | (1<<MUX1) | (1<<MUX0);  anaList[7].adcsrb_mask  = 0;
+        anaList[8].admux_mask  = 0;                                  anaList[8].adcsrb_mask  = (1<<MUX5);
+        anaList[9].admux_mask  = (1<<MUX0);                          anaList[9].adcsrb_mask  = (1<<MUX5);
+        anaList[10].admux_mask = (1<<MUX1);                          anaList[10].adcsrb_mask = (1<<MUX5);
+        anaList[11].admux_mask = (1<<MUX1);                          anaList[11].adcsrb_mask = (1<<MUX5);
+        anaList[12].admux_mask = (1<<MUX1);                          anaList[12].adcsrb_mask = (1<<MUX5);
+        anaList[13].admux_mask = (1<<MUX1);                          anaList[13].adcsrb_mask = (1<<MUX5);
+        anaList[14].admux_mask = (1<<MUX1);                          anaList[14].adcsrb_mask = (1<<MUX5);
+        anaList[15].admux_mask = (1<<MUX1);                          anaList[15].adcsrb_mask = (1<<MUX5);
+    }
+#endif
+
 uint16_t AnalogPin::read(uint16_t id)
 {
-    ADCSRA = ADCSRB = ADMUX = 0;
-    switch(id)
+    if (id >= 100 && id <=199)
     {
-        case 100:
-        {
-            ADMUX = (1<<REFS0);
-        }
-        break;
-        case 101:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX0);
-        }
-        break;
-        case 102:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1);
-        }
-        break;
-        case 103:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1) | (1<<MUX0);
-        }
-        break;
-        case 104:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2);
-        }
-        break;
-        case 105:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX0);
-        }
-        break;
-        case 106:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1);
-        }
-        break;
-        case 107:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
-        }
-        break;
-        case 108:
-        {
-            ADMUX = (1<<REFS0);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 109:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX0);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 110:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 111:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX1) | (1<<MUX0);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 112:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 113:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX0);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 114:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        case 115:
-        {
-            ADMUX = (1<<REFS0) | (1<<MUX2) | (1<<MUX1) | (1<<MUX0);
-            ADCSRB = (1<<MUX5);
-        }
-        break;
-        default:
-        {
+        id = id - 100;
+        if (id >= ANALOG_SIZE)
             return 0;
-        }
+        ADCSRA = ADCSRB = ADMUX = 0;
+        ADMUX = (1<<REFS0) | anaList[id].admux_mask;
+        ADCSRB |= anaList[id].adcsrb_mask;
+        ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADPS2) | (1<<ADPS0);
+        while (ADCSRA & (1<<ADSC));
+        ADCSRA = ADCSRB = ADMUX = 0;
+        return ADC;
     }
-    ADCSRA |= (1<<ADEN) | (1<<ADSC) | (1<<ADPS2) | (1<<ADPS0);
-    while (ADCSRA & (1<<ADSC));
-    ADCSRA = ADCSRB = ADMUX = 0;
-    return ADC;
+    return 0;
 }
-
-#endif
 
 #endif
