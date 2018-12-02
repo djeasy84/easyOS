@@ -63,8 +63,8 @@ float ProportionalIntegralDerivative::runPID(float input, float target, float kP
     if (timeDiff < pidInterval)
         return lastOutput;
 
-    float interval = (float)timeDiff / 1000000.0;
     lastTime = ST.microsec();
+    float interval = (float)timeDiff / 1000000.0;
 
     float error = target - input;
 

@@ -53,7 +53,7 @@ class StateMachine
 
     private:
         uint8_t currState;
-        bool changedStated;
+        bool changedState;
         stateInfo stateList[MAX_STATE];
 };
 
@@ -62,7 +62,7 @@ class StateMachine
 StateMachine::StateMachine()
 {
     currState = 0;
-    changedStated = true;
+    changedState = true;
     for (uint8_t i=0; i<MAX_STATE; i++)
     {
         stateList[i].stateTask = 0x0000;
@@ -92,7 +92,7 @@ bool StateMachine::changeState(uint8_t stateName)
 {
     if (stateList[stateName].stateTask != 0x0000)
     {
-        changedStated = true;
+        changedState = true;
         currState = stateName;
         return true;
     }
@@ -103,9 +103,9 @@ void StateMachine::runState()
 {
     if (stateList[currState].stateTask != 0x0000)
     {
-        if (changedStated == true)
+        if (changedState == true)
         {
-            changedStated = false;
+            changedState = false;
             stateList[currState].startTime = ST.millisec();
         }
         stateList[currState].stateTask();
