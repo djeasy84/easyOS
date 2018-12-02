@@ -769,15 +769,19 @@ bool DigitalPin::read(uint16_t id, bool pullup)
         id = id - 0;
         if (id >= DIGITAL_SIZE)
             return false;
-        if (pgm_read_word(digitalListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(digitalListDrr + (id)));
+        if (ddr == 0)
             return false;
+        uint8_t mask = (1<<pgm_read_byte(digitalListMask + (id)));
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(digitalListPort + (id)));
         if (pullup)
-            *((volatile uint8_t *)(pgm_read_word(digitalListPort + (id)))) |= (1<<pgm_read_word(digitalListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint8_t *)(pgm_read_word(digitalListPort + (id)))) &= ~(1<<pgm_read_word(digitalListMask + (id)));
-        *((volatile uint16_t *)(pgm_read_word(digitalListDrr + (id)))) &= ~(1<<pgm_read_word(digitalListMask + (id)));
+            *port &= ~mask;
+        *ddr &= ~mask;
         asm("nop");
-        if(*((volatile uint8_t *)(pgm_read_word(digitalListPin + (id)))) & (1<<pgm_read_word(digitalListMask + (id))))
+        volatile uint8_t *pin = (volatile uint8_t *)(pgm_read_word(digitalListPin + (id)));
+        if(*pin & mask)
             return true;
     }
     else if (id >= 100 && id <=199)
@@ -785,15 +789,19 @@ bool DigitalPin::read(uint16_t id, bool pullup)
         id = id - 100;
         if (id >= ANALOG_SIZE)
             return false;
-        if (pgm_read_word(analogListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(analogListDrr + (id)));
+        if (ddr == 0)
             return false;
+        uint8_t mask = (1<<pgm_read_byte(analogListMask + (id)));
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(analogListPort + (id)));
         if (pullup)
-            *((volatile uint8_t *)(pgm_read_word(analogListPort + (id)))) |= (1<<pgm_read_word(analogListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint8_t *)(pgm_read_word(analogListPort + (id)))) &= ~(1<<pgm_read_word(analogListMask + (id)));
-        *((volatile uint16_t *)(pgm_read_word(analogListDrr + (id)))) &= ~(1<<pgm_read_word(analogListMask + (id)));
+            *port &= ~mask;
+        *ddr &= ~mask;
         asm("nop");
-        if(*((volatile uint8_t *)(pgm_read_word(analogListPin + (id)))) & (1<<pgm_read_word(analogListMask + (id))))
+        volatile uint8_t *pin = (volatile uint8_t *)(pgm_read_word(analogListPin + (id)));
+        if(*pin & mask)
             return true;
     }
     else if (id >= 200 && id <=299)
@@ -801,15 +809,19 @@ bool DigitalPin::read(uint16_t id, bool pullup)
         id = id - 200;
         if (id >= PWM_SIZE)
             return false;
-        if (pgm_read_word(pwmListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(pwmListDrr + (id)));
+        if (ddr == 0)
             return false;
+        uint8_t mask = (1<<pgm_read_byte(pwmListMask + (id)));
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(pwmListPort + (id)));
         if (pullup)
-            *((volatile uint8_t *)(pgm_read_word(pwmListPort + (id)))) |= (1<<pgm_read_word(pwmListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint8_t *)(pgm_read_word(pwmListPort + (id)))) &= ~(1<<pgm_read_word(pwmListMask + (id)));
-        *((volatile uint16_t *)(pgm_read_word(pwmListDrr + (id)))) &= ~(1<<pgm_read_word(pwmListMask + (id)));
+            *port &= ~mask;
+        *ddr &= ~mask;
         asm("nop");
-        if(*((volatile uint8_t *)(pgm_read_word(pwmListPin + (id)))) & (1<<pgm_read_word(pwmListMask + (id))))
+        volatile uint8_t *pin = (volatile uint8_t *)(pgm_read_word(pwmListPin + (id)));
+        if(*pin & mask)
             return true;
     }
     return false;
@@ -822,39 +834,48 @@ void DigitalPin::write(uint16_t id, bool status)
         id = id - 0;
         if (id >= DIGITAL_SIZE)
             return;
-        if (pgm_read_word(digitalListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(digitalListDrr + (id)));
+        if (ddr == 0)
             return;
-        *((volatile uint16_t *)(pgm_read_word(digitalListDrr + (id)))) |= (1<<pgm_read_word(digitalListMask + (id)));
+        uint8_t mask = (1<<pgm_read_byte(digitalListMask + (id)));
+        *ddr |= mask;
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(digitalListPort + (id)));
         if (status)
-            *((volatile uint16_t *)(pgm_read_word(digitalListPort + (id)))) |= (1<<pgm_read_word(digitalListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint16_t *)(pgm_read_word(digitalListPort + (id)))) &= ~(1<<pgm_read_word(digitalListMask + (id)));
+            *port &= ~mask;
     }
     else if (id >= 100 && id <=199)
     {
         id = id - 100;
         if (id >= ANALOG_SIZE)
             return;
-        if (pgm_read_word(analogListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(analogListDrr + (id)));
+        if (ddr == 0)
             return;
-        *((volatile uint16_t *)(pgm_read_word(analogListDrr + (id)))) |= (1<<pgm_read_word(analogListMask + (id)));
+        uint8_t mask = (1<<pgm_read_byte(analogListMask + (id)));
+        *ddr |= mask;
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(analogListPort + (id)));
         if (status)
-            *((volatile uint16_t *)(pgm_read_word(analogListPort + (id)))) |= (1<<pgm_read_word(analogListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint16_t *)(pgm_read_word(analogListPort + (id)))) &= ~(1<<pgm_read_word(analogListMask + (id)));
+            *port &= ~mask;
     }
     else if (id >= 200 && id <=299)
     {
         id = id - 200;
         if (id >= PWM_SIZE)
             return;
-        if (pgm_read_word(pwmListDrr + (id)) == 0)
+        volatile uint8_t *ddr = (volatile uint8_t *)(pgm_read_word(pwmListDrr + (id)));
+        if (ddr == 0)
             return;
-        *((volatile uint16_t *)(pgm_read_word(pwmListDrr + (id)))) |= (1<<pgm_read_word(pwmListMask + (id)));
+        uint8_t mask = (1<<pgm_read_byte(pwmListMask + (id)));
+        *ddr |= mask;
+        volatile uint8_t *port = (volatile uint8_t *)(pgm_read_word(pwmListPort + (id)));
         if (status)
-            *((volatile uint16_t *)(pgm_read_word(pwmListPort + (id)))) |= (1<<pgm_read_word(pwmListMask + (id)));
+            *port |= mask;
         else
-            *((volatile uint16_t *)(pgm_read_word(pwmListPort + (id)))) &= ~(1<<pgm_read_word(pwmListMask + (id)));
+            *port &= ~mask;
     }
 }
 
