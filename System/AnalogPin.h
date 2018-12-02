@@ -138,11 +138,11 @@ AnalogPin AP;
         anaList[8].admux_mask  = 0;                                  anaList[8].adcsrb_mask  = (1<<MUX5);
         anaList[9].admux_mask  = (1<<MUX0);                          anaList[9].adcsrb_mask  = (1<<MUX5);
         anaList[10].admux_mask = (1<<MUX1);                          anaList[10].adcsrb_mask = (1<<MUX5);
-        anaList[11].admux_mask = (1<<MUX1);                          anaList[11].adcsrb_mask = (1<<MUX5);
-        anaList[12].admux_mask = (1<<MUX1);                          anaList[12].adcsrb_mask = (1<<MUX5);
-        anaList[13].admux_mask = (1<<MUX1);                          anaList[13].adcsrb_mask = (1<<MUX5);
-        anaList[14].admux_mask = (1<<MUX1);                          anaList[14].adcsrb_mask = (1<<MUX5);
-        anaList[15].admux_mask = (1<<MUX1);                          anaList[15].adcsrb_mask = (1<<MUX5);
+        anaList[11].admux_mask = (1<<MUX1) | (1<<MUX0);              anaList[11].adcsrb_mask = (1<<MUX5);
+        anaList[12].admux_mask = (1<<MUX2);                          anaList[12].adcsrb_mask = (1<<MUX5);
+        anaList[13].admux_mask = (1<<MUX2) | (1<<MUX0);              anaList[13].adcsrb_mask = (1<<MUX5);
+        anaList[14].admux_mask = (1<<MUX2) | (1<<MUX1);              anaList[14].adcsrb_mask = (1<<MUX5);
+        anaList[15].admux_mask = (1<<MUX2) | (1<<MUX1) | (1<<MUX0);  anaList[15].adcsrb_mask = (1<<MUX5);
     }
 #endif
 

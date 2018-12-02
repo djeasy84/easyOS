@@ -348,6 +348,7 @@ DigitalPin DP;
 
         for (uint8_t i=0; i<PWM_SIZE; i++)
             pwmList[0].ddr = 0;  pwmList[0].port = 0;  pwmList[0].pin = 0;  pwmList[0].mask = 0;
+        #if !defined (PWM_M)
         pwmList[0].ddr  = &DDRE;  pwmList[0].port  = &PORTE;  pwmList[0].pin  = &PINE;  pwmList[0].mask  = 4;
         pwmList[1].ddr  = &DDRE;  pwmList[1].port  = &PORTE;  pwmList[1].pin  = &PINE;  pwmList[1].mask  = 5;
         pwmList[2].ddr  = &DDRG;  pwmList[2].port  = &PORTG;  pwmList[2].pin  = &PING;  pwmList[2].mask  = 5;
@@ -359,6 +360,7 @@ DigitalPin DP;
         pwmList[8].ddr  = &DDRL;  pwmList[8].port  = &PORTL;  pwmList[8].pin  = &PINL;  pwmList[8].mask  = 3;
         pwmList[9].ddr  = &DDRL;  pwmList[9].port  = &PORTL;  pwmList[9].pin  = &PINL;  pwmList[9].mask  = 4;
         pwmList[10].ddr = &DDRL;  pwmList[10].port = &PORTL;  pwmList[10].pin = &PINL;  pwmList[10].mask = 5;
+        #endif
     }
 
 #endif
