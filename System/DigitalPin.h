@@ -76,14 +76,6 @@
     #define DIGITAL_SIZE 10
     #define ANALOG_SIZE 6
     #define PWM_SIZE 2
-        /*anaList[0].ddr = &DDRC;  anaList[0].port = &PORTC;  anaList[0].pin = &PINC;  anaList[0].mask = 0;
-        anaList[1].ddr = &DDRC;  anaList[1].port = &PORTC;  anaList[1].pin = &PINC;  anaList[1].mask = 1;
-        anaList[2].ddr = &DDRC;  anaList[2].port = &PORTC;  anaList[2].pin = &PINC;  anaList[2].mask = 2;
-        anaList[3].ddr = &DDRC;  anaList[3].port = &PORTC;  anaList[3].pin = &PINC;  anaList[3].mask = 3;
-        #if !defined (I2C_M)
-        anaList[4].ddr = &DDRC;  anaList[4].port = &PORTC;  anaList[4].pin = &PINC;  anaList[4].mask = 4;
-        anaList[5].ddr = &DDRC;  anaList[5].port = &PORTC;  anaList[5].pin = &PINC;  anaList[5].mask = 5;
-        #endif*/
     const PROGMEM uint16_t digitalListDrr[DIGITAL_SIZE]  = { (uint16_t)&DDRD,
                                                              (uint16_t)&DDRD,
                                                              (uint16_t)&DDRD,
