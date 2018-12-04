@@ -74,7 +74,7 @@
         #define ARDUINO_PIN_A5 105
     #endif
     #define DIGITAL_SIZE 10
-    #define ANALOG_SIZE 6
+    #define ANALOG_SIZE 8
     #define PWM_SIZE 2
     const PROGMEM uint16_t digitalListDrr[DIGITAL_SIZE]  = { (uint16_t)&DDRD,
                                                              (uint16_t)&DDRD,
