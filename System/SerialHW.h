@@ -29,6 +29,8 @@
 #ifndef SERIAL_HW_H
 #define SERIAL_HW_H
 
+#define SERIAL_HW_TIMEOUT 5000
+
 #include "./Time.h"
 
 #include <stdio.h>
@@ -252,7 +254,7 @@ bool SerialHW::readln(char *data, uint8_t max)
             if (data[len-2] == '\r' && data[len-1] == '\n')
                 break;
         }
-        if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
+        if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
             return false;
         start_microsec = ST.microsec();
     }
@@ -277,7 +279,7 @@ bool SerialHW::readMulti(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 5)
+		if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
             break;
         if (read(&data[*len]))
             (*len)++;

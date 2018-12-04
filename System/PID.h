@@ -34,7 +34,7 @@
 class ProportionalIntegralDerivative
 {
     public:
-        ProportionalIntegralDerivative(uint16_t interval);
+        ProportionalIntegralDerivative(uint32_t interval);
 
         float runPID(float input, float target, float kP, float kI, float kD, float maxP, float maxI, float maxD, float min, float max);
 
@@ -48,23 +48,23 @@ class ProportionalIntegralDerivative
 
 /****************************************************************************************/
 
-ProportionalIntegralDerivative::ProportionalIntegralDerivative(uint16_t interval)
+ProportionalIntegralDerivative::ProportionalIntegralDerivative(uint32_t interval)
 {
     lastError = 0.0;
     historyError = 0.0;
     lastOutput = 0.0;
     lastTime = 0;
-    pidInterval = interval * 1000;
+    pidInterval = interval;
 }
 
 float ProportionalIntegralDerivative::runPID(float input, float target, float kP, float kI, float kD, float maxP, float maxI, float maxD, float min, float max)
 {
-    uint32_t timeDiff = ST.time_diff(ST.microsec(), lastTime);
+    uint32_t timeDiff = ST.time_diff(ST.millisec(), lastTime);
     if (timeDiff < pidInterval)
         return lastOutput;
 
-    lastTime = ST.microsec();
-    float interval = (float)timeDiff / 1000000.0;
+    lastTime = ST.millisec();
+    float interval = (float)timeDiff / 1000.0;
 
     float error = target - input;
 
@@ -74,12 +74,10 @@ float ProportionalIntegralDerivative::runPID(float input, float target, float kP
     float D = ((error - lastError) / interval) * kD;
     D = (D < -maxD) ? -maxD : (D > +maxD) ? +maxD : D;
 
-    float I = (historyError + (error * interval)) * kI;
-    if (I > -maxI && I < +maxI)
-        historyError = historyError + (error * interval);
-    else
-        I = (I < -maxI) ? -maxI : (I > +maxI) ? +maxI : I;
+    float I = historyError + ((error * interval) * kI);
+    I = (I < -maxI) ? -maxI : (I > +maxI) ? +maxI : I;
 
+    historyError = I;
     lastError = error;
 
     lastOutput = P + I + D;
