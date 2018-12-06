@@ -44,7 +44,7 @@ class StateMachine
     public:
         StateMachine();
 
-        bool addState(uint8_t stateName, void (*pTask)(void));
+        void addState(uint8_t stateName, void (*pTask)(void));
 
         uint32_t timeState();
         bool changeState(uint8_t stateName);
@@ -70,17 +70,12 @@ StateMachine::StateMachine()
     }
 }
 
-bool StateMachine::addState(uint8_t stateName, void (*pTask)(void))
+void StateMachine::addState(uint8_t stateName, void (*pTask)(void))
 {
     if (stateName >= MAX_STATE)
-        return false;
-    if (stateList[stateName].stateTask == 0x0000)
-    {
-        stateList[stateName].stateTask = pTask;
-        stateList[stateName].startTime = 0x00000000;
-        return true;
-    }
-    return false;
+        return;
+    stateList[stateName].stateTask = pTask;
+    stateList[stateName].startTime = 0x00000000;
 }
 
 uint32_t StateMachine::timeState()

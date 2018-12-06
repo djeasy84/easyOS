@@ -406,7 +406,7 @@ ExternalEEPROM EasyHome::EXEEPROM()
 
 void EasyHome::update()
 {
-    if (ST.time_diff(ST.millisec(), cpuLedTime) >= 500)
+    if (ST.time_diff(ST.millisec(), cpuLedTime) > 500)
     {
         cpuLedTime = ST.millisec();
         cpuLedStatus = !cpuLedStatus;
@@ -416,7 +416,7 @@ void EasyHome::update()
     CMD_counter++;
     CMD5V_sVoltage += AP.read(EASYHOME_IN_5V);
     CMD12V_sVoltage += AP.read(EASYHOME_IN_12V);
-    if (ST.time_diff(ST.millisec(), CMD_time) >= 250)
+    if (ST.time_diff(ST.millisec(), CMD_time) > 250)
     {
         CMD_time = ST.millisec();
         CMD5V_fVoltage = (3.0/2.0) * ((5.0 / 1024.0) * ((float)CMD5V_sVoltage / (float)CMD_counter));
@@ -432,7 +432,7 @@ void EasyHome::update()
     INPUT_sVoltage[4] += AP.read(EASYHOME_IN_5);
     INPUT_sVoltage[5] += AP.read(EASYHOME_IN_6);
     INPUT_sVoltage[6] += AP.read(EASYHOME_IN_7);
-    if (ST.time_diff(ST.millisec(), INPUT_time) >= 50)
+    if (ST.time_diff(ST.millisec(), INPUT_time) > 50)
     {
         INPUT_time = ST.millisec();
         for (uint8_t i=0; i<INPUT_NUM; i++)

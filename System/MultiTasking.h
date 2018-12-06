@@ -45,7 +45,7 @@ class MultiTasking
     public:
         MultiTasking();
 
-        bool addTask(void (*pLoop)(void), uint32_t tInterval = 0x00000000);
+        void addTask(void (*pLoop)(void), uint32_t tInterval = 0x00000000);
 
         void runTask();
 
@@ -67,7 +67,7 @@ MultiTasking::MultiTasking()
     }
 }
 
-bool MultiTasking::addTask(void (*pLoop)(void), uint32_t tInterval)
+void MultiTasking::addTask(void (*pLoop)(void), uint32_t tInterval)
 {
     for (uint8_t i=0; i<MAX_TASK; i++)
     {
@@ -76,10 +76,9 @@ bool MultiTasking::addTask(void (*pLoop)(void), uint32_t tInterval)
             taskList[i].taskLoop = pLoop;
             taskList[i].lastRun = 0x00000000;
             taskList[i].timeInterval = tInterval;
-            return true;
+            return;
         }
     }
-    return false;
 }
 
 void MultiTasking::runTask()

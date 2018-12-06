@@ -94,14 +94,14 @@ bool DigitalMultipleX::update()
                 UBRR1L = 19;
                 SHW1.write(0);
                 UBRR1L = 7;
-                for (uint16_t i=0; i<1+2; i++)
+                for (uint16_t i=0; i<1+512; i++)
                     SHW1.write(dataLED[i]);
             break;
             case 2:
                 UBRR2L = 19;
                 SHW2.write(0);
                 UBRR2L = 7;
-                for (uint16_t i=0; i<1+2; i++)
+                for (uint16_t i=0; i<1+512; i++)
                     SHW2.write(dataLED[i]);
             break;
             case 3:

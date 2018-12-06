@@ -45,8 +45,8 @@ class SerialHW
 
         void flush();
 
-        virtual bool write(uint8_t data)=0;
-        virtual bool read(uint8_t *data)=0;
+        virtual bool write(uint8_t data) = 0;
+        virtual bool read(uint8_t *data) = 0;
 
         virtual bool write(uint8_t *data, uint8_t len) = 0;
         virtual bool read(uint8_t *data, uint8_t *len, uint8_t max) = 0;
