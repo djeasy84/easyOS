@@ -37,12 +37,10 @@ void TaskC();
 
 bool init()
 {
-    if (!MT.addTask(TaskA, 500000))
-        return false;
-    if (!MT.addTask(TaskB, 1000000))
-        return false;
-    if (!MT.addTask(TaskC, 5000000))
-        return false;
+    MT.addTask(TaskA, 500000);
+    MT.addTask(TaskB, 1000000);
+    MT.addTask(TaskC, 5000000);
+
     return true;
 }
 
