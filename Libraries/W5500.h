@@ -82,6 +82,12 @@ bool IPAddress::PortToBytes(const uint16_t port, uint8_t *bytes)
 #define CLIENT 1
 #define SERVER 2
 
+#define NAVS 0
+#define CLOSED 1
+#define LISTEN 2
+#define CONNECTED 3
+#define WAIT_CLOSE 4
+
 #define MIN_CLIENT_SOURCE_PORT 50000
 
 class Ethernet
@@ -89,7 +95,11 @@ class Ethernet
     public:
         bool setup(uint8_t ss /* ARDUINO_PIN_10 */, const char *mac = "00:11:22:33:44:55", const char *ip = "192.168.1.100", const char *netmask = "255.255.255.0", const char *gateway = "0.0.0.0");
 
-        bool open(const char *ip, uint16_t port, uint8_t type = TCP, uint16_t lPort = 0, uint8_t mode = CLIENT);
+        bool openServer(uint16_t port);
+        bool openClient(const char *ip, uint16_t port, uint8_t type = TCP, uint16_t lPort = 0);
+
+        uint8_t status();
+
         unsigned int available();
         bool read(uint16_t len, uint8_t *data);
         bool write(uint16_t len, uint8_t *data);
@@ -157,7 +167,41 @@ bool Ethernet::setup(uint8_t ss, const char *mac, const char *ip, const char *ne
     return true;
 }
 
-bool Ethernet::open(const char *ip, uint16_t port, uint8_t type, uint16_t lPort, uint8_t mode)
+bool Ethernet::openServer(uint16_t port)
+{
+    uint8_t bytePHY = 0x00;
+    getRegistry(SYS_CM, 0x002E, &bytePHY);
+    if ((bytePHY & 0b00000001) == 0b00000000)
+        return false;
+    incPort = port;
+    sockType = TCP;
+    close();
+    if (!setRegistry(SOCK_CM, 0x0000, 0b00000001))
+        return false;
+    uint8_t bytesSrcPort[2] = {0, 0};
+    IPAddress::PortToBytes(incPort, bytesSrcPort);
+    if (!setRegistry(SOCK_CM, 0x0004, 2, bytesSrcPort))
+        return false;
+    setRegistry(SOCK_CM, 0x0001, 0x01);
+    uint8_t byteStatus = 0x00;
+    getRegistry(SOCK_CM, 0x0003, &byteStatus);
+    if (byteStatus != 0x13)
+    {
+        close();
+        return false;
+    }
+    setRegistry(SOCK_CM, 0x0001, 0x02);
+    byteStatus = 0x00;
+    getRegistry(SOCK_CM, 0x0003, &byteStatus);
+    if (byteStatus != 0x14)
+    {
+        close();
+        return false;
+    }
+    return true;
+}
+
+bool Ethernet::openClient(const char *ip, uint16_t port, uint8_t type, uint16_t lPort)
 {
     uint8_t bytePHY = 0x00;
     getRegistry(SYS_CM, 0x002E, &bytePHY);
@@ -165,72 +209,86 @@ bool Ethernet::open(const char *ip, uint16_t port, uint8_t type, uint16_t lPort,
         return false;
     incPort = lPort;
     sockType = type;
-    if (mode == CLIENT)
+    if (sockType == TCP)
     {
-        if (sockType == TCP)
+        close();
+        if (!setRegistry(SOCK_CM, 0x0000, 0b00000001))
+            return false;
+        uint8_t bytesSrcPort[2] = {0, 0};
+        IPAddress::PortToBytes(getSourcePort(), bytesSrcPort);
+        if (!setRegistry(SOCK_CM, 0x0004, 2, bytesSrcPort))
+            return false;
+        setRegistry(SOCK_CM, 0x0001, 0x01);
+        uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x13)
         {
             close();
-            if (!setRegistry(SOCK_CM, 0x0000, 0b00000001))
-                return false;
-            uint8_t bytesSrcPort[2] = {0, 0};
-            IPAddress::PortToBytes(getSourcePort(), bytesSrcPort);
-            if (!setRegistry(SOCK_CM, 0x0004, 2, bytesSrcPort))
-                return false;
-            setRegistry(SOCK_CM, 0x0001, 0x01);
-            uint8_t byteStatus = 0x00;
+            return false;
+        }
+        uint8_t bytesDestIP[4] = {0x00, 0x00, 0x00, 0x00};
+        IPAddress::IPToBytes(ip, bytesDestIP);
+        setRegistry(SOCK_CM, 0x000C, 4, bytesDestIP);
+        uint8_t bytesDestPort[2] = {0, 0};
+        IPAddress::PortToBytes(port, bytesDestPort);
+        setRegistry(SOCK_CM, 0x0010, 2, bytesDestPort);
+        setRegistry(SOCK_CM, 0x0001, 0x04);
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        while (byteStatus != 0x17)
+        {
             getRegistry(SOCK_CM, 0x0003, &byteStatus);
-            if (byteStatus != 0x13)
+            if (byteStatus == 0x00)
             {
                 close();
                 return false;
             }
-            uint8_t bytesDestIP[4] = {0x00, 0x00, 0x00, 0x00};
-            IPAddress::IPToBytes(ip, bytesDestIP);
-            setRegistry(SOCK_CM, 0x000C, 4, bytesDestIP);
-            uint8_t bytesDestPort[2] = {0, 0};
-            IPAddress::PortToBytes(port, bytesDestPort);
-            setRegistry(SOCK_CM, 0x0010, 2, bytesDestPort);
-            setRegistry(SOCK_CM, 0x0001, 0x04);
-            getRegistry(SOCK_CM, 0x0003, &byteStatus);
-            while (byteStatus != 0x17)
-            {
-                getRegistry(SOCK_CM, 0x0003, &byteStatus);
-                if (byteStatus == 0x00)
-                {
-                    close();
-                    return false;
-                }
-            }
-            return true;
         }
-        else if (sockType == UDP)
-        {
-            close();
-            if (!setRegistry(SOCK_CM, 0x0000, 0b00000010))
-                return false;
-            uint8_t bytesSrcPort[2] = {0, 0};
-            IPAddress::PortToBytes(65000, bytesSrcPort);
-            if (!setRegistry(SOCK_CM, 0x0004, 2, bytesSrcPort))
-                return false;
-            setRegistry(SOCK_CM, 0x0001, 0x01);
-            uint8_t byteStatus = 0x00;
-            getRegistry(SOCK_CM, 0x0003, &byteStatus);
-            if (byteStatus != 0x22)
-            {
-                close();
-                return false;
-            }
-            IPAddress::IPToBytes(ip, destIPUDP);
-            IPAddress::PortToBytes(port, destPortUDP);
-            return true;
-        }
-        return false;
+        return true;
     }
-    else if (mode == SERVER)
+    else if (sockType == UDP)
     {
-        return false;
+        close();
+        if (!setRegistry(SOCK_CM, 0x0000, 0b00000010))
+            return false;
+        uint8_t bytesSrcPort[2] = {0, 0};
+        IPAddress::PortToBytes(65000, bytesSrcPort);
+        if (!setRegistry(SOCK_CM, 0x0004, 2, bytesSrcPort))
+            return false;
+        setRegistry(SOCK_CM, 0x0001, 0x01);
+        uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x22)
+        {
+            close();
+            return false;
+        }
+        IPAddress::IPToBytes(ip, destIPUDP);
+        IPAddress::PortToBytes(port, destPortUDP);
+        return true;
     }
     return false;
+}
+
+uint8_t Ethernet::status()
+{
+    uint8_t byteStatus = 0x00;
+    getRegistry(SOCK_CM, 0x0003, &byteStatus);
+    switch (byteStatus)
+    {
+        case 0x00:
+            return CLOSED;
+        break;
+        case 0x1C:
+            return WAIT_CLOSE;
+        break;
+        case 0x14:
+            return LISTEN;
+        break;
+        case 0x17:
+            return CONNECTED;
+        break;
+    }
+    return NAVS;
 }
 
 unsigned int Ethernet::available()
@@ -453,7 +511,7 @@ bool Ethernet::close()
     uint8_t byte = 0x00;
     getRegistry(SOCK_CM, 0x0003, &byte);
     while (byte != 0x00)
-        getRegistry(1, 0x0003, &byte);
+        getRegistry(SOCK_CM, 0x0003, &byte);
     return true;
 }
 
