@@ -82,7 +82,7 @@ bool IPAddress::PortToBytes(const uint16_t port, uint8_t *bytes)
 #define CLIENT 1
 #define SERVER 2
 
-#define NAVS 0
+#define NVS 0 // NOT VALID STATE
 #define CLOSED 1
 #define LISTEN 2
 #define CONNECTED 3
@@ -288,7 +288,7 @@ uint8_t Ethernet::status()
             return CONNECTED;
         break;
     }
-    return NAVS;
+    return NVS;
 }
 
 unsigned int Ethernet::available()

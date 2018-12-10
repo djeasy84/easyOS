@@ -28,7 +28,6 @@
 
 #define TIME_M
 #define DIGITAL_PIN_M
-#define ANALOG_PIN_M
 #define SPI_M
 #define SERIAL_HW_M
 #define SERIAL_HW_2_M
@@ -124,6 +123,17 @@ int main()
                         ETH.write(3, (uint8_t *)"E\r\n");
                         break;
                     }
+					uint8_t cEND[2] = {0, 0};
+                    if (!ETH.read(2, cEND))
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
+                    if (cEND[0] != '\r' && cEND[1] != '\n')
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
                     uint8_t iOUT = cOUT-'0';
                     bool bOUT = (cSTATE == '1') ? true : false;
                     switch (iOUT)
@@ -172,6 +182,17 @@ int main()
                         ETH.write(3, (uint8_t *)"E\r\n");
                         break;
                     }
+					uint8_t cEND[2] = {0, 0};
+                    if (!ETH.read(2, cEND))
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
+                    if (cEND[0] != '\r' && cEND[1] != '\n')
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
                     uint8_t cSTATE = 0;
                     uint8_t iIN = cIN-'0';
                     switch (iIN)
@@ -208,6 +229,17 @@ int main()
                 {
                     uint8_t cDATA = 0;
                     if (!ETH.read(1, &cDATA))
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
+					uint8_t cEND[2] = {0, 0};
+                    if (!ETH.read(2, cEND))
+                    {
+                        ETH.write(3, (uint8_t *)"E\r\n");
+                        break;
+                    }
+                    if (cEND[0] != '\r' && cEND[1] != '\n')
                     {
                         ETH.write(3, (uint8_t *)"E\r\n");
                         break;
