@@ -49,7 +49,6 @@
 StateMachine SM;
 ProportionalIntegralDerivative PID(0);
 
-#include "./../../Libraries/ModBus.h"
 #include "./../../Libraries/MPU6050.h"
 #include "./../../Libraries/MCP2515.h"
 #include "./../../Libraries/DS1307.h"
@@ -81,7 +80,6 @@ bool init()
     SM.addState(0,0);
     PID.runPID(0,0,0,0,0,0,0,0,0,0);
 
-    MBM.readSingleInputWP8024(0,0,0);
     AG.read(0,0,0,0,0,0);
     CB.read(0,0,0,0);
     RTC.read(0,0,0,0,0,0);
