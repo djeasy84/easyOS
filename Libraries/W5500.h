@@ -325,13 +325,13 @@ bool Ethernet::read(uint16_t len, uint8_t *data)
 {
     if (sockType == TCP)
     {
-		uint8_t byteStatus = 0x00;
+		/*uint8_t byteStatus = 0x00;
 		getRegistry(SOCK_CM, 0x0003, &byteStatus);
 		if (byteStatus != 0x17)
 		{
 			close();
 			return false;
-		}
+		}*/
         uint16_t rx_size = available();
         if (rx_size == 0)
             return false;
@@ -360,13 +360,13 @@ bool Ethernet::read(uint16_t len, uint8_t *data)
     }
     else if (sockType == UDP)
     {
-		uint8_t byteStatus = 0x00;
+		/*uint8_t byteStatus = 0x00;
 		getRegistry(SOCK_CM, 0x0003, &byteStatus);
 		if (byteStatus != 0x22)
 		{
 			close();
 			return false;
-		}
+		}*/
         uint16_t rx_size = available();
         if (rx_size == 0)
             return false;
