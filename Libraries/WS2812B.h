@@ -36,8 +36,8 @@ void updateLED(uint8_t *data, uint16_t len, uint8_t pin)
 {
   cli();
 
-  #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoMEGA__)
-  #if defined (__BOARD_arduinoUNO__)
+  #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__) || defined (__BOARD_arduinoMEGA__)
+  #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
   volatile uint8_t *portADDR = &PORTD;
   #endif
   #if defined (__BOARD_arduinoMEGA__)
@@ -167,11 +167,11 @@ bool LightEmittingDiode::setup(uint8_t pin, uint16_t len)
     lastUpdate = 0;
     *dataLED = dataLEN = dataPIN = 0;
 
-    #if !defined (__BOARD_arduinoUNO__) && !defined (__BOARD_arduinoMEGA__)
+    #if !defined (__BOARD_arduinoUNO__) && !defined (__BOARD_arduinoNANO__) && !defined (__BOARD_arduinoMEGA__)
     return false;
     #endif
 
-    #if defined (__BOARD_arduinoUNO__)
+    #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
     if (pin != ARDUINO_PIN_2 && pin != ARDUINO_PIN_3 && pin != ARDUINO_PIN_4 && pin != ARDUINO_PIN_5 && pin != ARDUINO_PIN_6 && pin != ARDUINO_PIN_7)
         return false;
     #endif
@@ -186,7 +186,7 @@ bool LightEmittingDiode::setup(uint8_t pin, uint16_t len)
     DP.write(pin, false);
     switch(pin)
     {
-        #if defined (__BOARD_arduinoUNO__)
+        #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
         case ARDUINO_PIN_2:
         {
             dataPIN = 2;
