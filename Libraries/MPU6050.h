@@ -65,8 +65,8 @@ bool AccelerometerGyroscope::setup(uint16_t accRange, uint16_t gyroRange, uint8_
         return false;
     if (!setupGyroscopeRange(gyroRange))
         return false;
-    //if (!setupLowPassFilter(lowPassFilterValue))
-    //  return false;
+    if (!setupLowPassFilter(lowPassFilterValue))
+      return false;
     return setRegistryBit(I2C_ACCGYRO_ID, 0x6B, 6, false);
 }
 
@@ -214,55 +214,11 @@ bool AccelerometerGyroscope::setupGyroscopeRange(uint16_t range)
     return false;
 }
 
-bool AccelerometerGyroscope::setupLowPassFilter(uint8_t range)  // TO DO
+bool AccelerometerGyroscope::setupLowPassFilter(uint8_t range)
 {
-    /*switch(range)
-    {
-        case 260:
-        case 256:
-        default:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 0);
-        }
-        break;
-        case 184:
-        case 188:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 1);
-        }
-        break;
-        case 94:
-        case 98:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 2);
-        }
-        break;
-        case 44:
-        case 42:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 3);
-        }
-        break;
-        case 21:
-        case 20:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 4);
-        }
-        break;
-        case 10:
-        //case 10:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 5);
-        }
-        break;
-        case 5:
-        //case 5:
-        {
-            return setRegistry(I2C_ACCGYRO_ID, 0x1A, 6);
-        }
-        break;
-    }*/
-    return false;
+    if (range > 6)
+        return false;
+    return setRegistry(I2C_ACCGYRO_ID, 0x1A, range);
 }
 
 float AccelerometerGyroscope::mapRawToFloat(uint8_t RawH, uint8_t RawL, float range)
