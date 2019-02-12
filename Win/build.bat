@@ -170,7 +170,7 @@ SET res=false
 IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
-    ".\AVR-GCC\bin\avr-size.exe" ..\Projects\%file_name%\%file_name%.out
+    ".\AVR-GCC\bin\avr-size.exe" -C --mcu=%processor_type% ..\Projects\%file_name%\%file_name%.out
     if errorlevel 1 (
         GOTO :BUILD_KO
     )
