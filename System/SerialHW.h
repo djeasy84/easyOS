@@ -35,6 +35,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define BUFFER_SIZE 32
 
@@ -57,7 +58,7 @@ class SerialHW
         bool print(char data);
         bool print(int data);
         bool print(long data);
-        bool print(double data);
+        bool print(double data, uint8_t dec = 2);
         bool print(const char *data);
 
         bool println(unsigned char data);
@@ -66,7 +67,7 @@ class SerialHW
         bool println(char data);
         bool println(int data);
         bool println(long data);
-        bool println(double data);
+        bool println(double data, uint8_t dec = 2);
         bool println(const char *data);
 
         bool readln(char *data, uint8_t max);
@@ -86,7 +87,7 @@ void SerialHW::flush()
 
 bool SerialHW::print(unsigned char data)
 {
-    uint8_t buffer[4];
+    uint8_t buffer[3+1];
     sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -95,7 +96,7 @@ bool SerialHW::print(unsigned char data)
 
 bool SerialHW::print(unsigned int data)
 {
-    uint8_t buffer[6];
+    uint8_t buffer[5+1];
     sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -104,7 +105,7 @@ bool SerialHW::print(unsigned int data)
 
 bool SerialHW::print(unsigned long data)
 {
-    uint8_t buffer[11];
+    uint8_t buffer[10+1];
     sprintf((char *)buffer, "%lu", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -113,8 +114,8 @@ bool SerialHW::print(unsigned long data)
 
 bool SerialHW::print(char data)
 {
-    uint8_t buffer[4];
-    sprintf((char *)buffer, "%c", data);
+    uint8_t buffer[1+1];
+    sprintf((char *)buffer, "%c", data&0x7F);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     return true;
@@ -122,7 +123,7 @@ bool SerialHW::print(char data)
 
 bool SerialHW::print(int data)
 {
-    uint8_t buffer[6];
+    uint8_t buffer[6+1];
     sprintf((char *)buffer, "%d", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -131,17 +132,17 @@ bool SerialHW::print(int data)
 
 bool SerialHW::print(long data)
 {
-    uint8_t buffer[11];
+    uint8_t buffer[11+1];
     sprintf((char *)buffer, "%ld", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     return true;
 }
 
-bool SerialHW::print(double data)
+bool SerialHW::print(double data,  uint8_t dec)
 {
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
+    uint8_t buffer[40+8+1];
+	dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     return true;
@@ -156,7 +157,7 @@ bool SerialHW::print(const char *data)
 
 bool SerialHW::println(unsigned char data)
 {
-    uint8_t buffer[4];
+    uint8_t buffer[3+1];
     sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -167,7 +168,7 @@ bool SerialHW::println(unsigned char data)
 
 bool SerialHW::println(unsigned int data)
 {
-    uint8_t buffer[6];
+    uint8_t buffer[5+1];
     sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -178,7 +179,7 @@ bool SerialHW::println(unsigned int data)
 
 bool SerialHW::println(unsigned long data)
 {
-    uint8_t buffer[11];
+    uint8_t buffer[10+1];
     sprintf((char *)buffer, "%lu", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -189,7 +190,7 @@ bool SerialHW::println(unsigned long data)
 
 bool SerialHW::println(char data)
 {
-    uint8_t buffer[4];
+    uint8_t buffer[1+1];
     sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -200,7 +201,7 @@ bool SerialHW::println(char data)
 
 bool SerialHW::println(int data)
 {
-    uint8_t buffer[6];
+    uint8_t buffer[6+1];
     sprintf((char *)buffer, "%d", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -211,7 +212,7 @@ bool SerialHW::println(int data)
 
 bool SerialHW::println(long data)
 {
-    uint8_t buffer[11];
+    uint8_t buffer[11+1];
     sprintf((char *)buffer, "%ld", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
@@ -220,10 +221,10 @@ bool SerialHW::println(long data)
     return true;
 }
 
-bool SerialHW::println(double data)
+bool SerialHW::println(double data, uint8_t dec)
 {
-    uint8_t buffer[32];
-    sprintf((char *)buffer, "%.2f", data);
+    uint8_t buffer[40+8+1];
+	dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     if (!write((uint8_t *)"\r\n", 2))

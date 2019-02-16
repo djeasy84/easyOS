@@ -177,7 +177,7 @@ fi
 
 if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
 then
-    ./AVR-GCC/bin/avr-g++ ../Projects/$file_name/$file_name.c -Os -Wl,-u,vfprintf -lprintf_flt -mmcu=$processor_type -o ../Projects/$file_name/$file_name.out -D$board_type -D$cpu_speed
+    ./AVR-GCC/bin/avr-g++ ../Projects/$file_name/$file_name.c -Os -mmcu=$processor_type -o ../Projects/$file_name/$file_name.out -D$board_type -D$cpu_speed
 else
     build_ko
 fi
