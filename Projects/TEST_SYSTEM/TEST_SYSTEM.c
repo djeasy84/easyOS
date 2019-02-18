@@ -44,7 +44,7 @@
 #define STATE_MACHINE_M
 #define PID_M
 
-#include "./../../easyOS.h"
+#include "easyOS.h"
 
 StateMachine SM;
 ProportionalIntegralDerivative PID(0);
