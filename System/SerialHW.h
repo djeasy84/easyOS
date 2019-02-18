@@ -31,7 +31,7 @@
 
 #define SERIAL_HW_TIMEOUT 5000
 
-#include "./Time.h"
+#include "Time.h"
 
 #include <stdio.h>
 #include <string.h>

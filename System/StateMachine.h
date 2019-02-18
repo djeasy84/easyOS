@@ -29,7 +29,7 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
 
-#include "./Time.h"
+#include "Time.h"
 
 #define MAX_STATE 8
 
