@@ -29,7 +29,7 @@
 #define MULTI_TASKING_M
 #define SERIAL_HW_M
 
-#include "./../../easyOS.h"
+#include "easyOS.h"
 
 void TaskA();
 void TaskB();

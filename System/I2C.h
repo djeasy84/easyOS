@@ -31,7 +31,7 @@
 
 #define I2C_TIMEOUT 1000
 
-#include "./Time.h"
+#include "Time.h"
 
 class InterIntegratedCircuit
 {

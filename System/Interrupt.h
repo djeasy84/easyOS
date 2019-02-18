@@ -29,7 +29,7 @@
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
-#include "./Time.h"
+#include "Time.h"
 
 #define CHANGE 1
 #define FALLING 2

@@ -29,7 +29,7 @@
 #define TIME_M
 #define SERIAL_HW_M
 
-#include "./../../easyOS.h"
+#include "easyOS.h"
 
 int main()
 {

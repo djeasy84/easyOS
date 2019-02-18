@@ -44,22 +44,22 @@
 #define STATE_MACHINE_M
 #define PID_M
 
-#include "./../../easyOS.h"
+#include "easyOS.h"
 
 StateMachine SM;
 ProportionalIntegralDerivative PID(0);
 
-#include "./../../Libraries/MPU6050.h"
-#include "./../../Libraries/MCP2515.h"
-#include "./../../Libraries/DS1307.h"
-#include "./../../Libraries/W5500.h"
-#include "./../../Libraries/NRF24L01.h"
-#include "./../../Libraries/DS18B20.h"
-#include "./../../Libraries/WS2812B.h"
-#include "./../../Libraries/MAX6675.h"
-#include "./../../Libraries/TC1602.h"
-#include "./../../Libraries/M24M02.h"
-#include "./../../Libraries/DMX512.h"
+#include "MPU6050.h"
+#include "MCP2515.h"
+#include "DS1307.h"
+#include "W5500.h"
+#include "NRF24L01.h"
+#include "DS18B20.h"
+#include "WS2812B.h"
+#include "MAX6675.h"
+#include "TC1602.h"
+#include "M24M02.h"
+#include "DMX512.h"
 
 bool init()
 {

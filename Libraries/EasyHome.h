@@ -33,10 +33,10 @@
 #define OUTPUT_NUM 7
 #define OUT010V_NUM 4
 
-#include "./DS1307.h"
-#include "./MCP2515.h"
-#include "./W5500.h"
-#include "./M24M02.h"
+#include "DS1307.h"
+#include "MCP2515.h"
+#include "W5500.h"
+#include "M24M02.h"
 
 class SerialRS485 :  public SerialHW3
 {

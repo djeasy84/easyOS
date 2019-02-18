@@ -29,7 +29,7 @@
 #ifndef MULTI_TASKING_H
 #define MULTI_TASKING_H
 
-#include "./Time.h"
+#include "Time.h"
 
 #define MAX_TASK 8
 

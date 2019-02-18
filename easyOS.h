@@ -42,52 +42,52 @@
 #endif
 
 #if defined (TIME_M)
-    #include "./System/Time.h"
+    #include "Time.h"
 #endif
 
 #if defined (MEMORY_M)
-    #include "./System/Memory.h"
+    #include "Memory.h"
 #endif
 
 #if defined (SERIAL_HW_M)
-    #include "./System/SerialHW.h"
+    #include "SerialHW.h"
 #endif
 #if defined (SPI_M)
-    #include "./System/SPI.h"
+    #include "SPI.h"
 #endif
 #if defined (I2C_M)
-    #include "./System/I2C.h"
+    #include "I2C.h"
 #endif
 
 #if defined (INTERRUPT_M)
-	#include "./System/Interrupt.h"
+	#include "Interrupt.h"
 #endif
 
 #if defined (COUNTER_M)
-	#include "./System/Counter.h"
+	#include "Counter.h"
 #endif
 #if defined (PWM_M)
-    #include "./System/PWM.h"
+    #include "PWM.h"
 #endif
 #if defined (DIGITAL_PIN_M)
-    #include "./System/DigitalPin.h"
+    #include "DigitalPin.h"
 #endif
 #if defined (ANALOG_PIN_M)
-    #include "./System/AnalogPin.h"
+    #include "AnalogPin.h"
 #endif
 
 #if defined (EEPROM_M)
-    #include "./System/EEPROM.h"
+    #include "EEPROM.h"
 #endif
 
 #if defined (MULTI_TASKING_M)
-    #include "./System/MultiTasking.h"
+    #include "MultiTasking.h"
 #endif
 
 #if defined (PID_M)
-    #include "./System/PID.h"
+    #include "PID.h"
 #endif
 
 #if defined (STATE_MACHINE_M)
-    #include "./System/StateMachine.h"
+    #include "StateMachine.h"
 #endif
