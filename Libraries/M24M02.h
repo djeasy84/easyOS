@@ -100,6 +100,7 @@ bool ExternalEEPROM::read(uint32_t addr, uint8_t *data, uint32_t len)
     {
         if (!read(addr+i, &data[i]))
             return false;
+        ST.watchdog_reset();
     }
     return true;
 }
@@ -110,6 +111,7 @@ bool ExternalEEPROM::write(int32_t addr, uint8_t *data, uint32_t len)
     {
         if (!write(addr+i, data[i]))
             return false;
+        ST.watchdog_reset();
     }
     return true;
 }

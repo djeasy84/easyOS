@@ -71,6 +71,9 @@ bool ElectricallyErasableProgrammableROM::read(uint16_t addr, uint8_t *data, uin
     {
         if (!read(addr+i, &data[i]))
             return false;
+        #if defined (TIME_M)
+        ST.watchdog_reset();
+        #endif
     }
     return true;
 }
@@ -81,6 +84,9 @@ bool ElectricallyErasableProgrammableROM::write(uint16_t addr, uint8_t *data, ui
     {
         if (!write(addr+i, data[i]))
             return false;
+        #if defined (TIME_M)
+        ST.watchdog_reset();
+        #endif
     }
     return true;
 }

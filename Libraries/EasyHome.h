@@ -442,8 +442,6 @@ void EasyHome::update()
         }
         INPUT_counter = 0;
     }
-
-    ST.watchdog_reset();
 }
 
 #endif
