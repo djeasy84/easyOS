@@ -146,7 +146,7 @@ SET res=false
 IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
-    ".\AVR-GCC\bin\avr-g++.exe" ..\Projects\%file_name%\%file_name%.c -Os -mmcu=%processor_type% -o ..\Projects\%file_name%\%file_name%.out -D%board_type% -D%cpu_speed%
+    ".\AVR-GCC\bin\avr-g++.exe" -I..\ -I..\System\ -I..\Libraries\ ..\Projects\%file_name%\%file_name%.c -Os -mmcu=%processor_type% -o ..\Projects\%file_name%\%file_name%.out -D%board_type% -D%cpu_speed%
     if errorlevel 1 (
         GOTO :BUILD_KO
     )
