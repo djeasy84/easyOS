@@ -383,7 +383,6 @@ void PulseWidthModulation::write(uint16_t id, uint8_t value)
     {
         case 200:
         {
-            #if !defined (INTERRUPT_M)
             if (value == 0)
             {
                 TCCR3A &= ~(0b00110000);
@@ -399,12 +398,10 @@ void PulseWidthModulation::write(uint16_t id, uint8_t value)
                 TCCR3A |= 0b00100000;
                 OCR3B = value;
             }
-            #endif
         }
         break;
         case 201:
         {
-            #if !defined (INTERRUPT_M)
             if (value == 0)
             {
                 TCCR3A &= ~(0b00001100);
@@ -420,7 +417,6 @@ void PulseWidthModulation::write(uint16_t id, uint8_t value)
                 TCCR3A |= 0b00001000;
                 OCR3C = value;
             }
-            #endif
         }
         break;
         case 202:
