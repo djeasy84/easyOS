@@ -43,34 +43,20 @@ SerialPeripheralInterface SPI;
 
 /****************************************************************************************/
 
-#if defined (__AVR_ATmega328P__)
-
 SerialPeripheralInterface::SerialPeripheralInterface()
 {
+    #if defined (__AVR_ATmega328P__)
     DDRB &= ~(1<<4);
-
     DDRB |= (1<<2);
     DDRB |= (1<<3);
     DDRB |= (1<<5);
-
-    SPSR = 0;
-	SPSR |= (1<<SPI2X);
-
-    SPCR = 0;
-    SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);
-}
-
-#endif
-
-#if defined (__AVR_ATmega2560__)
-
-SerialPeripheralInterface::SerialPeripheralInterface()
-{
+    #endif
+    #if defined (__AVR_ATmega2560__)
     DDRB &= ~(1<<3);
-
     DDRB |= (1<<0);
     DDRB |= (1<<1);
     DDRB |= (1<<2);
+    #endif
 
     SPSR = 0;
 	SPSR |= (1<<SPI2X);
@@ -78,8 +64,6 @@ SerialPeripheralInterface::SerialPeripheralInterface()
     SPCR = 0;
     SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);
 }
-
-#endif
 
 uint8_t SerialPeripheralInterface::transfer(uint8_t data)
 {
