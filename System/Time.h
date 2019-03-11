@@ -190,7 +190,8 @@ uint32_t Time::millisec()
 void Time::wait_millisec(uint32_t value)
 {
     uint32_t start = millisec();
-    while((millisec() - start) < value);
+    while((millisec() - start) < value)
+        wdt_reset();
 }
 
 uint32_t Time::time_diff(uint32_t stop, uint32_t start)
