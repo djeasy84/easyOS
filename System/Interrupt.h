@@ -33,15 +33,18 @@ void (*interruptFunc)(void);
 
 ISR(PCINT0_vect)
 {
-	interruptFunc();
+	if (interruptFunc != 0x0000)
+		interruptFunc();
 }
 ISR(PCINT1_vect)
 {
-	interruptFunc();
+	if (interruptFunc != 0x0000)
+		interruptFunc();
 }
 ISR(PCINT2_vect)
 {
-	interruptFunc();
+	if (interruptFunc != 0x0000)
+		interruptFunc();
 }
 
 class Interrupt
