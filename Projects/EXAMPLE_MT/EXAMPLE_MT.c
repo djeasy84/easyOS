@@ -37,9 +37,9 @@ void TaskC();
 
 bool init()
 {
-    MT.addTask(TaskA, 500000);
-    MT.addTask(TaskB, 1000000);
-    MT.addTask(TaskC, 5000000);
+    MT.addTask(TaskA, 500);
+    MT.addTask(TaskB, 1000);
+    MT.addTask(TaskC, 5000);
 
     return true;
 }
