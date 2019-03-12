@@ -59,7 +59,7 @@ class SerialHW
         bool print(int data);
         bool print(long data);
         bool print(double data, uint8_t dec = 2);
-        bool print(const char *data);
+        bool print(const char *data = "");
 
         bool println(unsigned char data);
         bool println(unsigned int data);
@@ -68,7 +68,7 @@ class SerialHW
         bool println(int data);
         bool println(long data);
         bool println(double data, uint8_t dec = 2);
-        bool println(const char *data);
+        bool println(const char *data = "");
 
         bool readln(char *data, uint8_t max);
 
