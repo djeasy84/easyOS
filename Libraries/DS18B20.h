@@ -126,11 +126,9 @@ bool Temperature::update()
         tempReaded = false;
 
         firstDone = true;
-
-        return true;
     }
 
-    return false;
+    return true;
 }
 
 bool Temperature::reset()
