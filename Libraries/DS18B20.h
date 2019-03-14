@@ -70,15 +70,25 @@ bool Temperature::setup(uint8_t pin, uint32_t refresh)
     tempReaded = false;
     firstDone = false;
 
-    lastTemp = 0.0;
+    lastTemp = -273.15;
 
     return reset();
 }
 
 bool Temperature::read(float *temp)
 {
+    if (firstDone == false)
+        return false;
+
     uint32_t currTime = ST.millisec();
-    if (ST.time_diff(currTime, lastUpdate) > 1000 && ST.time_diff(currTime, lastUpdate) < tempRefresh && firstDone == true)
+    if (ST.time_diff(currTime, lastUpdate) < 1000)
+    {
+        *temp = lastTemp;
+
+        return true;
+    }
+
+    if (ST.time_diff(currTime, lastUpdate) < (tempRefresh * 3))
     {
         if (tempReaded == false)
         {
@@ -97,15 +107,13 @@ bool Temperature::read(float *temp)
             *temp = lastTemp = (float)tempI / 16.0;
 
             tempReaded = true;
-
-            return true;
         }
         else
         {
             *temp = lastTemp;
-
-            return true;
         }
+
+        return true;
     }
 
     return false;
