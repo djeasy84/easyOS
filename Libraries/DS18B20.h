@@ -93,12 +93,17 @@ bool Temperature::read(float *temp)
             if (!reset())
                 return false;
 
+            uint8_t oldSREG = SREG;
+	        cli();
+
             writeByte(0xCC);
             writeByte(0xBE);
 
             uint8_t scratchpad[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
             for (uint8_t i=0; i<2/*9*/; i++)
                 scratchpad[i] = readByte();
+
+            SREG = oldSREG;  //sei();
 
             uint16_t tempI = (scratchpad[1]<<8) | scratchpad[0];
 
@@ -126,8 +131,13 @@ bool Temperature::update()
 
         lastUpdate = ST.millisec();
 
+        uint8_t oldSREG = SREG;
+	    cli();
+
         writeByte(0xCC);
         writeByte(0x44);
+
+        SREG = oldSREG;  //sei();
 
         tempReaded = false;
 

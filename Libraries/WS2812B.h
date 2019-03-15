@@ -34,6 +34,7 @@
 
 void updateLED(uint8_t *data, uint16_t len, uint8_t pin)
 {
+  uint8_t oldSREG = SREG;
   cli();
 
   #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
@@ -131,7 +132,7 @@ void updateLED(uint8_t *data, uint16_t len, uint8_t pin)
   asm ("    brne resetLOOP      ;\n");
   #endif
 
-  sei();
+  SREG = oldSREG;  //sei();
 }
 
 /****************************************************************************************/
