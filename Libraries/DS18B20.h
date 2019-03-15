@@ -153,16 +153,16 @@ void Temperature::writeBit(bool dataB)
     if (dataB)
     {
         DP.write(dataPin, false);
-        _delay_us(3);
+        _delay_us(2);
         DP.read(dataPin, true);
-        _delay_us(77);
+        _delay_us(78);
     }
     else
     {
         DP.write(dataPin, false);
-        _delay_us(77);
+        _delay_us(78);
         DP.read(dataPin, true);
-        _delay_us(3);
+        _delay_us(2);
     }
 }
 
