@@ -55,8 +55,6 @@ class Temperature
         float lastTemp;
 };
 
-Temperature DTS;
-
 /****************************************************************************************/
 
 bool Temperature::setup(uint8_t pin, uint32_t refresh)
