@@ -59,7 +59,7 @@ bool init()
     SHW3.println("");
     SPI.transfer(0);
     I2C.sendStart();
-    IM.enableInterrupt(0,0,0);
+    IM.enableInterrupt(0);
     CT.read();
     PWM.write(0,0);
     DP.read(0);

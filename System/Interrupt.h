@@ -67,7 +67,7 @@ ISR(PCINT2_vect)
 class Interrupt
 {
     public:
-        bool setup(void (*pFunc)(void), uint32_t tDebounce = 25);
+        void setup(void (*pFunc)(void), uint32_t tDebounce = 25);
 
         bool enableInterrupt(uint16_t id);
 		bool disableInterrupt(uint16_t id);
@@ -113,19 +113,14 @@ Interrupt IM;
 	#endif
 #endif
 
-bool Interrupt::setup(void (*pFunc)(void), uint32_t tDebounce)
+void Interrupt::setup(void (*pFunc)(void), uint32_t tDebounce)
 {
 	PCMSK0 = PCMSK1 = PCMSK2 = PCIFR = PCICR = 0;
 	PCICR = (1<<2) | (1<<1) | (1<<0);
 
-	if (pFunc == 0x0000)
-		return false;
-
 	lastTime = 0;
 	debounceTime = tDebounce;
 	interruptFunc = pFunc;
-	
-	return true;
 }
 
 bool Interrupt::enableInterrupt(uint16_t id)
