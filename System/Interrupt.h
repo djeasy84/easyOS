@@ -83,12 +83,20 @@ Interrupt IM;
         #define ARDUINO_PIN_A1 101
         #define ARDUINO_PIN_A2 102
 		#define ARDUINO_PIN_A3 103
+		#if !defined (I2C_M)
+		#define ARDUINO_PIN_A4 104
+		#define ARDUINO_PIN_A5 105
+		#endif
 	#endif
     #if defined (__BOARD_arduinoNANO__)
 		#define ARDUINO_PIN_A0 100
         #define ARDUINO_PIN_A1 101
         #define ARDUINO_PIN_A2 102
 		#define ARDUINO_PIN_A3 103
+		#if !defined (I2C_M)
+		#define ARDUINO_PIN_A4 104
+		#define ARDUINO_PIN_A5 105
+		#endif
 	#endif
 #endif
 #if defined (__AVR_ATmega2560__)
@@ -146,6 +154,20 @@ bool Interrupt::enableInterrupt(uint16_t id)
 		case 103:  //PCINT11
 		{
 			PCMSK1 |= (1<<3);
+		}
+		break;
+		case 104:  //PCINT12
+		{
+			#if !defined (I2C_M)
+			PCMSK1 |= (1<<4);
+			#endif
+		}
+		break;
+		case 105:  //PCINT13
+		{
+			#if !defined (I2C_M)
+			PCMSK1 |= (1<<5);
+			#endif
 		}
 		break;
 		default:
@@ -232,6 +254,20 @@ bool Interrupt::disableInterrupt(uint16_t id)
 		case 103:  //PCINT11
 		{
 			PCMSK1 &= ~(1<<3);
+		}
+		break;
+		case 104:  //PCINT12
+		{
+			#if !defined (I2C_M)
+			PCMSK1 &= ~(1<<4);
+			#endif
+		}
+		break;
+		case 105:  //PCINT13
+		{
+			#if !defined (I2C_M)
+			PCMSK1 &= ~(1<<5);
+			#endif
 		}
 		break;
 		default:
