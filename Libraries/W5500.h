@@ -26,8 +26,8 @@
  *
  */
 
-#ifndef W5100_H
-#define W5100_H
+#ifndef W5500_H
+#define W5500_H
 
 #include <stdio.h>
 #include <string.h>
