@@ -32,7 +32,7 @@
 class StepperMotor
 {
     public:
-        bool setup(uint8_t ena /*ARDUINO_PIN_X*/, uint8_t dir /*ARDUINO_PIN_X*/, uint8_t pul /*ARDUINO_PIN_X*/);
+        bool setup(uint8_t ena, uint8_t dir, uint8_t pul);
 
         void enable(bool val);
         void direction(bool val);
