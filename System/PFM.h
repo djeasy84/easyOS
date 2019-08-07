@@ -46,7 +46,12 @@ PulseFrequencyModulation PFM;
 PulseFrequencyModulation::PulseFrequencyModulation()
 {
     #if !defined (COUNTER_M)
+    #if defined (__AVR_ATmega328P__)
     DDRD |= (1<<3);
+    #endif
+    #if defined (__AVR_ATmega2560__)
+    DDRH |= (1<<6);
+    #endif
 
     TCCR2A = 0b00010010;
     TCCR2B = 0b00000000;
