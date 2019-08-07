@@ -69,6 +69,9 @@
 #if defined (PWM_M)
     #include "PWM.h"
 #endif
+#if defined (PFM_M)
+    #include "PFM.h"
+#endif
 #if defined (DIGITAL_PIN_M)
     #include "DigitalPin.h"
 #endif
