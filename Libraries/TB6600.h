@@ -36,15 +36,20 @@ class StepperMotor
 
         void enable(bool val);
         void direction(bool val);
+        void speed(uint16_t val);
+
         void step();
+        void steps(uint16_t val);
 
     private:
         uint8_t enaPin;
         uint8_t dirPin;
         uint8_t pulPin;
+
+        uint16_t spdVal;
 };
 
-StepperMotor SM;
+StepperMotor STP;
 
 /****************************************************************************************/
 
@@ -57,6 +62,8 @@ bool StepperMotor::setup(uint8_t ena, uint8_t dir, uint8_t pul)
     DP.write(enaPin, true);
     DP.write(dirPin, false);
     DP.write(pulPin, false);
+
+    spdVal = 0;
 
     return true;
 }
@@ -71,12 +78,28 @@ void StepperMotor::direction(bool val)
     DP.write(dirPin, !val);
 }
 
+void StepperMotor::speed(uint16_t val)
+{
+    spdVal = val;
+
+    PFM.write(spdVal);
+}
+
 void StepperMotor::step()
 {
+    if (spdVal != 0)
+        return;
+
     DP.write(pulPin, true);
     _delay_us(250);
     DP.write(pulPin, false);
     _delay_us(250);
+}
+
+void StepperMotor::steps(uint16_t val)
+{
+    for (uint16_t i=0; i<val; i++)
+        step();
 }
 
 #endif
