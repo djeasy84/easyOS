@@ -37,6 +37,7 @@
 #define INTERRUPT_M
 #define COUNTER_M
 #define PWM_M
+#define PFM_M
 #define DIGITAL_PIN_M
 #define ANALOG_PIN_M
 #define EEPROM_M
@@ -62,6 +63,7 @@ bool init()
     IM.enableInterrupt(0);
     CT.read();
     PWM.write(0,0);
+    PFM.write(0);
     DP.read(0);
     AP.read(0);
     EEPROM.read(0,0);
