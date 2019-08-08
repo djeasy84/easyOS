@@ -77,11 +77,7 @@
     #define ANALOG_SIZE 8
     #define PWM_SIZE 2
     const PROGMEM uint16_t digitalListDrr[DIGITAL_SIZE]  = { (uint16_t)&DDRD,
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&DDRD,
-                                                             #else
-                                                             0
-                                                             #endif
                                                              (uint16_t)&DDRD,
                                                              (uint16_t)&DDRD,
                                                              (uint16_t)&DDRB,
@@ -98,11 +94,7 @@
                                                              #endif
                                                           };
     const PROGMEM uint16_t digitalListPort[DIGITAL_SIZE] = { (uint16_t)&PORTD,
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&PORTD,
-                                                             #else
-                                                             0
-                                                             #endif
                                                              (uint16_t)&PORTD,
                                                              (uint16_t)&PORTD,
                                                              (uint16_t)&PORTB,
@@ -119,11 +111,7 @@
                                                              #endif
                                                           };
     const PROGMEM uint16_t digitalListPin[DIGITAL_SIZE]  = { (uint16_t)&PIND,
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&PIND,
-                                                             #else
-                                                             0
-                                                             #endif
                                                              (uint16_t)&PIND,
                                                              (uint16_t)&PIND,
                                                              (uint16_t)&PINB,
@@ -140,11 +128,7 @@
                                                              #endif
                                                           };
     const PROGMEM uint8_t digitalListMask[DIGITAL_SIZE]  = { 2,
-                                                             #if !defined (PFM_M)
                                                              3,
-                                                             #else
-                                                             0
-                                                             #endif
                                                              4,
                                                              7,
                                                              0,
@@ -409,11 +393,7 @@
                                                              0,
                                                              0,
                                                              #endif
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&DDRH,
-                                                             #else
-                                                             0,
-                                                             #endif
                                                              (uint16_t)&DDRB,
                                                              (uint16_t)&DDRJ,
                                                           };
@@ -489,11 +469,7 @@
                                                              0,
                                                              0,
                                                              #endif
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&PORTH,
-                                                             #else
-                                                             0,
-                                                             #endif
                                                              (uint16_t)&PORTB,
                                                              (uint16_t)&PORTJ,
                                                           };
@@ -569,11 +545,7 @@
                                                              0,
                                                              0,
                                                              #endif
-                                                             #if !defined (PFM_M)
                                                              (uint16_t)&PINH,
-                                                             #else
-                                                             0,
-                                                             #endif
                                                              (uint16_t)&PINB,
                                                              (uint16_t)&PINJ,
                                                           };
@@ -649,11 +621,7 @@
                                                              0,
                                                              0,
                                                              #endif
-                                                             #if !defined (PFM_M)
                                                              6,
-                                                             #else
-                                                             0,
-                                                             #endif
                                                              4,
                                                              6,
                                                           };
