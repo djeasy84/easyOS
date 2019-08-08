@@ -59,9 +59,9 @@ bool StepperMotor::setup(uint8_t ena, uint8_t dir, uint8_t pul)
     dirPin = dir;
     pulPin = pul;
 
-    DP.write(enaPin, true);
-    DP.write(dirPin, false);
-    DP.write(pulPin, false);
+    DP.write(enaPin, false);
+    DP.write(dirPin, true);
+    DP.write(pulPin, true);
 
     spdVal = 0;
 
