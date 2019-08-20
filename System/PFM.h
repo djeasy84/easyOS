@@ -77,27 +77,27 @@ void PulseFrequencyModulation::write(uint32_t value)
     else if (value >= 31 && value <= 122)
     {
         TCCR2B = 0b00000111;  // Timer 2 Prescaler 1024 (Frequency: From 31 To 122 Hz)
-        OCR2A = (-(192.0*((float)(value)))/(91.0))+(29157.0/91.0);
+        OCR2A = (F_CPU - (value*2*1024))/((value*2*1024));
     }
     else if (value >= 123 && value <= 488)
     {
         TCCR2B = 0b00000110;  // Timer 2 Prescaler 256 (Frequency: From 123 To 488 Hz)
-        OCR2A = (-(192.0*((float)(value)))/(365.0))+(116691.0/365.0);
+        OCR2A = (F_CPU - (value*2*256))/((value*2*256));
     }
     else if (value >= 489 && value <= 3906)
     {
         TCCR2B = 0b00000100;  // Timer 2 Prescaler 64 (Frequency: From 489 To 3906 Hz)
-        OCR2A = (-(224.0*((float)(value)))/(3417.0))+(326957.0/1139.0);
+        OCR2A = (F_CPU - (value*2*64))/((value*2*64));
     }
     else if (value >= 3907 && value <= 31250)
     {
         TCCR2B = 0b00000010;  // Timer 2 Prescaler 8 (Frequency: From 3907 To 31250 Hz)
-        OCR2A = (-(14.0*((float)(value)))/(1709.0))+(490479.0/1709.0);
+        OCR2A = (F_CPU - (value*2*8))/((value*2*8));
     }
     else if (value >= 31251 && value <= 250000)
     {
         TCCR2B = 0b00000001;  // Timer 2 Prescaler 1 (Frequency: From 31251 To 250000 Hz)
-        OCR2A = (-(224.0*((float)(value)))/(218749.0))+(62781219.0/218749.0);
+        OCR2A = OCR2A = (F_CPU - (value*2*1))/((value*2*1));
     }
     #endif
 }
