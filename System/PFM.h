@@ -53,11 +53,6 @@ PulseFrequencyModulation::PulseFrequencyModulation()
     DDRH |= (1<<6);
     #endif
 
-    TCCR2A = 0b00010010;
-    TCCR2B = 0b00000000;
-
-    OCR2A = TCNT2 = 0;
-
     write(0);
     #endif
 }
@@ -67,35 +62,43 @@ void PulseFrequencyModulation::write(uint32_t value)
     #if !defined (COUNTER_M)
     if (value == 0)
     {
+        TCCR2A = 0b00000010;
         TCCR2B = 0b00000000;  // Timer 2 OFF
+        OCR2A = 0;
     }
     else if (value > 0 && value <= 30)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000111;  // Timer 2 Prescaler 1024 (Minimum Possible Frequency Value: 30 Hz)
         OCR2A = 255;
     }
     else if (value >= 31 && value <= 122)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000111;  // Timer 2 Prescaler 1024 (Frequency: From 31 To 122 Hz)
         OCR2A = (F_CPU - (value*2*1024))/((value*2*1024));
     }
     else if (value >= 123 && value <= 488)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000110;  // Timer 2 Prescaler 256 (Frequency: From 123 To 488 Hz)
         OCR2A = (F_CPU - (value*2*256))/((value*2*256));
     }
     else if (value >= 489 && value <= 3906)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000100;  // Timer 2 Prescaler 64 (Frequency: From 489 To 3906 Hz)
         OCR2A = (F_CPU - (value*2*64))/((value*2*64));
     }
     else if (value >= 3907 && value <= 31250)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000010;  // Timer 2 Prescaler 8 (Frequency: From 3907 To 31250 Hz)
         OCR2A = (F_CPU - (value*2*8))/((value*2*8));
     }
     else if (value >= 31251 && value <= 250000)
     {
+        TCCR2A = 0b00010010;
         TCCR2B = 0b00000001;  // Timer 2 Prescaler 1 (Frequency: From 31251 To 250000 Hz)
         OCR2A = OCR2A = (F_CPU - (value*2*1))/((value*2*1));
     }

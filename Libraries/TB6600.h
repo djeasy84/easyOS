@@ -36,7 +36,7 @@ class StepperMotor
 
         void enable(bool val);  // Active HIGH if used with "Common-Anode Connection"
         void direction(bool val);
-        void speed(uint16_t val);
+        void speed(uint32_t val);
 
         void step();
         void steps(uint16_t val);
@@ -46,7 +46,7 @@ class StepperMotor
         uint8_t dirPin;
         uint8_t pulPin;
 
-        uint16_t spdVal;
+        uint32_t spdVal;
 };
 
 StepperMotor STP;
@@ -65,6 +65,8 @@ bool StepperMotor::setup(uint8_t ena, uint8_t dir, uint8_t pul)
 
     spdVal = 0;
 
+    speed(0);
+
     return true;
 }
 
@@ -78,13 +80,13 @@ void StepperMotor::direction(bool val)
     DP.write(dirPin, val);
 }
 
-void StepperMotor::speed(uint16_t val)
+void StepperMotor::speed(uint32_t val)
 {
     #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
-    if (val != ARDUINO_PIN_3)
+    if (pulPin != ARDUINO_PIN_3)
     #endif
     #if defined (__BOARD_arduinoMEGA__)
-    if (val != ARDUINO_PIN_9)
+    if (pulPin != ARDUINO_PIN_9)
     #endif
         return;
 
