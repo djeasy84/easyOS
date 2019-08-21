@@ -141,14 +141,14 @@
 class AnalogPin
 {
     public:
-        uint16_t read(uint16_t id);
+        uint16_t read(uint8_t id);
 };
 
 AnalogPin AP;
 
 /****************************************************************************************/
 
-uint16_t AnalogPin::read(uint16_t id)
+uint16_t AnalogPin::read(uint8_t id)
 {
     if (id >= 100 && id <=199)
     {

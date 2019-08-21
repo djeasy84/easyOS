@@ -69,8 +69,8 @@ class Interrupt
     public:
         void setup(void (*pFunc)(void), uint32_t tDebounce = 25);
 
-        bool enableInterrupt(uint16_t id);
-		bool disableInterrupt(uint16_t id);
+        bool enableInterrupt(uint8_t id);
+		bool disableInterrupt(uint8_t id);
 };
 
 Interrupt IM;
@@ -131,7 +131,7 @@ void Interrupt::setup(void (*pFunc)(void), uint32_t tDebounce)
 	interruptFunc = pFunc;
 }
 
-bool Interrupt::enableInterrupt(uint16_t id)
+bool Interrupt::enableInterrupt(uint8_t id)
 {
 	#if defined (__AVR_ATmega328P__)
 	switch (id)
@@ -231,7 +231,7 @@ bool Interrupt::enableInterrupt(uint16_t id)
 	return true;
 }
 
-bool Interrupt::disableInterrupt(uint16_t id)
+bool Interrupt::disableInterrupt(uint8_t id)
 {
     #if defined (__AVR_ATmega328P__)
 	switch (id)

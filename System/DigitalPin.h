@@ -746,15 +746,15 @@
 class DigitalPin
 {
     public:
-        bool read(uint16_t id, bool pullup=false);
-        void write(uint16_t id, bool status);
+        bool read(uint8_t id, bool pullup=false);
+        void write(uint8_t id, bool status);
 };
 
 DigitalPin DP;
 
 /****************************************************************************************/
 
-bool DigitalPin::read(uint16_t id, bool pullup)
+bool DigitalPin::read(uint8_t id, bool pullup)
 {
     if (id >= 0 && id <=99)
     {
@@ -796,7 +796,7 @@ bool DigitalPin::read(uint16_t id, bool pullup)
         if(*pin & mask)
             return true;
     }
-    else if (id >= 200 && id <=299)
+    else if (id >= 200 && id <=255)
     {
         id = id - 200;
         if (id >= PWM_SIZE)
@@ -819,7 +819,7 @@ bool DigitalPin::read(uint16_t id, bool pullup)
     return false;
 }
 
-void DigitalPin::write(uint16_t id, bool status)
+void DigitalPin::write(uint8_t id, bool status)
 {
     if (id >= 0 && id <=99)
     {
@@ -853,7 +853,7 @@ void DigitalPin::write(uint16_t id, bool status)
         else
             *port &= ~mask;
     }
-    else if (id >= 200 && id <=299)
+    else if (id >= 200 && id <=255)
     {
         id = id - 200;
         if (id >= PWM_SIZE)

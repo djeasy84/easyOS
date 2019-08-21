@@ -38,7 +38,7 @@ class PulseWidthModulation
 
         bool setup(uint16_t freq);
 
-        void write(uint16_t id, uint8_t value);
+        void write(uint8_t id, uint8_t value);
 };
 
 PulseWidthModulation PWM;
@@ -128,7 +128,7 @@ bool PulseWidthModulation::setup(uint16_t freq)
     return true;
 }
 
-void PulseWidthModulation::write(uint16_t id, uint8_t value)
+void PulseWidthModulation::write(uint8_t id, uint8_t value)
 {
     switch(id)
     {
@@ -377,7 +377,7 @@ bool PulseWidthModulation::setup(uint16_t freq)
     return true;
 }
 
-void PulseWidthModulation::write(uint16_t id, uint8_t value)
+void PulseWidthModulation::write(uint8_t id, uint8_t value)
 {
     switch(id)
     {
