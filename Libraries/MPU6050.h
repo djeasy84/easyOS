@@ -36,7 +36,7 @@ class AccelerometerGyroscope
     public:
         bool setup(uint16_t accRange = 16, uint16_t gyroRange = 2000, uint8_t lowPassFilterRange = 0);
 
-        bool read(float *accX, float *accY, float *accZ, float *gyroX, float *gyroY, float *gryoZ);
+        bool read(float *accX, float *accY, float *accZ, float *gyroX, float *gyroY, float *gyroZ);
 
     private:
         bool setRegistry(uint8_t devAddr, uint8_t regAddr, uint8_t data);
