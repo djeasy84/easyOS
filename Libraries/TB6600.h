@@ -29,24 +29,35 @@
 #ifndef TB6600_H
 #define TB6600_H
 
+#define MOTOR_ENABLE true
+#define MOTOR_DISABLE false
+
+#define MOTOR_CLOCKWISE false
+#define MOTOR_ANTICLOCKWISE true
+
 class StepperMotor
 {
     public:
-        bool setup(uint8_t ena, uint8_t dir, uint8_t pul);
+        bool setup(uint8_t ena, uint8_t dir, uint8_t pul);  //Use with "Common-Anode Connection"
 
-        void enable(bool val);  // Active HIGH if used with "Common-Anode Connection"
+        void enable(bool val);
         void direction(bool val);
-        void speed(uint32_t val);
+        void speed(uint16_t val);
 
         void step();
-        void steps(uint16_t val);
+        void steps(uint16_t num);
+
+        bool update();
 
     private:
         uint8_t enaPin;
         uint8_t dirPin;
         uint8_t pulPin;
 
-        uint32_t spdVal;
+        uint16_t spdVal;
+        uint16_t curSpdVal;
+
+        uint32_t lastUpdate;
 };
 
 StepperMotor STP;
@@ -59,13 +70,13 @@ bool StepperMotor::setup(uint8_t ena, uint8_t dir, uint8_t pul)
     dirPin = dir;
     pulPin = pul;
 
-    DP.write(enaPin, false);
-    DP.write(dirPin, true);
-    DP.write(pulPin, true);
+    DP.write(enaPin, false);  // MOTOR_DISABLE
+    DP.write(dirPin, false);  // MOTOR_CLOCKWISE
+    DP.write(pulPin, false);
 
-    spdVal = 0;
+    spdVal = curSpdVal = 0;
 
-    speed(0);
+    lastUpdate = 0;
 
     return true;
 }
@@ -80,7 +91,7 @@ void StepperMotor::direction(bool val)
     DP.write(dirPin, val);
 }
 
-void StepperMotor::speed(uint32_t val)
+void StepperMotor::speed(uint16_t val)
 {
     #if defined (__BOARD_arduinoUNO__) || defined (__BOARD_arduinoNANO__)
     if (pulPin != ARDUINO_PIN_3)
@@ -91,8 +102,6 @@ void StepperMotor::speed(uint32_t val)
         return;
 
     spdVal = val;
-
-    PFM.write(spdVal);
 }
 
 void StepperMotor::step()
@@ -100,16 +109,39 @@ void StepperMotor::step()
     if (spdVal != 0)
         return;
 
-    DP.write(pulPin, false);
-    _delay_us(250);
     DP.write(pulPin, true);
-    _delay_us(250);
+    _delay_us(500);
+    DP.write(pulPin, false);
+    _delay_us(500);
 }
 
-void StepperMotor::steps(uint16_t val)
+#include "SerialHW.h"
+
+void StepperMotor::steps(uint16_t num)
 {
-    for (uint16_t i=0; i<val; i++)
+    if (num == 0)
+        return;
+
+    for (uint16_t i=0; i<num; i++)
+    {
         step();
+        _delay_us(2500);
+    }
+}
+
+bool StepperMotor::update()
+{
+    if (ST.time_diff(ST.microsec(), lastUpdate) >= 2500)
+    {
+        lastUpdate = ST.microsec();
+
+        if (curSpdVal < spdVal)
+            curSpdVal = (curSpdVal < 200) ? (curSpdVal + 1) : (curSpdVal >= 200 && curSpdVal < 500) ? (curSpdVal + 2) : (curSpdVal + 4);
+        if (curSpdVal > spdVal)
+            curSpdVal = (curSpdVal < 200) ? (curSpdVal - 1) : (curSpdVal >= 200 && curSpdVal < 500) ? (curSpdVal - 2) : (curSpdVal - 4);
+
+        PFM.write(curSpdVal);
+    }
 }
 
 #endif
