@@ -58,15 +58,21 @@ bool DigitalMultipleX::setup(uint8_t port, uint8_t we)
     DP.write(we, true);
     switch(portNUM)
     {
+		#if defined (SERIAL_HW_1_M)
         case 1:
             SHW1.setup(100000, true);
         break;
+		#endif
+		#if defined (SERIAL_HW_2_M)
         case 2:
             SHW2.setup(100000, true);
         break;
+		#endif
+		#if defined (SERIAL_HW_3_M)
         case 3:
             SHW3.setup(100000, true);
         break;
+		#endif
     }
     memset(dataLED, 0, 1+512);
     lastUpdate = 0;
@@ -90,6 +96,7 @@ bool DigitalMultipleX::update()
         lastUpdate = ST.millisec();
         switch(portNUM)
         {
+			#if defined (SERIAL_HW_1_M)
             case 1:
                 UBRR1L = 19;
                 SHW1.write(0);
@@ -97,6 +104,8 @@ bool DigitalMultipleX::update()
                 for (uint16_t i=0; i<1+512; i++)
                     SHW1.write(dataLED[i]);
             break;
+			#endif
+			#if defined (SERIAL_HW_2_M)
             case 2:
                 UBRR2L = 19;
                 SHW2.write(0);
@@ -104,6 +113,8 @@ bool DigitalMultipleX::update()
                 for (uint16_t i=0; i<1+512; i++)
                     SHW2.write(dataLED[i]);
             break;
+			#endif
+			#if defined (SERIAL_HW_3_M)
             case 3:
                 UBRR3L = 19;
                 SHW3.write(0);
@@ -111,6 +122,7 @@ bool DigitalMultipleX::update()
                 for (uint16_t i=0; i<1+512; i++)
                     SHW3.write(dataLED[i]);
             break;
+			#endif
         }
     }
     return true;
