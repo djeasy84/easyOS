@@ -36,9 +36,13 @@ class PulseWidthModulation
     public:
         PulseWidthModulation();
 
-        bool setup(uint16_t freq);
+        bool setup(uint32_t freq);
 
         void write(uint8_t id, uint8_t value);
+
+    private:
+        bool isFastMode;
+        uint8_t ocrMaxValue;
 };
 
 PulseWidthModulation PWM;
@@ -65,57 +69,127 @@ PulseWidthModulation::PulseWidthModulation()
     #endif
 }
 
-bool PulseWidthModulation::setup(uint16_t freq)
+bool PulseWidthModulation::setup(uint32_t freq)
 {
     switch(freq)
     {
         #if !defined (COUNTER_M)
         case 125:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000100;
         }
         break;
         case 250:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000100;
         }
         break;
         case 500:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000011;
         }
         break;
         case 1000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000011;
         }
         break;
         case 4000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000010;
         }
         break;
         case 8000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000010;
         }
         break;
         case 30000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000001;
         }
         break;
         case 60000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000001;
+        }
+        break;
+        case 100000:  // For frequency above 100kHz, PWM only on pin drive by OCRxB
+        {
+            ocrMaxValue = 159;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
+        case 150000:
+        {
+            ocrMaxValue = 106;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
+        case 200000:
+        {
+            ocrMaxValue = 79;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
+        case 250000:
+        {
+            ocrMaxValue = 63;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
+        case 300000:
+        {
+            ocrMaxValue = 52;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
+        case 400000:
+        {
+            ocrMaxValue = 39;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
         }
         break;
         #endif
@@ -130,6 +204,9 @@ bool PulseWidthModulation::setup(uint16_t freq)
 
 void PulseWidthModulation::write(uint8_t id, uint8_t value)
 {
+    if (value > 100)
+        return;
+
     switch(id)
     {
         #if !defined (COUNTER_M)
@@ -140,7 +217,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR0A &= ~(0b00110000);
                 PORTD &= ~(1<<5);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR0A &= ~(0b00110000);
                 PORTD |= (1<<5);
@@ -148,18 +225,21 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR0A |= 0b00100000;
-                OCR0B = value;
+                OCR0B = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
         case 201:
         {
+            if (isFastMode == true)
+                return;
+
             if (value == 0)
             {
                 TCCR0A &= ~(0b11000000);
                 PORTD &= ~(1<<6);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR0A &= ~(0b11000000);
                 PORTD |= (1<<6);
@@ -167,7 +247,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR0A |= 0b10000000;
-                OCR0A = value;
+                OCR0A = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -236,7 +316,7 @@ PulseWidthModulation::PulseWidthModulation()
     write(210, 0);
 }
 
-bool PulseWidthModulation::setup(uint16_t freq)
+bool PulseWidthModulation::setup(uint32_t freq)
 {
     switch(freq)
     {
