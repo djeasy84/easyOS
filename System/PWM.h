@@ -183,6 +183,15 @@ bool PulseWidthModulation::setup(uint32_t freq)
             OCR0A = ocrMaxValue;
         }
         break;
+        case 350000:
+        {
+            ocrMaxValue = 45;
+            isFastMode = true;
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            OCR0A = ocrMaxValue;
+        }
+        break;
         case 400000:
         {
             ocrMaxValue = 39;
