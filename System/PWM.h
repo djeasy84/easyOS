@@ -331,10 +331,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
     {
         case 125:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000100;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000100;
 
@@ -347,10 +351,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 250:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000100;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001100;
 
@@ -363,10 +371,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 500:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000011;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000011;
 
@@ -379,10 +391,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 1000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000011;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001011;
 
@@ -395,10 +411,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 4000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000010;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000010;
 
@@ -411,10 +431,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 8000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000010;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001010;
 
@@ -427,10 +451,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 30000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000001;
             TCCR0B = 0b00000001;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00000001;
 
@@ -443,10 +471,14 @@ bool PulseWidthModulation::setup(uint32_t freq)
         break;
         case 60000:
         {
+            ocrMaxValue = 255;
+            isFastMode = false;
+
 			#if !defined (COUNTER_M)
             TCCR0A = 0b00000011;
             TCCR0B = 0b00000001;
 			#endif
+
             TCCR3A = 0b00000001;
             TCCR3B = 0b00001001;
 
@@ -455,6 +487,195 @@ bool PulseWidthModulation::setup(uint32_t freq)
 
             TCCR5A = 0b00000001;
             TCCR5B = 0b00001001;
+        }
+        break;
+        case 100000:  // For frequency above 100kHz, PWM only on pin drive by OCRxB
+        {
+            ocrMaxValue = 159;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 150000:
+        {
+            ocrMaxValue = 106;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 200000:
+        {
+            ocrMaxValue = 79;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 250000:
+        {
+            ocrMaxValue = 63;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 300000:
+        {
+            ocrMaxValue = 52;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 350000:
+        {
+            ocrMaxValue = 45;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
+        }
+        break;
+        case 400000:
+        {
+            ocrMaxValue = 39;
+            isFastMode = true;
+
+            #if !defined (COUNTER_M)
+            TCCR0A = 0b00000011;
+            TCCR0B = 0b00001001;
+            #endif
+
+            TCCR3A = 0b00000011;
+            TCCR3B = 0b00011001;
+
+            TCCR4A = 0b00000011;
+            TCCR4B = 0b00011001;
+
+            TCCR5A = 0b00000011;
+            TCCR5B = 0b00011001;
+
+            #if !defined (COUNTER_M)
+            OCR0A = ocrMaxValue;
+            #endif
+            OCR3A = ocrMaxValue;
+            OCR4A = ocrMaxValue;
+            OCR5A = ocrMaxValue;
         }
         break;
         default:
@@ -468,6 +689,9 @@ bool PulseWidthModulation::setup(uint32_t freq)
 
 void PulseWidthModulation::write(uint8_t id, uint8_t value)
 {
+    if (value > 100)
+        return;
+
     switch(id)
     {
         case 200:
@@ -477,7 +701,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR3A &= ~(0b00110000);
                 PORTE &= ~(1<<4);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR3A &= ~(0b00110000);
                 PORTE |= (1<<4);
@@ -485,7 +709,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR3A |= 0b00100000;
-                OCR3B = value;
+                OCR3B = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -496,7 +720,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR3A &= ~(0b00001100);
                 PORTE &= ~(1<<5);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR3A &= ~(0b00001100);
                 PORTE |= (1<<5);
@@ -504,7 +728,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR3A |= 0b00001000;
-                OCR3C = value;
+                OCR3C = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -516,7 +740,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR0A &= ~(0b00110000);
                 PORTG &= ~(1<<5);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR0A &= ~(0b00110000);
                 PORTG |= (1<<5);
@@ -524,19 +748,22 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR0A |= 0b00100000;
-                OCR0B = value;
+                OCR0B = (((float)ocrMaxValue)/100.0)*((float)value);
             }
 			#endif
         }
         break;
         case 203:
         {
+            if (isFastMode == true)
+                return;
+
             if (value == 0)
             {
                 TCCR3A &= ~(0b11000000);
                 PORTE &= ~(1<<3);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR3A &= ~(0b11000000);
                 PORTE |= (1<<3);
@@ -544,18 +771,21 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR3A |= 0b10000000;
-                OCR3A = value;
+                OCR3A = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
         case 204:
         {
+            if (isFastMode == true)
+                return;
+
             if (value == 0)
             {
                 TCCR4A &= ~(0b11000000);
                 PORTH &= ~(1<<3);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR4A &= ~(0b11000000);
                 PORTH |= (1<<3);
@@ -563,7 +793,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR4A |= 0b10000000;
-                OCR4A = value;
+                OCR4A = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -574,7 +804,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR4A &= ~(0b00110000);
                 PORTH &= ~(1<<4);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR4A &= ~(0b00110000);
                 PORTH |= (1<<4);
@@ -582,7 +812,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR4A |= 0b00100000;
-                OCR4B = value;
+                OCR4B = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -593,7 +823,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR4A &= ~(0b00001100);
                 PORTH &= ~(1<<5);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR4A &= ~(0b00001100);
                 PORTH |= (1<<5);
@@ -601,19 +831,22 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR4A |= 0b00001000;
-                OCR4C = value;
+                OCR4C = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
         case 207:
         {
 			#if !defined (COUNTER_M)
+            if (isFastMode == true)
+                return;
+
             if (value == 0)
             {
                 TCCR0A &= ~(0b11000000);
                 PORTB &= ~(1<<7);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR0A &= ~(0b11000000);
                 PORTB |= (1<<7);
@@ -621,19 +854,22 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR0A |= 0b10000000;
-                OCR0A = value;
+                OCR0A = (((float)ocrMaxValue)/100.0)*((float)value);
             }
 			#endif
         }
         break;
         case 208:
         {
+            if (isFastMode == true)
+                return;
+
             if (value == 0)
             {
                 TCCR5A &= ~(0b11000000);
                 PORTL &= ~(1<<3);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR5A &= ~(0b11000000);
                 PORTL |= (1<<3);
@@ -641,7 +877,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR5A |= 0b10000000;
-                OCR5A = value;
+                OCR5A = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -652,7 +888,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR5A &= ~(0b00110000);
                 PORTL &= ~(1<<4);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR5A &= ~(0b00110000);
                 PORTL |= (1<<4);
@@ -660,7 +896,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR5A |= 0b00100000;
-                OCR5B = value;
+                OCR5B = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
@@ -671,7 +907,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
                 TCCR5A &= ~(0b00001100);
                 PORTL &= ~(1<<5);
             }
-            else if (value == 255)
+            else if (value == 100)
             {
                 TCCR5A &= ~(0b00001100);
                 PORTL |= (1<<5);
@@ -679,7 +915,7 @@ void PulseWidthModulation::write(uint8_t id, uint8_t value)
             else
             {
                 TCCR5A |= 0b00001000;
-                OCR5C = value;
+                OCR5C = (((float)ocrMaxValue)/100.0)*((float)value);
             }
         }
         break;
