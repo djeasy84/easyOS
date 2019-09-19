@@ -53,7 +53,7 @@ InterIntegratedCircuit::InterIntegratedCircuit()
 {
     TWSR = 0;
 
-    TWBR = ((F_CPU / 400000UL) - 16) / 2;
+    TWBR = ((F_CPU / 100000UL) - 16) / 2;
 
     TWCR = (1<<TWEN);
 }
