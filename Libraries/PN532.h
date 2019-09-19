@@ -150,7 +150,7 @@ bool NearFieldCommunication::sendCommand(uint8_t devAddr, uint8_t *data, uint8_t
     if (!I2C.sendStop())
         return false;
 
-    ST.wait_millisec(5);
+    ST.wait_millisec(25);
 
     uint8_t dataReceived[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     if (!readResponse(devAddr, dataReceived, 6))
@@ -186,10 +186,6 @@ bool NearFieldCommunication::readResponse(uint8_t devAddr, uint8_t *data, uint8_
         return false;
 
     if (!I2C.sendStop())
-        return false;
-
-    uint8_t expectedACK[6] = {0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00};
-    if (strncmp((char *)data, (char *)expectedACK, 6))
         return false;
 
     ST.wait_millisec(25);
