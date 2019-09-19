@@ -62,6 +62,7 @@ ProportionalIntegralDerivative PID(0);
 #include "M24M02.h"
 #include "DMX512.h"
 #include "TB6600.h"
+#include "PN532.h"
 
 Temperature DTS;
 
@@ -97,6 +98,7 @@ bool init()
     ExEEPROM.read(0,0);
     DMX.update();
     STP.step();
+    NFC.read(0);
 
     return false;
 }
