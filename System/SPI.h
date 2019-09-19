@@ -63,6 +63,8 @@ SerialPeripheralInterface::SerialPeripheralInterface()
 
     SPCR = 0;
     SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);
+
+    // CLOCK SPEED 2MHz
 }
 
 uint8_t SerialPeripheralInterface::transfer(uint8_t data)

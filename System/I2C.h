@@ -56,6 +56,8 @@ InterIntegratedCircuit::InterIntegratedCircuit()
     TWBR = ((F_CPU / 100000UL) - 16) / 2;
 
     TWCR = (1<<TWEN);
+
+    // CLOCK SPEED 100kHz
 }
 
 bool InterIntegratedCircuit::sendStart()
