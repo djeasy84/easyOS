@@ -148,10 +148,7 @@ bool ExternalEEPROM::getRegistry(uint8_t devAddrCmd, uint16_t regAddr, uint8_t *
     if (!I2C.sendDeviceAddressWithReadWrite(devAddrCmd, true))
         return false;
     if (!I2C.readData(data, true))
-	{
-		I2C.sendStop();
         return false;
-	}
     if (!I2C.sendStop())
         return false;
     return true;
