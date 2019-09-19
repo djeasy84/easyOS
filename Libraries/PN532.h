@@ -29,7 +29,7 @@
 #ifndef PN532_H
 #define PN532_H
 
-#define I2C_NFC_ID (0x48 >> 1)
+#define I2C_NFC_ID 0x48
 
 class NearFieldCommunication
 {
@@ -111,7 +111,7 @@ bool NearFieldCommunication::sendCommand(uint8_t devAddr, uint8_t *data, uint8_t
 
     if (!I2C.sendStart())
         return false;
-    if (!I2C.sendDeviceAddressWithReadWrite(devAddr, false))
+    if (!I2C.sendDeviceAddressWithReadWrite((devAddr >> 1), false))
         return false;
 
     if (!I2C.sendData(0x00))
@@ -167,7 +167,7 @@ bool NearFieldCommunication::readResponse(uint8_t devAddr, uint8_t *data, uint8_
 {
     if (!I2C.sendStart())
         return false;
-    if (!I2C.sendDeviceAddressWithReadWrite(devAddr, true))
+    if (!I2C.sendDeviceAddressWithReadWrite((devAddr >> 1), true))
         return false;
 
     uint8_t tmpData = 0;
