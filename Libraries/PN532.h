@@ -59,6 +59,8 @@ bool NearFieldCommunication::setup()
     if (!sendCommand(I2C_NFC_ID, txData, 4))
         return false;
 
+    ST.wait_millisec(25);
+
     uint8_t rxData[8];
     if (!readResponse(I2C_NFC_ID, rxData, 8))
         return false;
@@ -158,7 +160,7 @@ bool NearFieldCommunication::sendCommand(uint8_t devAddr, uint8_t *data, uint8_t
     if (strncmp((char *)dataReceived, (char *)expectedACK, 6))
         return false;
 
-    ST.wait_millisec(5);
+    ST.wait_millisec(25);
 
     return true;
 }
@@ -190,7 +192,7 @@ bool NearFieldCommunication::readResponse(uint8_t devAddr, uint8_t *data, uint8_
     if (strncmp((char *)data, (char *)expectedACK, 6))
         return false;
 
-    ST.wait_millisec(5);
+    ST.wait_millisec(25);
 
     return true;
 }
