@@ -34,7 +34,7 @@
 class NearFieldCommunication
 {
     public:
-        bool setup(uint8_t irq);
+        bool setup(uint8_t irq, uint8_t reset);
 
         bool read(uint8_t *data);  // LEN: 7
 
@@ -46,16 +46,23 @@ class NearFieldCommunication
         uint32_t lastCheck;
 
         uint8_t irqPin;
+        uint8_t resetPin;
 };
 
 NearFieldCommunication NFC;
 
 /****************************************************************************************/
 
-bool NearFieldCommunication::setup(uint8_t irq)
+bool NearFieldCommunication::setup(uint8_t irq, uint8_t reset)
 {
     irqPin = irq;
+    resetPin = reset;
+
     DP.read(irqPin);
+    DP.write(resetPin, false);
+    ST.wait_millisec(50);
+    DP.write(resetPin, true);
+    ST.wait_millisec(50);
 
     lastRead = lastCheck = 0;
 
