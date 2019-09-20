@@ -34,7 +34,7 @@
 class NearFieldCommunication
 {
     public:
-        bool setup(uint8_t irq, uint8_t reset);
+        bool setup();
 
         bool read(uint8_t *data);  // LEN: 7
 
@@ -44,39 +44,22 @@ class NearFieldCommunication
 
         uint32_t lastRead;
         uint32_t lastCheck;
-
-        uint8_t irqPin;
-        uint8_t resetPin;
 };
 
 NearFieldCommunication NFC;
 
 /****************************************************************************************/
 
-bool NearFieldCommunication::setup(uint8_t irq, uint8_t reset)
+bool NearFieldCommunication::setup()
 {
-    irqPin = irq;
-    resetPin = reset;
-
-    DP.read(irqPin);
-    DP.write(resetPin, false);
-    ST.wait_millisec(50);
-    DP.write(resetPin, true);
-    ST.wait_millisec(50);
-
     lastRead = lastCheck = 0;
 
-    uint8_t txData[4] = {0x14, 0x01, 0x10, 0x01};
+    uint8_t txData[4] = {0x14, 1, 20, 0};
 
     if (!sendCommand(I2C_NFC_ID, txData, 4))
         return false;
 
-    uint32_t start_microsec = ST.microsec();
-    while(DP.read(irqPin))
-    {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 5000)
-			return false;
-    }
+    ST.wait_millisec(10);
 
     uint8_t rxData[8];
     if (!readResponse(I2C_NFC_ID, rxData, 8))
@@ -102,12 +85,7 @@ bool NearFieldCommunication::read(uint8_t *data)
     if (!sendCommand(I2C_NFC_ID, cmdBuffer, 3))
         return false;
 
-    uint32_t start_microsec = ST.microsec();
-    while(DP.read(irqPin))
-    {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 50000)
-			return false;
-    }
+    ST.wait_millisec(10);
 
     uint8_t rxData[20];
     if (!readResponse(I2C_NFC_ID, rxData, 20))
@@ -171,12 +149,7 @@ bool NearFieldCommunication::sendCommand(uint8_t devAddr, uint8_t *data, uint8_t
     if (!I2C.sendStop())
         return false;
 
-    uint32_t start_microsec = ST.microsec();
-    while(DP.read(irqPin))
-    {
-		if (ST.time_diff(ST.microsec(), start_microsec) > 1000)
-			return false;
-    }
+    ST.wait_millisec(10);
 
     uint8_t dataReceived[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     if (!readResponse(devAddr, dataReceived, 6))
@@ -185,6 +158,8 @@ bool NearFieldCommunication::sendCommand(uint8_t devAddr, uint8_t *data, uint8_t
     uint8_t expectedACK[6] = {0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00};
     if (strncmp((char *)dataReceived, (char *)expectedACK, 6))
         return false;
+
+    ST.wait_millisec(10);
 
     return true;
 }
@@ -212,6 +187,8 @@ bool NearFieldCommunication::readResponse(uint8_t devAddr, uint8_t *data, uint8_
 
     if (!I2C.sendStop())
         return false;
+
+    ST.wait_millisec(10);
 
     return true;
 }
