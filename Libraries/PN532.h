@@ -89,7 +89,6 @@ bool NearFieldCommunication::read(uint8_t *data)
 
     if (ST.time_diff(ST.millisec(), lastRead) < 1000)
         return false;
-    lastRead = ST.millisec();
 
     uint8_t txData[4];
     uint8_t cmdBuffer[3] = {0x4A, 0x01, 0x00};
@@ -115,6 +114,8 @@ bool NearFieldCommunication::read(uint8_t *data)
 
     for (uint8_t i=0; i<7; i++)
         data[i] = rxData[13+i];
+
+    lastRead = ST.millisec();
 
     return true;
 }
