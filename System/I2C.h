@@ -51,9 +51,22 @@ InterIntegratedCircuit I2C;
 
 InterIntegratedCircuit::InterIntegratedCircuit()
 {
+    #if defined (__AVR_ATmega328P__)
+    PORTC |= (1<<4);
+    PORTC |= (1<<5);
+    DDRC &= ~(1<<4);
+    DDRC &= ~(1<<5);
+    #endif
+    #if defined (__AVR_ATmega2560__)
+    PORTD |= (1<<0);
+    PORTD |= (1<<1);
+    DDRD &= ~(1<<0);
+    DDRD &= ~(1<<1);
+    #endif
+
     TWSR = 0;
 
-    TWBR = ((F_CPU / 100000UL) - 16) / 2;
+    TWBR = 72;
 
     TWCR = (1<<TWEN);
 
