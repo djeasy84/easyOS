@@ -29,7 +29,7 @@
 #ifndef I2C_H
 #define I2C_H
 
-#define I2C_TIMEOUT 1000
+#define I2C_TIMEOUT 5000
 
 #include "Time.h"
 
@@ -66,7 +66,12 @@ InterIntegratedCircuit::InterIntegratedCircuit()
 
     TWSR = 0;
 
+    #if defined (__FCPU_16MHz__)
     TWBR = 72;
+    #endif
+    #if defined (__FCPU_8MHz__)
+    TWBR = 32;
+    #endif
 
     TWCR = (1<<TWEN);
 
