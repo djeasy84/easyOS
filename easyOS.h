@@ -45,10 +45,6 @@
     #include "Time.h"
 #endif
 
-#if defined (MEMORY_M)
-    #include "Memory.h"
-#endif
-
 #if defined (SERIAL_HW_M)
     #include "SerialHW.h"
 #endif
@@ -85,12 +81,4 @@
 
 #if defined (MULTI_TASKING_M)
     #include "MultiTasking.h"
-#endif
-
-#if defined (PID_M)
-    #include "PID.h"
-#endif
-
-#if defined (STATE_MACHINE_M)
-    #include "StateMachine.h"
 #endif

@@ -26,8 +26,8 @@
  *
  */
 
-#define MULTI_TASKING_M
 #define SERIAL_HW_M
+#define MULTI_TASKING_M
 
 #include "easyOS.h"
 

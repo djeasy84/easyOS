@@ -31,6 +31,8 @@
 
 #define I2C_NFC_ID 0x48
 
+#include <string.h>
+
 class NearFieldCommunication
 {
     public:

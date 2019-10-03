@@ -44,6 +44,22 @@
 
 #include "easyOS.h"
 
+#include "MPU6050.h"
+#include "MCP2515.h"
+#include "DS1307.h"
+#include "W5500.h"
+#include "NRF24L01.h"
+#include "DS18B20.h"
+#include "WS2812B.h"
+#include "MAX6675.h"
+#include "TC1602.h"
+#include "M24M02.h"
+#include "DMX512.h"
+#include "TB6600.h"
+#include "PN532.h"
+
+Temperature DTS;
+
 bool init()
 {
     ST.wait_millisec(0);
@@ -60,6 +76,20 @@ bool init()
     DP.read(0);
     AP.read(0);
     EEPROM.read(0,0);
+
+    AG.read(0,0,0,0,0,0);
+    CB.read(0,0,0,0);
+    RTC.read(0,0,0,0,0,0);
+    ETH.close();
+    RF.read(0);
+    DTS.update();
+    LED.update();
+    TC.read();
+    LCD.write(0,0,0,0);
+    ExEEPROM.read(0,0);
+    DMX.update();
+    STP.step();
+    NFC.read(0);
 
     return false;
 }
