@@ -52,7 +52,7 @@ class SerialHW
         virtual bool write(uint8_t *data, uint8_t len) = 0;
         virtual bool read(uint8_t *data, uint8_t *len, uint8_t max) = 0;
 
-        bool print(unsigned char data);
+        bool print(unsigned char data, bool hexFormat = false);
         bool print(unsigned int data);
         bool print(unsigned long data);
         bool print(char data);
@@ -61,7 +61,7 @@ class SerialHW
         bool print(double data, uint8_t dec = 2);
         bool print(const char *data = "");
 
-        bool println(unsigned char data);
+        bool println(unsigned char data, bool hexFormat = false);
         bool println(unsigned int data);
         bool println(unsigned long data);
         bool println(char data);
@@ -85,10 +85,13 @@ void SerialHW::flush()
     while(read(&buffer));
 }
 
-bool SerialHW::print(unsigned char data)
+bool SerialHW::print(unsigned char data, bool hexFormat)
 {
     uint8_t buffer[3+1];
-    sprintf((char *)buffer, "%u", data);
+    if (hexFormat)
+        sprintf((char *)buffer, "%02X", data);
+    else
+        sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     return true;
@@ -155,10 +158,13 @@ bool SerialHW::print(const char *data)
     return true;
 }
 
-bool SerialHW::println(unsigned char data)
+bool SerialHW::println(unsigned char data, bool hexFormat)
 {
     uint8_t buffer[3+1];
-    sprintf((char *)buffer, "%u", data);
+    if (hexFormat)
+        sprintf((char *)buffer, "%02X", data);
+    else
+        sprintf((char *)buffer, "%u", data);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     if (!write((uint8_t *)"\r\n", 2))
