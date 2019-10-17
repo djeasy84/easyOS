@@ -29,45 +29,43 @@
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
+#define DEBOUNCE_TIME 25000
+
 uint32_t lastTime;
-uint32_t debounceTime;
 void (*interruptFunc)(void);
 
 ISR(PCINT0_vect)
 {
 	if (interruptFunc == 0x0000)
 		return;
-	if (ST.time_diff(ST.millisec(), lastTime) > debounceTime)
-	{
-		lastTime = ST.millisec();
-		interruptFunc();
-	}
+	PCICR &= ~((1<<2) | (1<<1) | (1<<0));
+	_delay_us(DEBOUNCE_TIME);
+	interruptFunc();
+	PCICR = (1<<2) | (1<<1) | (1<<0);
 }
 ISR(PCINT1_vect)
 {
 	if (interruptFunc == 0x0000)
 		return;
-	if (ST.time_diff(ST.millisec(), lastTime) > debounceTime)
-	{
-		lastTime = ST.millisec();
-		interruptFunc();
-	}
+	PCICR &= ~((1<<2) | (1<<1) | (1<<0));
+	_delay_us(DEBOUNCE_TIME);
+	interruptFunc();
+	PCICR = (1<<2) | (1<<1) | (1<<0);
 }
 ISR(PCINT2_vect)
 {
 	if (interruptFunc == 0x0000)
 		return;
-	if (ST.time_diff(ST.millisec(), lastTime) > debounceTime)
-	{
-		lastTime = ST.millisec();
-		interruptFunc();
-	}
+	PCICR &= ~((1<<2) | (1<<1) | (1<<0));
+	_delay_us(DEBOUNCE_TIME);
+	interruptFunc();
+	PCICR = (1<<2) | (1<<1) | (1<<0);
 }
 
 class Interrupt
 {
     public:
-        void setup(void (*pFunc)(void), uint32_t tDebounce = 25);
+        void setup(void (*pFunc)(void));
 
         bool enableInterrupt(uint8_t id);
 		bool disableInterrupt(uint8_t id);
@@ -121,13 +119,12 @@ Interrupt IM;
 	#endif
 #endif
 
-void Interrupt::setup(void (*pFunc)(void), uint32_t tDebounce)
+void Interrupt::setup(void (*pFunc)(void))
 {
 	PCMSK0 = PCMSK1 = PCMSK2 = PCIFR = PCICR = 0;
 	PCICR = (1<<2) | (1<<1) | (1<<0);
 
 	lastTime = 0;
-	debounceTime = tDebounce;
 	interruptFunc = pFunc;
 }
 
