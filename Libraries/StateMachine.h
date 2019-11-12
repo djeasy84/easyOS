@@ -80,7 +80,7 @@ void StateMachine::addState(uint8_t stateName, void (*pTask)(void))
 
 uint32_t StateMachine::timeState()
 {
-	return ST.time_diff(ST.millisec(), stateList[currState].startTime);
+    return ST.time_diff(ST.millisec(), stateList[currState].startTime);
 }
 
 bool StateMachine::changeState(uint8_t stateName)

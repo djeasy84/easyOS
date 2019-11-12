@@ -82,16 +82,16 @@ bool ExternalEEPROM::write(uint32_t addr, uint8_t data)
     uint8_t dsc = I2C_EEPROM_ID | (nBank << 2) | (intAddr >> 16);
     if (!setRegistry(dsc, intAddr, data))
         return false;
-	uint8_t value = 0;
+    uint8_t value = 0;
     for (uint8_t i=0; i<0xFF; i++)
-	{
-		if (getRegistry(dsc, intAddr, &value))
-		{
-			if (value == data)
-				return true;
-		}
-	}
-	return false;
+    {
+        if (getRegistry(dsc, intAddr, &value))
+        {
+            if (value == data)
+                return true;
+        }
+    }
+    return false;
 }
 
 bool ExternalEEPROM::read(uint32_t addr, uint8_t *data, uint32_t len)

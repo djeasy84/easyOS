@@ -59,7 +59,7 @@ SerialPeripheralInterface::SerialPeripheralInterface()
     #endif
 
     SPSR = 0;
-	SPSR |= (1<<SPI2X);
+    SPSR |= (1<<SPI2X);
 
     SPCR = 0;
     SPCR |= (1<<SPE) | (1<<MSTR) | (1<<SPR0);

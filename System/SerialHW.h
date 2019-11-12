@@ -145,7 +145,7 @@ bool SerialHW::print(long data)
 bool SerialHW::print(double data,  uint8_t dec)
 {
     uint8_t buffer[40+8+1];
-	dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
+    dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     return true;
@@ -230,7 +230,7 @@ bool SerialHW::println(long data)
 bool SerialHW::println(double data, uint8_t dec)
 {
     uint8_t buffer[40+8+1];
-	dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
+    dtostrf(data, 0, (dec>8)?8:dec, (char *)buffer);
     if (!write((uint8_t *)buffer, strlen((const char *)buffer)))
         return false;
     if (!write((uint8_t *)"\r\n", 2))
@@ -286,7 +286,7 @@ bool SerialHW::readMulti(uint8_t *data, uint8_t *len, uint8_t max)
     uint32_t start_microsec = ST.microsec();
     while(*len < max)
     {
-		if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
+        if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
             break;
         if (read(&data[*len]))
             (*len)++;

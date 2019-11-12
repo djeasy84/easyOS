@@ -41,7 +41,7 @@ GOTO :MAIN
     ECHO:
     ECHO     Optional field:
     ECHO         COM: COM1, COM2, ...
-	ECHO         NOBOOTLOADER: to upload without bootloader (it will erase a previous bootloader if present)
+    ECHO         NOBOOTLOADER: to upload without bootloader (it will erase a previous bootloader if present)
     ECHO:
     EXIT /B -1
 
@@ -79,55 +79,55 @@ SET fuse_low=
 IF "%1%"=="arduinoUNO" (
     SET processor_type=atmega328p
     SET board_type=__BOARD_arduinoUNO__
-	SET upload_type=arduino
-	SET upload_speed=115200
-	SET cpu_speed=__FCPU_16MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=arduino
+    SET upload_speed=115200
+    SET cpu_speed=__FCPU_16MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="arduinoUNO_8MHz" (
     SET processor_type=atmega328p
     SET board_type=__BOARD_arduinoUNO__
-	SET upload_type=arduino
-	SET upload_speed=57600
-	SET cpu_speed=__FCPU_8MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=arduino
+    SET upload_speed=57600
+    SET cpu_speed=__FCPU_8MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xE2
 ) ELSE IF "%1%"=="arduinoNANO" (
     SET processor_type=atmega328p
     SET board_type=__BOARD_arduinoNANO__
-	SET upload_type=arduino
-	SET upload_speed=115200
-	SET cpu_speed=__FCPU_16MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=arduino
+    SET upload_speed=115200
+    SET cpu_speed=__FCPU_16MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="arduinoNANO_8MHz" (
     SET processor_type=atmega328p
     SET board_type=__BOARD_arduinoNANO__
-	SET upload_type=arduino
-	SET upload_speed=57600
-	SET cpu_speed=__FCPU_8MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=arduino
+    SET upload_speed=57600
+    SET cpu_speed=__FCPU_8MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xE2
 ) ELSE IF "%1%"=="arduinoMEGA" (
     SET processor_type=atmega2560
     SET board_type=__BOARD_arduinoMEGA__
-	SET upload_type=wiring
-	SET upload_speed=115200
-	SET cpu_speed=__FCPU_16MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=wiring
+    SET upload_speed=115200
+    SET cpu_speed=__FCPU_16MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xD8
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="easyHOME" (
     SET processor_type=atmega2560
     SET board_type=__BOARD_easyHOME__
-	SET upload_type=wiring
-	SET upload_speed=115200
-	SET cpu_speed=__FCPU_16MHz__
-	SET fuse_ext=0xFD
+    SET upload_type=wiring
+    SET upload_speed=115200
+    SET cpu_speed=__FCPU_16MHz__
+    SET fuse_ext=0xFD
     SET fuse_high=0xD8
     SET fuse_low=0xFF
 ) ELSE (
@@ -187,7 +187,7 @@ IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
     ".\AVR-GCC\bin\avr-objcopy.exe" -O ihex ..\Projects\%file_name%\%file_name%.out ..\Projects\%file_name%\%file_name%.hex
-	if errorlevel 1 (
+    if errorlevel 1 (
         GOTO :BUILD_KO
     )
 ) ELSE (
@@ -199,20 +199,20 @@ IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
     IF %no_bootloader%==true (
-	    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
-	    if errorlevel 1 (
+        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+        if errorlevel 1 (
             GOTO :BUILD_KO
         )
-		".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
-	    if errorlevel 1 (
+        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
+        if errorlevel 1 (
             GOTO :BUILD_KO
         )
-	) ELSE (
+    ) ELSE (
         ".\AVR-GCC\bin\avrdude.exe" -q -q -p %processor_type% -D -P %upload_device% -c %upload_type% -b %upload_speed% -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i
-		if errorlevel 1 (
+        if errorlevel 1 (
             GOTO :BUILD_KO
         )
-	)
+    )
 )
 
 GOTO :UPLOAD_OK

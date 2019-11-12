@@ -325,13 +325,13 @@ bool Ethernet::read(uint16_t len, uint8_t *data)
 {
     if (sockType == TCP)
     {
-		/*uint8_t byteStatus = 0x00;
-		getRegistry(SOCK_CM, 0x0003, &byteStatus);
-		if (byteStatus != 0x17)
-		{
-			close();
-			return false;
-		}*/
+        /*uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x17)
+        {
+            close();
+            return false;
+        }*/
         uint16_t rx_size = available();
         if (rx_size == 0)
             return false;
@@ -360,13 +360,13 @@ bool Ethernet::read(uint16_t len, uint8_t *data)
     }
     else if (sockType == UDP)
     {
-		/*uint8_t byteStatus = 0x00;
-		getRegistry(SOCK_CM, 0x0003, &byteStatus);
-		if (byteStatus != 0x22)
-		{
-			close();
-			return false;
-		}*/
+        /*uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x22)
+        {
+            close();
+            return false;
+        }*/
         uint16_t rx_size = available();
         if (rx_size == 0)
             return false;
@@ -398,22 +398,22 @@ bool Ethernet::read(uint16_t len, uint8_t *data)
 
 bool Ethernet::write(uint16_t len, uint8_t *data)
 {
-	if (sockType == TCP)
+    if (sockType == TCP)
     {
-		uint8_t byteStatus = 0x00;
-		getRegistry(SOCK_CM, 0x0003, &byteStatus);
-		if (byteStatus != 0x17)
-		{
+        uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x17)
+        {
             close();
-			return false;
-		}
+            return false;
+        }
         if (len > 16384)
             return false;
         uint16_t tx_size = 0x0000;
         getRegistry(SOCK_CM, 0x0020, (uint8_t *)&tx_size+1);
         getRegistry(SOCK_CM, 0x0021, (uint8_t *)&tx_size+0);
         if (tx_size < len)
-			return false;
+            return false;
         setRegistry(SOCK_CM, 0x0002, 0b00011000);
         uint16_t tx_wr = 0x0000;
         getRegistry(SOCK_CM, 0x0024, (uint8_t *)&tx_wr+1);
@@ -446,7 +446,7 @@ bool Ethernet::write(uint16_t len, uint8_t *data)
                 return false;
             }
             byteInterrupt = 0x00;
-			getRegistry(SOCK_CM, 0x0002, &byteInterrupt);
+            getRegistry(SOCK_CM, 0x0002, &byteInterrupt);
             if ((byteInterrupt & 0b00001000) != 0b00001000)
             {
                 close();
@@ -457,13 +457,13 @@ bool Ethernet::write(uint16_t len, uint8_t *data)
     }
     else if (sockType == UDP)
     {
-		uint8_t byteStatus = 0x00;
-		getRegistry(SOCK_CM, 0x0003, &byteStatus);
-		if (byteStatus != 0x22)
-		{
-			close();
-			return false;
-		}
+        uint8_t byteStatus = 0x00;
+        getRegistry(SOCK_CM, 0x0003, &byteStatus);
+        if (byteStatus != 0x22)
+        {
+            close();
+            return false;
+        }
         if (len > 16384)
             return false;
         uint16_t tx_size = 0x0000;

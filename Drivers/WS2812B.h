@@ -284,7 +284,7 @@ bool LightEmittingDiode::update()
     if (dataLED == 0 || dataLEN == 0 || dataPIN == 0)
         return false;
 
-	if (ST.time_diff(ST.millisec(), lastUpdate) > 20)
+    if (ST.time_diff(ST.millisec(), lastUpdate) > 20)
     {
         lastUpdate = ST.millisec();
 

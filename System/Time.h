@@ -63,13 +63,13 @@ class Time
     public:
         Time();
         void enable();
-		void disable();
+        void disable();
 
         void restart();
         uint8_t restart_reason();
 
         void watchdog_reset();
-		void watchdog_disable();
+        void watchdog_disable();
 
         uint32_t microsec();
         //_delay_us(double us);  // use this for precision delay
@@ -77,7 +77,7 @@ class Time
         uint32_t millisec();
         void wait_millisec(uint32_t value);
 
-		uint32_t time_diff(uint32_t stop, uint32_t start);
+        uint32_t time_diff(uint32_t stop, uint32_t start);
 
     private:
         uint8_t restartReason;
@@ -96,7 +96,7 @@ Time::Time()
 
 void Time::enable()
 {
-	cli();
+    cli();
 
     TCCR1A = 0;
     TCCR1B = 0;
@@ -112,12 +112,12 @@ void Time::enable()
     restartReason = MCUSR;
     MCUSR = 0;
 
-	sei();
+    sei();
 }
 
 void Time::disable()
 {
-	TCCR1A = 0;
+    TCCR1A = 0;
     TCCR1B = 0;
     TIMSK1 = 0;
     TCNT1 = 0;
@@ -160,7 +160,7 @@ void Time::watchdog_disable()
 uint32_t Time::microsec()
 {
     uint8_t oldSREG = SREG;
-	cli();
+    cli();
 
     uint32_t microsec = milliseconds * 1000;
     uint32_t counter = TCNT1;
@@ -174,8 +174,8 @@ uint32_t Time::microsec()
 
 uint32_t Time::millisec()
 {
-	uint8_t oldSREG = SREG;
-	cli();
+    uint8_t oldSREG = SREG;
+    cli();
 
     uint32_t millisec = milliseconds;
     uint32_t counter = TCNT1;
@@ -196,9 +196,9 @@ void Time::wait_millisec(uint32_t value)
 
 uint32_t Time::time_diff(uint32_t stop, uint32_t start)
 {
-	if (stop >= start)
-		return stop - start;
-	return (0xFFFFFFFF - start) + stop;
+    if (stop >= start)
+        return stop - start;
+    return (0xFFFFFFFF - start) + stop;
 }
 
 #endif

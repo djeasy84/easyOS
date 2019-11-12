@@ -38,7 +38,7 @@ GOTO :MAIN
     ECHO     Mandatory fields:
     ECHO         board: arduinoUNO, arduinoUNO_8MHz, arduinoNANO, arduinoNANO_8MHz, arduinoMEGA, easyHOME
     ECHO         COM: COM1, COM2, ...
-	ECHO:
+    ECHO:
     EXIT /B -1
 
 :UPLOAD_KO
@@ -63,38 +63,38 @@ SET fuse_low=
 
 IF "%1%"=="arduinoUNO" (
     SET processor_type=atmega328p
-	SET file_name=..\Bootloader\arduinoUNO\optiboot_16MHz\optiboot_atmega328.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\arduinoUNO\optiboot_16MHz\optiboot_atmega328.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="arduinoUNO_8MHz" (
     SET processor_type=atmega328p
-	SET file_name=..\Bootloader\arduinoUNO\optiboot_8MHz\optiboot_atmega328_8mhz.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\arduinoUNO\optiboot_8MHz\optiboot_atmega328_8mhz.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xE2
 ) ELSE IF "%1%"=="arduinoNANO" (
     SET processor_type=atmega328p
-	SET file_name=..\Bootloader\arduinoUNO\optiboot_16MHz\optiboot_atmega328.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\arduinoUNO\optiboot_16MHz\optiboot_atmega328.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="arduinoNANO_8MHz" (
     SET processor_type=atmega328p
-	SET file_name=..\Bootloader\arduinoUNO\optiboot_8MHz\optiboot_atmega328_8mhz.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\arduinoUNO\optiboot_8MHz\optiboot_atmega328_8mhz.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xDE
     SET fuse_low=0xE2
 ) ELSE IF "%1%"=="arduinoMEGA" (
     SET processor_type=atmega2560
-	SET file_name=..\Bootloader\arduinoMEGA\stk500v2_16MHz\stk500boot_v2_mega2560.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\arduinoMEGA\stk500v2_16MHz\stk500boot_v2_mega2560.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xD8
     SET fuse_low=0xFF
 ) ELSE IF "%1%"=="easyHOME" (
     SET processor_type=atmega2560
-	SET file_name=..\Bootloader\easyHOME\stk500v2_16MHz\stk500boot_v2_easyHOME.hex
-	SET fuse_ext=0xFD
+    SET file_name=..\Bootloader\easyHOME\stk500v2_16MHz\stk500boot_v2_easyHOME.hex
+    SET fuse_ext=0xFD
     SET fuse_high=0xD8
     SET fuse_low=0xFF
 ) ELSE (
@@ -109,14 +109,14 @@ SET res=false
 IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
-	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
-	if errorlevel 1 (
-		GOTO :UPLOAD_KO
-	)
-	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
-	if errorlevel 1 (
-		GOTO :UPLOAD_KO
-	)
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+    if errorlevel 1 (
+        GOTO :UPLOAD_KO
+    )
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
+    if errorlevel 1 (
+        GOTO :UPLOAD_KO
+    )
 )
 
 GOTO :UPLOAD_OK

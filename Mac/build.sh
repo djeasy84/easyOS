@@ -92,7 +92,7 @@ do
             upload_type=arduino
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xDE
             fuse_low=0xFF
         fi
@@ -103,7 +103,7 @@ do
             upload_type=arduino
             upload_speed=57600
             cpu_speed=__FCPU_8MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xDE
             fuse_low=0xE2
         fi
@@ -114,7 +114,7 @@ do
             upload_type=arduino
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xDE
             fuse_low=0xFF
         fi
@@ -125,7 +125,7 @@ do
             upload_type=arduino
             upload_speed=57600
             cpu_speed=__FCPU_8MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xDE
             fuse_low=0xE2
         fi
@@ -136,7 +136,7 @@ do
             upload_type=wiring
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xD8
             fuse_low=0xFF
         fi
@@ -147,7 +147,7 @@ do
             upload_type=wiring
             upload_speed=115200
             cpu_speed=__FCPU_16MHz__
-			fuse_ext=0xFD
+            fuse_ext=0xFD
             fuse_high=0xD8
             fuse_low=0xFF
         fi

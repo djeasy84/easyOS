@@ -94,7 +94,7 @@ bool Temperature::read(float *temp)
                 return false;
 
             uint8_t oldSREG = SREG;
-	        cli();
+            cli();
 
             writeByte(0xCC);
             writeByte(0xBE);
@@ -124,7 +124,7 @@ bool Temperature::read(float *temp)
 
 bool Temperature::update()
 {
-	if (ST.time_diff(ST.millisec(), lastUpdate) > tempRefresh)
+    if (ST.time_diff(ST.millisec(), lastUpdate) > tempRefresh)
     {
         if (!reset())
             return false;
@@ -132,7 +132,7 @@ bool Temperature::update()
         lastUpdate = ST.millisec();
 
         uint8_t oldSREG = SREG;
-	    cli();
+        cli();
 
         writeByte(0xCC);
         writeByte(0x44);

@@ -37,7 +37,7 @@ class ThermoCouple
         float read();
 
     private:
-		uint16_t getData();
+        uint16_t getData();
 
         uint8_t ssPin;
 };
@@ -57,10 +57,10 @@ bool ThermoCouple::setup(uint8_t ss)
 
 float ThermoCouple::read()
 {
-	uint16_t raw_data = getData();
+    uint16_t raw_data = getData();
 
-	if (raw_data & 0b0000000000000100)
-		return -1.0;
+    if (raw_data & 0b0000000000000100)
+        return -1.0;
 
     uint16_t raw_temp = (raw_data>>3) & 0b0000111111111111;
 
@@ -73,7 +73,7 @@ uint16_t ThermoCouple::getData()
     uint16_t raw_data = (SPI.transfer(0x00)<<8) | (SPI.transfer(0x00)<<0);
     DP.write(ssPin, true);
 
-	return raw_data;
+    return raw_data;
 }
 
 #endif
