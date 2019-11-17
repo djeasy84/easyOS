@@ -32,7 +32,7 @@
 class Temperature
 {
     public:
-        bool setup(uint8_t pin, uint32_t refresh = 5000);
+        bool setup(uint8_t pin, uint32_t refresh = 15000);
 
         bool read(float *temp);
 
