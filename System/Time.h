@@ -41,15 +41,15 @@ volatile uint32_t milliseconds = 0;
 ISR(TIMER1_COMPA_vect)
 {
     uint32_t millisec = milliseconds;
-    millisec += 8;
+    millisec += 16;
     milliseconds = millisec;
 }
 
 #if defined (__FCPU_16MHz__)
-#define OCR1A_MAX 15999
+#define OCR1A_MAX 3999
 #endif
 #if defined (__FCPU_8MHz__)
-#define OCR1A_MAX 7999
+#define OCR1A_MAX 1999
 #endif
 
 #define POWER_ON 0
@@ -107,7 +107,7 @@ void Time::enable()
     TIMSK1 |= (1<<OCIE1A);
     OCR1A = OCR1A_MAX;
 
-    TCCR1B |= (1<<CS11);
+    TCCR1B |= (1<<CS11) | (1<<CS10);
 
     restartReason = MCUSR;
     MCUSR = 0;
@@ -165,11 +165,11 @@ uint32_t Time::microsec()
     uint32_t microsec = milliseconds * 1000;
     uint32_t counter = TCNT1;
     if ((TIFR1 & (1<<OCF1A)) && (counter < OCR1A_MAX))
-        microsec += 8000;
+        microsec += 16000;
 
     SREG = oldSREG;  //sei();
 
-    return microsec + (uint32_t)round((float)counter * (float)((float)8000 / (float)OCR1A_MAX));
+    return microsec + (counter * 4);
 }
 
 uint32_t Time::millisec()
@@ -180,11 +180,11 @@ uint32_t Time::millisec()
     uint32_t millisec = milliseconds;
     uint32_t counter = TCNT1;
     if ((TIFR1 & (1<<OCF1A)) && (counter < OCR1A_MAX))
-        millisec += 8;
+        millisec += 16;
 
     SREG = oldSREG;  //sei();
 
-    return millisec + (uint32_t)round((float)(((float)((float)counter * (float)((float)8000 / (float)OCR1A_MAX))) / (float)1000));
+    return millisec + ((counter * 4) / 1000);
 }
 
 void Time::wait_millisec(uint32_t value)
