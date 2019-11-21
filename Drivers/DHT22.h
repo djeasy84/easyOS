@@ -34,7 +34,7 @@ class TemperatureUmidity
     public:
         bool setup(uint8_t pin, uint32_t refresh = 30000);
 
-        bool read(float *hum, float *temp);
+        bool read(float *temp, float *hum);
 
         bool update();
 
@@ -65,14 +65,19 @@ bool TemperatureUmidity::setup(uint8_t pin, uint32_t refresh)
     return true;
 }
 
-bool TemperatureUmidity::read(float *hum, float *temp)
+bool TemperatureUmidity::read(float *temp, float *hum)
 {
     if (firstDone == false)
         return false;
 
-    *hum = lastHum;
-    *temp = lastTemp;
-    return true;
+    if (ST.time_diff(ST.millisec(), lastUpdate) < (dataRefresh * 3))
+    {
+        *hum = lastHum;
+        *temp = lastTemp;
+        return true;
+    }
+
+    return false;
 }
 
 bool TemperatureUmidity::update()
@@ -81,93 +86,58 @@ bool TemperatureUmidity::update()
     {
         lastUpdate = ST.millisec();
 
+        uint8_t edgeCounter = 0;
+        uint32_t edgeTime[84];  memset(edgeTime, 0, sizeof(uint32_t)*84);
+
+        uint16_t errCounter = 0;
+
         DP.write(dataPin, false);
         _delay_us(5000);
-        DP.read(dataPin, true);
+        DP.write(dataPin, true);
         _delay_us(5);
 
-        while(DP.read(dataPin, true))
-        {
-            if (ST.time_diff(ST.millisec(), lastUpdate) > 25)
-            {
-                lastHum = -100.0;
-                lastTemp = -273.15;
-                return false;
-            }
-        }
-        _delay_us(5);
-        while(!DP.read(dataPin, true))
-        {
-            if (ST.time_diff(ST.millisec(), lastUpdate) > 25)
-            {
-                lastHum = -100.0;
-                lastTemp = -273.15;
-                return false;
-            }
-        }
-        _delay_us(5);
-
-        while(DP.read(dataPin, true))
-        {
-            if (ST.time_diff(ST.millisec(), lastUpdate) > 25)
-            {
-                lastHum = -100.0;
-                lastTemp = -273.15;
-                return false;
-            }
-        }
-        _delay_us(5);
-
-        uint32_t tStart = 0;
-        uint8_t tmpData[5] = {0, 0, 0, 0, 0};
-        for (uint8_t i=0; i<5; i++)
-        {
-            for (uint8_t j=0; j<8; j++)
-            {
-                while(!DP.read(dataPin, true))
-                {
-                    if (ST.time_diff(ST.millisec(), lastUpdate) > 25)
-                    {
-                        lastHum = -100.0;
-                        lastTemp = -273.15;
-                        return false;
-                    }
-                }
-                uint32_t tStart = ST.microsec();
-
-                while(DP.read(dataPin, true))
-                {
-                    if (ST.time_diff(ST.millisec(), lastUpdate) > 25)
-                    {
-                        lastHum = -100.0;
-                        lastTemp = -273.15;
-                        return false;
-                    }
-                }
-                uint32_t tStop = ST.microsec();
-
-                uint8_t tmpDataBit = (ST.time_diff(tStop, tStart) > 35) ? true : false;
-
-                tmpData[i] = tmpData[i] | (tmpDataBit << j);
-            }
-        }
-
-        if ((tmpData[0] + tmpData[1] + tmpData[2] + tmpData[3]) != tmpData[4])
-        {
-            lastHum = -100.0;
-            lastTemp = -273.15;
+        if (DP.read(dataPin, true) == false)
             return false;
-        }
 
-        uint16_t humidity = ((tmpData[2] << 8) | (tmpData[3] << 0)) & 0b01111111;
-        lastHum = ((float)humidity) / 10.0;
+        bool oldStatus = true;
+        do
+        {
+            if (oldStatus != DP.read(dataPin, true))
+            {
+                oldStatus = !oldStatus;
+                edgeTime[edgeCounter++] = ST.microsec();
+            }
 
-        uint16_t temperature = ((tmpData[2] << 8) | (tmpData[3] << 0)) & 0b01111111;
-        lastTemp = (tmpData[2] & 0b10000000) ? ((((float)temperature) * -1.0) / 10.0) : ((((float)temperature) * +1.0) / 10.0);
+            if (errCounter++ > 1024)
+                return false;
+
+        }while(edgeCounter < 84);
+
+        if (DP.read(dataPin, true) == false)
+            return false;
+
+        int16_t humValue = 0;
+        int16_t tempValue = 0;
+        for (uint8_t i=4, j=15; i<36; i+=2, j--)
+            humValue = humValue | (uint16_t)((((edgeTime[i]-edgeTime[i-1]) > 50) ? (uint16_t)1 : (uint16_t)0) << j);
+        for (uint8_t i=36, j=15; i<68; i+=2, j--)
+            tempValue = tempValue | (uint16_t)((((edgeTime[i]-edgeTime[i-1]) > 50) ? (uint16_t)1 : (uint16_t)0) << j);
+
+        uint8_t crcValue = 0;
+        for (uint8_t i=68, j=7; i<84; i+=2, j--)
+            crcValue = crcValue | (uint8_t)((((edgeTime[i]-edgeTime[i-1]) > 50) ? (uint8_t)1 : (uint8_t)0) << j);
+
+        if (((uint8_t)((uint8_t)((humValue & 0b1111111100000000) >> 8) + (uint8_t)((humValue & 0b0000000011111111) >> 0) + (uint8_t)((tempValue & 0b1111111100000000) >> 8) + (uint8_t)((tempValue & 0b0000000011111111) >> 0))) != crcValue)
+            return false;
+
+        if ((tempValue & 0b1000000000000000) == 0b1000000000000000)
+            tempValue = (tempValue & 0b011111111111111) * (-1);
+
+        lastHum = ((float)humValue) / 10.0;
+        lastTemp = ((float)tempValue) / 10.0;
 
         firstDone = true;
     }
-
     return true;
 }
 
