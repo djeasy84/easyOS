@@ -57,8 +57,10 @@
 #include "DMX512.h"
 #include "TB6600.h"
 #include "PN532.h"
+#include "DHT22.h"
 
 Temperature DTS;
+TemperatureHumidity DTHS;
 
 bool init()
 {
@@ -83,6 +85,7 @@ bool init()
     ETH.close();
     RF.read(0);
     DTS.update();
+    DTHS.update();
     LED.update();
     TC.read();
     LCD.write(0,0,0,0);

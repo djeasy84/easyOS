@@ -29,7 +29,7 @@
 #ifndef DHT22_H
 #define DHT22_H
 
-class TemperatureUmidity
+class TemperatureHumidity
 {
     public:
         bool setup(uint8_t pin, uint32_t refresh = 30000);
@@ -49,7 +49,7 @@ class TemperatureUmidity
 
 /****************************************************************************************/
 
-bool TemperatureUmidity::setup(uint8_t pin, uint32_t refresh)
+bool TemperatureHumidity::setup(uint8_t pin, uint32_t refresh)
 {
     dataPin = pin;
     dataRefresh = (refresh < 10000) ? 10000 : refresh;
@@ -65,7 +65,7 @@ bool TemperatureUmidity::setup(uint8_t pin, uint32_t refresh)
     return true;
 }
 
-bool TemperatureUmidity::read(float *temp, float *hum)
+bool TemperatureHumidity::read(float *temp, float *hum)
 {
     if (firstDone == false)
         return false;
@@ -80,7 +80,7 @@ bool TemperatureUmidity::read(float *temp, float *hum)
     return false;
 }
 
-bool TemperatureUmidity::update()
+bool TemperatureHumidity::update()
 {
     if (ST.time_diff(ST.millisec(), lastUpdate) > dataRefresh)
     {
