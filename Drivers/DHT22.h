@@ -84,8 +84,6 @@ bool TemperatureHumidity::update()
 {
     if (ST.time_diff(ST.millisec(), lastUpdate) > dataRefresh)
     {
-        lastUpdate = ST.millisec();
-
         uint8_t edgeCounter = 0;
         uint32_t edgeTime[84];  memset(edgeTime, 0, sizeof(uint32_t)*84);
 
@@ -98,6 +96,8 @@ bool TemperatureHumidity::update()
 
         if (DP.read(dataPin, true) == false)
             return false;
+
+        lastUpdate = ST.millisec();
 
         bool oldStatus = true;
         do
