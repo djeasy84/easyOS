@@ -746,8 +746,8 @@
 class DigitalPin
 {
     public:
-        bool read(uint8_t id, bool pullup=false);
-        void write(uint8_t id, bool status);
+        bool read(uint8_t id, bool pullup=false);  // ~5.5us
+        void write(uint8_t id, bool status);  // ~5.5us
 };
 
 DigitalPin DP;
