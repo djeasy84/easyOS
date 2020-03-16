@@ -34,7 +34,7 @@ function help
     echo "build command syntax:"
     echo "     --help          to show this help"
     echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoNANO_8MHz - arduinoMEGA - easyHOME]"
-    echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
+    echo "     --upload        to specify the port name for upload [/dev/*** - usb - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
     echo "     --nobootloader  to upload without bootloader (it will erase a previous bootloader if present)"
@@ -68,6 +68,7 @@ function upload_ok
     exit 0
 }
 
+programmer_type=null
 processor_type=null
 upload_device=null
 board_type=null
@@ -228,12 +229,18 @@ if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
 then
     if [[ $no_bootloader == true ]]
     then
-        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
+        if [[ $upload_device == "usb" ]]
+        then
+            programmer_type=avrispmkII
+        else
+            programmer_type=stk500v1
+        fi
+        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $programmer_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
         if [[ $? != 0 ]]
         then
             upload_ko
         fi
-        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
+        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $programmer_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
         if [[ $? != 0 ]]
         then
             upload_ko

@@ -40,7 +40,7 @@ GOTO :MAIN
     ECHO         project: name of your project
     ECHO:
     ECHO     Optional field:
-    ECHO         COM: COM1, COM2, ...
+    ECHO         COM: COM1, COM2, ... , USB
     ECHO         NOBOOTLOADER: to upload without bootloader (it will erase a previous bootloader if present)
     ECHO:
     EXIT /B -1
@@ -64,6 +64,7 @@ GOTO :MAIN
     EXIT /B 0
 
 :MAIN
+SET programmer_type=
 SET processor_type=
 SET board_type=
 SET upload_device=%3
@@ -199,11 +200,16 @@ IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
     IF %no_bootloader%==true (
-        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+        IF upload_device=="USB" (
+            SET programmer_type=avrispmkII
+        ) ELSE (
+            SET programmer_type=stk500v1
+        )
+        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
         if errorlevel 1 (
             GOTO :BUILD_KO
         )
-        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
+        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
         if errorlevel 1 (
             GOTO :BUILD_KO
         )
