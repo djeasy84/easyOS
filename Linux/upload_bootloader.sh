@@ -34,7 +34,7 @@ function help
     echo "upload bootloder command syntax:"
     echo "     --help          to show this help"
     echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoNANO_8MHz - arduinoMEGA - easyHOME]"
-    echo "     --upload        to specify the port name for upload [/dev/***]"
+    echo "     --upload        to specify the port name for upload [/dev/*** - usb]"
     echo
     echo "./upload_bootloader --board arduinoUNO --upload /dev/***"
     echo
@@ -57,6 +57,7 @@ function upload_ok
     exit 0
 }
 
+programmer_type=null
 processor_type=null
 upload_device=null
 file_name=null
@@ -115,12 +116,19 @@ then
     help
 fi
 
-./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
+if [[ $upload_device == "usb" ]]
+then
+    programmer_type=avrispmkII
+else
+    programmer_type=stk500v1
+fi
+
+./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $programmer_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
 if [[ $? != 0 ]]
 then
     upload_ko
 fi
-./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:$file_name:i -Ulock:w:0x0F:m
+./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $programmer_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:$file_name:i -Ulock:w:0x0F:m
 if [[ $? != 0 ]]
 then
     upload_ko

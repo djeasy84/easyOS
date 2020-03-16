@@ -37,7 +37,7 @@ GOTO :MAIN
     ECHO:
     ECHO     Mandatory fields:
     ECHO         board: arduinoUNO, arduinoUNO_8MHz, arduinoNANO, arduinoNANO_8MHz, arduinoMEGA, easyHOME
-    ECHO         COM: COM1, COM2, ...
+    ECHO         COM: COM1, COM2, ... , USB
     ECHO:
     EXIT /B -1
 
@@ -54,6 +54,7 @@ GOTO :MAIN
     EXIT /B 0
 
 :MAIN
+SET programmer_type=
 SET processor_type=
 SET upload_device=%2
 SET file_name=
@@ -105,15 +106,21 @@ IF NOT DEFINED upload_device (
     GOTO :HELP
 )
 
+IF upload_device=="USB" (
+    SET programmer_type=avrispmkII
+) ELSE (
+    SET programmer_type=stk500v1
+)
+
 SET res=false
 IF %processor_type%==atmega328p SET res=true
 IF %processor_type%==atmega2560 SET res=true
 IF %res%==true (
-    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
     if errorlevel 1 (
         GOTO :UPLOAD_KO
     )
-    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c stk500v1 -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
     if errorlevel 1 (
         GOTO :UPLOAD_KO
     )
