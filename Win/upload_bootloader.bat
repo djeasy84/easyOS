@@ -54,10 +54,10 @@ GOTO :MAIN
     EXIT /B 0
 
 :MAIN
-SET programmer_type=
 SET processor_type=
 SET upload_device=%2
 SET file_name=
+SET upload_type=
 SET fuse_ext=
 SET fuse_high=
 SET fuse_low=
@@ -102,28 +102,39 @@ IF "%1%"=="arduinoUNO" (
     GOTO :HELP
 )
 
+IF NOT DEFINED processor_type (
+    GOTO :HELP
+)
+IF NOT DEFINED file_name (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_ext (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_high (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_low (
+    GOTO :HELP
+)
 IF NOT DEFINED upload_device (
     GOTO :HELP
 )
 
-IF upload_device=="USB" (
-    SET programmer_type=avrispmkII
+IF /I "%upload_device%"=="USB" (
+	SET upload_device=usb
+    SET upload_type=avrispmkII
 ) ELSE (
-    SET programmer_type=stk500v1
+    SET upload_type=stk500v1
 )
 
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
-    if errorlevel 1 (
-        GOTO :UPLOAD_KO
-    )
-    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
-    if errorlevel 1 (
-        GOTO :UPLOAD_KO
-    )
+".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+IF ERRORLEVEL 1 (
+	GOTO :UPLOAD_KO
+)
+".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
+IF ERRORLEVEL 1 (
+	GOTO :UPLOAD_KO
 )
 
 GOTO :UPLOAD_OK

@@ -64,7 +64,6 @@ GOTO :MAIN
     EXIT /B 0
 
 :MAIN
-SET programmer_type=
 SET processor_type=
 SET board_type=
 SET upload_device=%3
@@ -142,83 +141,77 @@ IF /I "%4%"=="NOBOOTLOADER" (
 IF NOT DEFINED file_name (
     GOTO :HELP
 )
-
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    ".\AVR-GCC\bin\avr-g++.exe" -Wno-write-strings -I..\ -I..\System\ -I..\Drivers\ -I..\Libraries\ ..\Projects\%file_name%\%file_name%.c -Os -mmcu=%processor_type% -o ..\Projects\%file_name%\%file_name%.out -D%board_type% -D%cpu_speed%
-    if errorlevel 1 (
-        GOTO :BUILD_KO
-    )
-) ELSE (
-    GOTO :BUILD_KO
+IF NOT DEFINED processor_type (
+    GOTO :HELP
+)
+IF NOT DEFINED board_type (
+    GOTO :HELP
+)
+IF NOT DEFINED upload_type (
+    GOTO :HELP
+)
+IF NOT DEFINED upload_speed (
+    GOTO :HELP
+)
+IF NOT DEFINED cpu_speed (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_ext (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_high (
+    GOTO :HELP
+)
+IF NOT DEFINED fuse_low (
+    GOTO :HELP
 )
 
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    ".\AVR-GCC\bin\avr-objdump.exe" -S ..\Projects\%file_name%\%file_name%.out > ..\Projects\%file_name%\%file_name%.c.asm
-    if errorlevel 1 (
-        GOTO :BUILD_KO
-    )
-) ELSE (
-    GOTO :BUILD_KO
+".\AVR-GCC\bin\avr-g++.exe" -Wno-write-strings -I..\ -I..\System\ -I..\Drivers\ -I..\Libraries\ ..\Projects\%file_name%\%file_name%.c -Os -mmcu=%processor_type% -o ..\Projects\%file_name%\%file_name%.out -D%board_type% -D%cpu_speed%
+IF ERRORLEVEL 1 (
+	GOTO :BUILD_KO
 )
 
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    ".\AVR-GCC\bin\avr-size.exe" -C --mcu=%processor_type% ..\Projects\%file_name%\%file_name%.out
-    if errorlevel 1 (
-        GOTO :BUILD_KO
-    )
-) ELSE (
-    GOTO :BUILD_KO
+".\AVR-GCC\bin\avr-objdump.exe" -S ..\Projects\%file_name%\%file_name%.out > ..\Projects\%file_name%\%file_name%.c.asm
+IF ERRORLEVEL 1 (
+	GOTO :BUILD_KO
+)
+
+".\AVR-GCC\bin\avr-size.exe" -C --mcu=%processor_type% ..\Projects\%file_name%\%file_name%.out
+IF ERRORLEVEL 1 (
+	GOTO :BUILD_KO
 )
 
 IF NOT DEFINED upload_device (
     GOTO :BUILD_OK
 )
 
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    ".\AVR-GCC\bin\avr-objcopy.exe" -O ihex ..\Projects\%file_name%\%file_name%.out ..\Projects\%file_name%\%file_name%.hex
-    if errorlevel 1 (
-        GOTO :BUILD_KO
-    )
-) ELSE (
-    GOTO :BUILD_KO
+".\AVR-GCC\bin\avr-objcopy.exe" -O ihex ..\Projects\%file_name%\%file_name%.out ..\Projects\%file_name%\%file_name%.hex
+IF ERRORLEVEL 1 (
+	GOTO :BUILD_KO
 )
 
-SET res=false
-IF %processor_type%==atmega328p SET res=true
-IF %processor_type%==atmega2560 SET res=true
-IF %res%==true (
-    IF %no_bootloader%==true (
-        IF upload_device=="USB" (
-            SET programmer_type=avrispmkII
-        ) ELSE (
-            SET programmer_type=stk500v1
-        )
-        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
-        if errorlevel 1 (
-            GOTO :BUILD_KO
-        )
-        ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %programmer_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
-        if errorlevel 1 (
-            GOTO :BUILD_KO
-        )
-    ) ELSE (
-        ".\AVR-GCC\bin\avrdude.exe" -q -q -p %processor_type% -D -P %upload_device% -c %upload_type% -b %upload_speed% -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i
-        if errorlevel 1 (
-            GOTO :BUILD_KO
-        )
-    )
+IF %no_bootloader%==true (
+	SET upload_type=stk500v1
+)
+IF %no_bootloader%==true IF /I "%upload_device%"=="USB" (
+
+	SET upload_device=usb
+	SET upload_type=avrispmkII
+)
+IF %no_bootloader%==true (
+	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+	IF ERRORLEVEL 1 (
+		GOTO :BUILD_KO
+	)
+	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
+	IF ERRORLEVEL 1 (
+		GOTO :BUILD_KO
+	)
+) ELSE (
+	".\AVR-GCC\bin\avrdude.exe" -q -q -p %processor_type% -D -P %upload_device% -c %upload_type% -b %upload_speed% -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i
+	IF ERRORLEVEL 1 (
+		GOTO :BUILD_KO
+	)
 )
 
 GOTO :UPLOAD_OK
