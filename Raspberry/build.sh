@@ -34,7 +34,7 @@ function help
     echo "build command syntax:"
     echo "     --help          to show this help"
     echo "     --board         to specify the board type [arduinoUNO - arduinoUNO_8MHz - arduinoNANO - arduinoNANO_8MHz - arduinoMEGA - easyHOME]"
-    echo "     --upload        to specify the port name for upload [/dev/*** - blank if you want only compiling]"
+    echo "     --upload        to specify the port name for upload [/dev/*** - usb - blank if you want only compiling]"
     echo "     --file          to specify the file name for compiling"
     echo
     echo "     --nobootloader  to upload without bootloader (it will erase a previous bootloader if present)"
@@ -170,39 +170,29 @@ do
     shift 1
 done
 
-if [[ $board_type == null ]] || [[ $file_name == null ]]
+if [[ $file_name == null ]] || [[ $board_type == null ]] || [[ $processor_type == null ]] || [[ $upload_type == null ]] || [[ $upload_speed == null ]] || [[ $cpu_speed == null ]] || [[ $fuse_ext == null ]] || [[ $fuse_high == null ]] || [[ $fuse_low == null ]]
 then
     help
 fi
 
-if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
+if ! ( [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]] )
 then
-    ./AVR-GCC/bin/avr-g++ -Wno-write-strings -I../ -I../System/ -I../Drivers/ -I../Libraries/ ../Projects/$file_name/$file_name.c -Os -mmcu=$processor_type -o ../Projects/$file_name/$file_name.out -D$board_type -D$cpu_speed
-else
     build_ko
 fi
+
+./AVR-GCC/bin/avr-g++ -Wno-write-strings -I../ -I../System/ -I../Drivers/ -I../Libraries/ ../Projects/$file_name/$file_name.c -Os -mmcu=$processor_type -o ../Projects/$file_name/$file_name.out -D$board_type -D$cpu_speed
 if [[ $? != 0 ]]
 then
     build_ko
 fi
 
-if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
-then
-    ./AVR-GCC/bin/avr-objdump -S ../Projects/$file_name/$file_name.out > ../Projects/$file_name/$file_name.c.asm
-else
-    build_ko
-fi
+./AVR-GCC/bin/avr-objdump -S ../Projects/$file_name/$file_name.out > ../Projects/$file_name/$file_name.c.asm
 if [[ $? != 0 ]]
 then
     build_ko
 fi
 
-if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
-then
-    ./AVR-GCC/bin/avr-size -C --mcu=$processor_type ../Projects/$file_name/$file_name.out
-else
-    build_ko
-fi
+./AVR-GCC/bin/avr-size -C --mcu=$processor_type ../Projects/$file_name/$file_name.out
 if [[ $? != 0 ]]
 then
     build_ko
@@ -213,37 +203,35 @@ then
     build_ok
 fi
 
-if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
-then
-    ./AVR-GCC/bin/avr-objcopy -O ihex ../Projects/$file_name/$file_name.out ../Projects/$file_name/$file_name.hex
-else
-    build_ko
-fi
+./AVR-GCC/bin/avr-objcopy -O ihex ../Projects/$file_name/$file_name.out ../Projects/$file_name/$file_name.hex
 if [[ $? != 0 ]]
 then
     build_ko
 fi
 
-if [[ $processor_type == atmega328p ]] || [[ $processor_type == atmega2560 ]]
+if [[ $no_bootloader == true ]]
 then
-    if [[ $no_bootloader == true ]]
+    if [[ $upload_device == "usb" ]]
     then
-        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
-        if [[ $? != 0 ]]
-        then
-            upload_ko
-        fi
-        ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c stk500v1 -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
-        if [[ $? != 0 ]]
-        then
-            upload_ko
-        fi
+        upload_type=avrispmkII
     else
-        ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
-        if [[ $? != 0 ]]
-        then
-            build_ko
-        fi
+        upload_type=stk500v1
+    fi
+    ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $upload_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
+    if [[ $? != 0 ]]
+    then
+        build_ko
+    fi
+    ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $upload_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
+    if [[ $? != 0 ]]
+    then
+        build_ko
+    fi
+else
+    ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
+    if [[ $? != 0 ]]
+    then
+        build_ko
     fi
 fi
 
