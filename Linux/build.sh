@@ -220,12 +220,12 @@ then
     ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $upload_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:$fuse_ext:m -Uhfuse:w:$fuse_high:m -Ulfuse:w:$fuse_low:m
     if [[ $? != 0 ]]
     then
-        upload_ko
+        build_ko
     fi
     ./AVR-GCC/bin/avrdude -p $processor_type -P $upload_device -c $upload_type -b 19200 -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i -Ulock:w:0x0F:m
     if [[ $? != 0 ]]
     then
-        upload_ko
+        build_ko
     fi
 else
     ./AVR-GCC/bin/avrdude -q -q -p $processor_type -D -P $upload_device -c $upload_type -b $upload_speed -C ./AVR-GCC/etc/avrdude.conf -U flash:w:../Projects/$file_name/$file_name.hex:i
