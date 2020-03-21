@@ -28,6 +28,13 @@
 #
 #
 
+if [[ ! -d "./AVR-GCC" ]]
+then
+    echo -n "Uncompressing AVR-GCC toolchain in progress, please wait..."
+    tar -jxf avr-gcc-toolchain.tar.bz2
+    echo "done"
+fi
+
 function help
 {
     echo
