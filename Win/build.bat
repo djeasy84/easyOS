@@ -28,6 +28,21 @@ REM SOFTWARE.
 REM
 REM
 
+IF NOT EXIST AVR-GCC (
+    ECHO | SET /P="Uncompressing AVR-GCC toolchain in progress, please wait..."
+    ".\Utility\bzip2.exe" -d avr-gcc-toolchain.tar.bz2 > nul 2>&1
+    IF ERRORLEVEL 1 (
+        ECHO ERROR
+        EXIT /B -1
+    )
+    ".\Utility\tar.exe" -x -f avr-gcc-toolchain.tar > nul 2>&1
+    IF ERRORLEVEL 1 (
+        ECHO ERROR
+        EXIT /B -1
+    )
+    ECHO done
+)
+
 GOTO :MAIN
 
 :HELP
@@ -168,17 +183,17 @@ IF NOT DEFINED fuse_low (
 
 ".\AVR-GCC\bin\avr-g++.exe" -Wno-write-strings -I..\ -I..\System\ -I..\Drivers\ -I..\Libraries\ ..\Projects\%file_name%\%file_name%.c -Os -mmcu=%processor_type% -o ..\Projects\%file_name%\%file_name%.out -D%board_type% -D%cpu_speed%
 IF ERRORLEVEL 1 (
-	GOTO :BUILD_KO
+    GOTO :BUILD_KO
 )
 
 ".\AVR-GCC\bin\avr-objdump.exe" -S ..\Projects\%file_name%\%file_name%.out > ..\Projects\%file_name%\%file_name%.c.asm
 IF ERRORLEVEL 1 (
-	GOTO :BUILD_KO
+    GOTO :BUILD_KO
 )
 
 ".\AVR-GCC\bin\avr-size.exe" -C --mcu=%processor_type% ..\Projects\%file_name%\%file_name%.out
 IF ERRORLEVEL 1 (
-	GOTO :BUILD_KO
+    GOTO :BUILD_KO
 )
 
 IF NOT DEFINED upload_device (
@@ -187,31 +202,31 @@ IF NOT DEFINED upload_device (
 
 ".\AVR-GCC\bin\avr-objcopy.exe" -O ihex ..\Projects\%file_name%\%file_name%.out ..\Projects\%file_name%\%file_name%.hex
 IF ERRORLEVEL 1 (
-	GOTO :BUILD_KO
+    GOTO :BUILD_KO
 )
 
 IF %no_bootloader%==true (
-	SET upload_type=stk500v1
+    SET upload_type=stk500v1
 )
 IF %no_bootloader%==true IF /I "%upload_device%"=="USB" (
 
-	SET upload_device=usb
-	SET upload_type=avrispmkII
+    SET upload_device=usb
+    SET upload_type=avrispmkII
 )
 IF %no_bootloader%==true (
-	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
-	IF ERRORLEVEL 1 (
-		GOTO :BUILD_KO
-	)
-	".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
-	IF ERRORLEVEL 1 (
-		GOTO :BUILD_KO
-	)
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
+    IF ERRORLEVEL 1 (
+        GOTO :BUILD_KO
+    )
+    ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i -Ulock:w:0x0F:m
+    IF ERRORLEVEL 1 (
+        GOTO :BUILD_KO
+    )
 ) ELSE (
-	".\AVR-GCC\bin\avrdude.exe" -q -q -p %processor_type% -D -P %upload_device% -c %upload_type% -b %upload_speed% -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i
-	IF ERRORLEVEL 1 (
-		GOTO :BUILD_KO
-	)
+    ".\AVR-GCC\bin\avrdude.exe" -q -q -p %processor_type% -D -P %upload_device% -c %upload_type% -b %upload_speed% -C .\AVR-GCC\etc\avrdude.conf -U flash:w:..\Projects\%file_name%\%file_name%.hex:i
+    IF ERRORLEVEL 1 (
+        GOTO :BUILD_KO
+    )
 )
 
 GOTO :UPLOAD_OK

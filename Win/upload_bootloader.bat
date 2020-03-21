@@ -122,7 +122,7 @@ IF NOT DEFINED upload_device (
 )
 
 IF /I "%upload_device%"=="USB" (
-	SET upload_device=usb
+    SET upload_device=usb
     SET upload_type=avrispmkII
 ) ELSE (
     SET upload_type=stk500v1
@@ -130,11 +130,11 @@ IF /I "%upload_device%"=="USB" (
 
 ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -e -Ulock:w:0x3F:m -Uefuse:w:%fuse_ext%:m -Uhfuse:w:%fuse_high%:m -Ulfuse:w:%fuse_low%:m
 IF ERRORLEVEL 1 (
-	GOTO :UPLOAD_KO
+    GOTO :UPLOAD_KO
 )
 ".\AVR-GCC\bin\avrdude.exe" -p %processor_type% -P %upload_device% -c %upload_type% -b 19200 -C .\AVR-GCC\etc\avrdude.conf -U flash:w:%file_name%:i -Ulock:w:0x0F:m
 IF ERRORLEVEL 1 (
-	GOTO :UPLOAD_KO
+    GOTO :UPLOAD_KO
 )
 
 GOTO :UPLOAD_OK
