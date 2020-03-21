@@ -31,7 +31,12 @@
 if [[ ! -d "./AVR-GCC" ]]
 then
     echo -n "Uncompressing AVR-GCC toolchain in progress, please wait..."
-    tar -jxf avr-gcc-toolchain.tar.bz2
+    tar -jxf avr-gcc-toolchain.tar.bz2 > /dev/null 2>&1
+    if [[ $? != 0 ]]
+    then
+        echo "ERROR"
+        exit 1
+    fi
     echo "done"
 fi
 
