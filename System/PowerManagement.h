@@ -35,7 +35,6 @@ class PowerManagement
 {
     public:
         void enable();
-        void disable();
 };
 
 PowerManagement PM;
@@ -48,10 +47,7 @@ void PowerManagement::enable()
 
     sleep_enable();
     sleep_cpu();
-}
 
-void PowerManagement::disable()
-{
     sleep_disable();
 }
 
