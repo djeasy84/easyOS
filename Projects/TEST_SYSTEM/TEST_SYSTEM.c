@@ -34,6 +34,7 @@
 #define SPI_M
 #define I2C_M
 #define INTERRUPT_M
+#define POWER_M
 #define COUNTER_M
 #define PWM_M
 #define PFM_M
@@ -54,6 +55,7 @@ bool init()
     SPI.transfer(0);
     I2C.sendStart();
     IM.enableInterrupt(0);
+    PM.enable();
     CT.read();
     PWM.write(0,0);
     PFM.write(0);
