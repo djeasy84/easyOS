@@ -59,6 +59,10 @@
     #include "Interrupt.h"
 #endif
 
+#if defined (POWER_M)
+    #include "PowerManagement.h"
+#endif
+
 #if defined (COUNTER_M)
     #include "Counter.h"
 #endif
