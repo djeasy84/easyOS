@@ -29,7 +29,6 @@
 #ifndef TIME_H
 #define TIME_H
 
-#include <math.h>
 #include <stdlib.h>
 #include <util/delay.h>
 
@@ -69,6 +68,7 @@ class Time
         uint8_t restart_reason();
 
         void watchdog_reset();
+        void watchdog_enable();
         void watchdog_disable();
 
         uint32_t microsec();
@@ -91,7 +91,7 @@ Time::Time()
 {
     enable();
 
-    wdt_enable(WDTO_8S);
+    watchdog_enable();
 }
 
 void Time::enable()
@@ -125,7 +125,7 @@ void Time::disable()
 
 void Time::restart()
 {
-    //wdt_enable(WDTO_8S);
+    wdt_enable(WDTO_8S);
     while(true);
 }
 
@@ -150,6 +150,11 @@ uint8_t Time::restart_reason()
 void Time::watchdog_reset()
 {
     wdt_reset();
+}
+
+void Time::watchdog_enable()
+{
+    wdt_enable(WDTO_8S);
 }
 
 void Time::watchdog_disable()

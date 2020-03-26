@@ -29,6 +29,8 @@
 #ifndef POWERMANAGEMENT_H
 #define POWERMANAGEMENT_H
 
+#include "Time.h"
+
 #include <avr/sleep.h>
 
 class PowerManagement
@@ -43,12 +45,17 @@ PowerManagement PM;
 
 void PowerManagement::enable()
 {
+    ST.watchdog_reset();
+    ST.watchdog_disable();
+
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 
     sleep_enable();
     sleep_cpu();
 
     sleep_disable();
+
+    ST.watchdog_enable();
 }
 
 #endif

@@ -31,6 +31,8 @@
 
 #define DEBOUNCE_TIME 25000
 
+#include "Time.h"
+
 uint32_t lastTime;
 void (*interruptFunc)(void);
 
@@ -67,8 +69,8 @@ class Interrupt
     public:
         void setup(void (*pFunc)(void));
 
-        bool enableInterrupt(uint8_t id);
-        bool disableInterrupt(uint8_t id);
+        bool enable(uint8_t id);
+        bool disable(uint8_t id);
 };
 
 Interrupt IM;
@@ -128,7 +130,7 @@ void Interrupt::setup(void (*pFunc)(void))
     interruptFunc = pFunc;
 }
 
-bool Interrupt::enableInterrupt(uint8_t id)
+bool Interrupt::enable(uint8_t id)
 {
     #if defined (__AVR_ATmega328P__)
     switch (id)
@@ -228,7 +230,7 @@ bool Interrupt::enableInterrupt(uint8_t id)
     return true;
 }
 
-bool Interrupt::disableInterrupt(uint8_t id)
+bool Interrupt::disable(uint8_t id)
 {
     #if defined (__AVR_ATmega328P__)
     switch (id)
