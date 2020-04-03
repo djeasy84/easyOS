@@ -111,81 +111,89 @@ ISR(PCINT2_vect)
     #define DIGITAL_SIZE 10
     #define ANALOG_SIZE 8
     #define PWM_SIZE 2
-    const PROGMEM uint16_t digitalListPcreg[DIGITAL_SIZE]  = { (uint16_t)&PCMSK2,
-                                                               (uint16_t)&PCMSK2,
-                                                               (uint16_t)&PCMSK2,
-                                                               (uint16_t)&PCMSK2,
-                                                               (uint16_t)&PCMSK0,
-                                                               (uint16_t)&PCMSK0,
-                                                               (uint16_t)&PCMSK0,
-                                                               #if !defined (SPI_M)
-                                                               (uint16_t)&PCMSK0,
-                                                               (uint16_t)&PCMSK0,
-                                                               (uint16_t)&PCMSK0,
-                                                               #else
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               #endif
+    const PROGMEM uint16_t digitalListPcreg[DIGITAL_SIZE] = { (uint16_t)&PCMSK2,
+                                                              (uint16_t)&PCMSK2,
+                                                              (uint16_t)&PCMSK2,
+                                                              (uint16_t)&PCMSK2,
+                                                              (uint16_t)&PCMSK0,
+                                                              (uint16_t)&PCMSK0,
+                                                              (uint16_t)&PCMSK0,
+                                                              #if !defined (SPI_M)
+                                                              (uint16_t)&PCMSK0,
+                                                              (uint16_t)&PCMSK0,
+                                                              (uint16_t)&PCMSK0,
+                                                              #else
+                                                              0,
+                                                              0,
+                                                              0,
+                                                              #endif
                                                             };
-    const PROGMEM uint8_t digitalListPcmask[DIGITAL_SIZE]  = { 2,
-                                                               3,
-                                                               4,
-                                                               7,
-                                                               0,
-                                                               1,
-                                                               2,
-                                                               #if !defined (SPI_M)
-                                                               3,
-                                                               4,
-                                                               5,
-                                                               #else
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               #endif
+    const PROGMEM uint8_t digitalListPcmask[DIGITAL_SIZE] = { 2,
+                                                              3,
+                                                              4,
+                                                              7,
+                                                              0,
+                                                              1,
+                                                              2,
+                                                              #if !defined (SPI_M)
+                                                              3,
+                                                              4,
+                                                              5,
+                                                              #else
+                                                              0,
+                                                              0,
+                                                              0,
+                                                              #endif
                                                             };
-    const PROGMEM uint16_t analogListPcreg[DIGITAL_SIZE]   = { (uint16_t)&PCMSK1,
-                                                               (uint16_t)&PCMSK1,
-                                                               (uint16_t)&PCMSK1,
-                                                               (uint16_t)&PCMSK1,
-                                                               #if !defined (I2C_M)
-                                                               (uint16_t)&PCMSK1,
-                                                               (uint16_t)&PCMSK1,
-                                                               0,
-                                                               0,
-                                                               #else
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               #endif
+    const PROGMEM uint16_t analogListPcreg[ANALOG_SIZE]  = { (uint16_t)&PCMSK1,
+                                                              (uint16_t)&PCMSK1,
+                                                              (uint16_t)&PCMSK1,
+                                                              (uint16_t)&PCMSK1,
+                                                              #if !defined (I2C_M)
+                                                              (uint16_t)&PCMSK1,
+                                                              (uint16_t)&PCMSK1,
+                                                              0,
+                                                              0,
+                                                              #else
+                                                              0,
+                                                              0,
+                                                              0,
+                                                              0,
+                                                             #endif
                                                             };
-    const PROGMEM uint8_t analogListPcmask[DIGITAL_SIZE]   = { 0,
-                                                               1,
-                                                               2,
-                                                               3,
-                                                               #if !defined (I2C_M)
-                                                               4,
-                                                               5,
-                                                               0,
-                                                               0,
-                                                               #else
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               0,
-                                                               #endif
+    const PROGMEM uint8_t analogListPcmask[ANALOG_SIZE]  = { 0,
+                                                              1,
+                                                              2,
+                                                              3,
+                                                              #if !defined (I2C_M)
+                                                              4,
+                                                              5,
+                                                              0,
+                                                              0,
+                                                              #else
+                                                              0,
+                                                              0,
+                                                              0,
+                                                              0,
+                                                              #endif
                                                             };
-    const PROGMEM uint16_t pwmListPcreg[DIGITAL_SIZE]      = { (uint16_t)&PCMSK2,
-                                                               (uint16_t)&PCMSK2,
+    const PROGMEM uint16_t pwmListPcreg[PWM_SIZE]         = { (uint16_t)&PCMSK2,
+                                                              (uint16_t)&PCMSK2,
                                                             };
-    const PROGMEM uint8_t pwmListPcmask[DIGITAL_SIZE]      = { 5,
-                                                               6,
+    const PROGMEM uint8_t pwmListPcmask[PWM_SIZE]         = { 5,
+                                                              6,
                                                             };
 #endif
 #if defined (__AVR_ATmega2560__)
     #if defined (__BOARD_arduinoMEGA__)
+        #define ARDUINO_PIN_A0 100
+        #define ARDUINO_PIN_A1 101
+        #define ARDUINO_PIN_A2 102
+        #define ARDUINO_PIN_A3 103
+        #define ARDUINO_PIN_A4 104
+        #define ARDUINO_PIN_A5 105
+        #define ARDUINO_PIN_A6 106
+        #define ARDUINO_PIN_A7 107
         #define ARDUINO_PIN_A8 108
         #define ARDUINO_PIN_A9 109
         #define ARDUINO_PIN_A10 110
@@ -204,7 +212,47 @@ ISR(PCINT2_vect)
         #define EASYHOME_IN_6 110
         #define EASYHOME_IN_7 109
     #endif
-    // TO FIX
+    #define DIGITAL_SIZE 49
+    #define ANALOG_SIZE 16
+    #define PWM_SIZE 11
+    const PROGMEM uint16_t digitalListPcreg[DIGITAL_SIZE]  = {  0  };
+    const PROGMEM uint16_t digitalListPcmask[DIGITAL_SIZE] = {  0  };
+    const PROGMEM uint16_t analogListPcreg[ANALOG_SIZE]    = {  0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                                (uint16_t)&PCMSK2,
+                                                            };
+    const PROGMEM uint8_t analogListPcmask[ANALOG_SIZE]   = {   0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                0,
+                                                                1,
+                                                                2,
+                                                                3,
+                                                                4,
+                                                                5,
+                                                                6,
+                                                                7,
+                                                            };
+    const PROGMEM uint16_t pwmListPcreg[PWM_SIZE]          = {  0  };
+    const PROGMEM uint16_t pwmListPcmask[PWM_SIZE]         = {  0  };
 #endif
 
 class Interrupt
