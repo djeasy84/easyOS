@@ -33,7 +33,8 @@
 
 #include "Time.h"
 
-uint32_t lastTime;
+#include <avr/pgmspace.h>
+
 void (*interruptFunc)(void);
 
 ISR(PCINT0_vect)
@@ -64,40 +65,124 @@ ISR(PCINT2_vect)
     PCICR = (1<<2) | (1<<1) | (1<<0);
 }
 
-class Interrupt
-{
-    public:
-        void setup(void (*pFunc)(void));
-
-        bool enable(uint8_t id);
-        bool disable(uint8_t id);
-};
-
-Interrupt IM;
-
-/****************************************************************************************/
-
 #if defined (__AVR_ATmega328P__)
     #if defined (__BOARD_arduinoUNO__)
+        #define ARDUINO_PIN_2 0
+        #define ARDUINO_PIN_3 1
+        #define ARDUINO_PIN_4 2
+        #define ARDUINO_PIN_5 200
+        #define ARDUINO_PIN_6 201
+        #define ARDUINO_PIN_7 3
+        #define ARDUINO_PIN_8 4
+        #define ARDUINO_PIN_9 5
+        #define ARDUINO_PIN_10 6
+        #define ARDUINO_PIN_11 7
+        #define ARDUINO_PIN_12 8
+        #define ARDUINO_PIN_13 9
         #define ARDUINO_PIN_A0 100
         #define ARDUINO_PIN_A1 101
         #define ARDUINO_PIN_A2 102
         #define ARDUINO_PIN_A3 103
-        #if !defined (I2C_M)
         #define ARDUINO_PIN_A4 104
         #define ARDUINO_PIN_A5 105
-        #endif
     #endif
     #if defined (__BOARD_arduinoNANO__)
+        #define ARDUINO_PIN_2 0
+        #define ARDUINO_PIN_3 1
+        #define ARDUINO_PIN_4 2
+        #define ARDUINO_PIN_5 200
+        #define ARDUINO_PIN_6 201
+        #define ARDUINO_PIN_7 3
+        #define ARDUINO_PIN_8 4
+        #define ARDUINO_PIN_9 5
+        #define ARDUINO_PIN_10 6
+        #define ARDUINO_PIN_11 7
+        #define ARDUINO_PIN_12 8
+        #define ARDUINO_PIN_13 9
         #define ARDUINO_PIN_A0 100
         #define ARDUINO_PIN_A1 101
         #define ARDUINO_PIN_A2 102
         #define ARDUINO_PIN_A3 103
-        #if !defined (I2C_M)
         #define ARDUINO_PIN_A4 104
         #define ARDUINO_PIN_A5 105
-        #endif
+        #define ARDUINO_PIN_A6 106
+        #define ARDUINO_PIN_A7 107
     #endif
+    #define DIGITAL_SIZE 10
+    #define ANALOG_SIZE 8
+    #define PWM_SIZE 2
+    const PROGMEM uint16_t digitalListPcreg[DIGITAL_SIZE]  = { (uint16_t)&PCMSK2,
+                                                               (uint16_t)&PCMSK2,
+                                                               (uint16_t)&PCMSK2,
+                                                               (uint16_t)&PCMSK2,
+                                                               (uint16_t)&PCMSK0,
+                                                               (uint16_t)&PCMSK0,
+                                                               (uint16_t)&PCMSK0,
+                                                               #if !defined (SPI_M)
+                                                               (uint16_t)&PCMSK0,
+                                                               (uint16_t)&PCMSK0,
+                                                               (uint16_t)&PCMSK0,
+                                                               #else
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               #endif
+                                                            };
+    const PROGMEM uint8_t digitalListPcmask[DIGITAL_SIZE]  = { 2,
+                                                               3,
+                                                               4,
+                                                               7,
+                                                               0,
+                                                               1,
+                                                               2,
+                                                               #if !defined (SPI_M)
+                                                               3,
+                                                               4,
+                                                               5,
+                                                               #else
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               #endif
+                                                            };
+    const PROGMEM uint16_t analogListPcreg[DIGITAL_SIZE]   = { (uint16_t)&PCMSK1,
+                                                               (uint16_t)&PCMSK1,
+                                                               (uint16_t)&PCMSK1,
+                                                               (uint16_t)&PCMSK1,
+                                                               #if !defined (I2C_M)
+                                                               (uint16_t)&PCMSK1,
+                                                               (uint16_t)&PCMSK1,
+                                                               0,
+                                                               0,
+                                                               #else
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               #endif
+                                                            };
+    const PROGMEM uint8_t analogListPcmask[DIGITAL_SIZE]   = { 0,
+                                                               1,
+                                                               2,
+                                                               3,
+                                                               #if !defined (I2C_M)
+                                                               4,
+                                                               5,
+                                                               0,
+                                                               0,
+                                                               #else
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               #endif
+                                                            };
+    const PROGMEM uint16_t pwmListPcreg[DIGITAL_SIZE]      = { (uint16_t)&PCMSK2,
+                                                               (uint16_t)&PCMSK2,
+                                                            };
+    const PROGMEM uint8_t pwmListPcmask[DIGITAL_SIZE]      = { 5,
+                                                               6,
+                                                            };
 #endif
 #if defined (__AVR_ATmega2560__)
     #if defined (__BOARD_arduinoMEGA__)
@@ -119,215 +204,110 @@ Interrupt IM;
         #define EASYHOME_IN_6 110
         #define EASYHOME_IN_7 109
     #endif
+    // TO FIX
 #endif
+
+class Interrupt
+{
+    public:
+        void setup(void (*pFunc)(void));
+
+        bool enable(uint8_t id);
+        bool disable(uint8_t id);
+};
+
+Interrupt IM;
+
+/****************************************************************************************/
 
 void Interrupt::setup(void (*pFunc)(void))
 {
     PCMSK0 = PCMSK1 = PCMSK2 = PCIFR = PCICR = 0;
     PCICR = (1<<2) | (1<<1) | (1<<0);
 
-    lastTime = 0;
     interruptFunc = pFunc;
 }
 
 bool Interrupt::enable(uint8_t id)
 {
-    #if defined (__AVR_ATmega328P__)
-    switch (id)
+    if (id >= 0 && id <=99)
     {
-        case 100:  //PCINT8
-        {
-            PCMSK1 |= (1<<0);
-        }
-        break;
-        case 101:  //PCINT9
-        {
-            PCMSK1 |= (1<<1);
-        }
-        break;
-        case 102:  //PCINT10
-        {
-            PCMSK1 |= (1<<2);
-        }
-        break;
-        case 103:  //PCINT11
-        {
-            PCMSK1 |= (1<<3);
-        }
-        break;
-        case 104:  //PCINT12
-        {
-            #if !defined (I2C_M)
-            PCMSK1 |= (1<<4);
-            #endif
-        }
-        break;
-        case 105:  //PCINT13
-        {
-            #if !defined (I2C_M)
-            PCMSK1 |= (1<<5);
-            #endif
-        }
-        break;
-        default:
-        {
+        id = id - 0;
+        if (id >= DIGITAL_SIZE)
             return false;
-        }
-        break;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(digitalListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(digitalListPcmask + (id)));
+        *pcmsk |= mask;
+        return true;
     }
-    #endif
-    #if defined (__AVR_ATmega2560__)
-    switch (id)
+    else if (id >= 100 && id <=199)
     {
-        case 108:  //PCINT16
-        {
-            PCMSK2 |= (1<<0);
-        }
-        break;
-        case 109:  //PCINT17
-        {
-            PCMSK2 |= (1<<1);
-        }
-        break;
-        case 110:  //PCINT18
-        {
-            PCMSK2 |= (1<<2);
-        }
-        break;
-        case 111:  //PCINT19
-        {
-            PCMSK2 |= (1<<3);
-        }
-        break;
-        case 112:  //PCINT20
-        {
-            PCMSK2 |= (1<<4);
-        }
-        break;
-        case 113:  //PCINT21
-        {
-            PCMSK2 |= (1<<5);
-        }
-        break;
-        case 114:  //PCINT22
-        {
-            PCMSK2 |= (1<<6);
-        }
-        break;
-        case 115:  //PCINT23
-        {
-            PCMSK2 |= (1<<7);
-        }
-        break;
-        default:
-        {
+        id = id - 100;
+        if (id >= ANALOG_SIZE)
             return false;
-        }
-        break;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(analogListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(analogListPcmask + (id)));
+        *pcmsk |= mask;
+        return true;
     }
-    #endif
-
-    return true;
+    else if (id >= 200 && id <=255)
+    {
+        id = id - 200;
+        if (id >= PWM_SIZE)
+            return false;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(pwmListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(pwmListPcmask + (id)));
+        *pcmsk |= mask;
+        return true;
+    }
+    return false;
 }
 
 bool Interrupt::disable(uint8_t id)
 {
-    #if defined (__AVR_ATmega328P__)
-    switch (id)
+     if (id >= 0 && id <=99)
     {
-        case 100:  //PCINT8
-        {
-            PCMSK1 &= ~(1<<0);
-        }
-        break;
-        case 101:  //PCINT9
-        {
-            PCMSK1 &= ~(1<<1);
-        }
-        break;
-        case 102:  //PCINT10
-        {
-            PCMSK1 &= ~(1<<2);
-        }
-        break;
-        case 103:  //PCINT11
-        {
-            PCMSK1 &= ~(1<<3);
-        }
-        break;
-        case 104:  //PCINT12
-        {
-            #if !defined (I2C_M)
-            PCMSK1 &= ~(1<<4);
-            #endif
-        }
-        break;
-        case 105:  //PCINT13
-        {
-            #if !defined (I2C_M)
-            PCMSK1 &= ~(1<<5);
-            #endif
-        }
-        break;
-        default:
-        {
+        id = id - 0;
+        if (id >= DIGITAL_SIZE)
             return false;
-        }
-        break;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(digitalListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(digitalListPcmask + (id)));
+        *pcmsk &= ~mask;
+        return true;
     }
-    #endif
-    #if defined (__AVR_ATmega2560__)
-    switch (id)
+    else if (id >= 100 && id <=199)
     {
-        case 108:  //PCINT16
-        {
-            PCMSK2 &= ~(1<<0);
-        }
-        break;
-        case 109:  //PCINT17
-        {
-            PCMSK2 &= ~(1<<1);
-        }
-        break;
-        case 110:  //PCINT18
-        {
-            PCMSK2 &= ~(1<<2);
-        }
-        break;
-        case 111:  //PCINT19
-        {
-            PCMSK2 &= ~(1<<3);
-        }
-        break;
-        case 112:  //PCINT20
-        {
-            PCMSK2 &= ~(1<<4);
-        }
-        break;
-        case 113:  //PCINT21
-        {
-            PCMSK2 &= ~(1<<5);
-        }
-        break;
-        case 114:  //PCINT22
-        {
-            PCMSK2 &= ~(1<<6);
-        }
-        break;
-        case 115:  //PCINT23
-        {
-            PCMSK2 &= ~(1<<7);
-        }
-        break;
-        default:
-        {
+        id = id - 100;
+        if (id >= ANALOG_SIZE)
             return false;
-        }
-        break;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(analogListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(analogListPcmask + (id)));
+        *pcmsk &= ~mask;
+        return true;
     }
-    #endif
-
-    return true;
+    else if (id >= 200 && id <=255)
+    {
+        id = id - 200;
+        if (id >= PWM_SIZE)
+            return false;
+        volatile uint8_t *pcmsk = (volatile uint8_t *)(pgm_read_word(pwmListPcreg + (id)));
+        if (pcmsk == 0)
+            return false;
+        uint8_t mask = (1<<pgm_read_byte(pwmListPcmask + (id)));
+        *pcmsk &= ~mask;
+        return true;
+    }
+    return false;
 }
 
 #endif
