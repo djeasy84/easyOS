@@ -213,7 +213,7 @@
     const PROGMEM uint16_t pwmListDrr[PWM_SIZE]          = { (uint16_t)&DDRD,
                                                              (uint16_t)&DDRD,
                                                           };
-    const PROGMEM uint16_t pwmListPort[DIGITAL_SIZE]     = { (uint16_t)&PORTD,
+    const PROGMEM uint16_t pwmListPort[PWM_SIZE]         = { (uint16_t)&PORTD,
                                                              (uint16_t)&PORTD,
                                                           };
     const PROGMEM uint16_t pwmListPin[PWM_SIZE]          = { (uint16_t)&PIND,
@@ -723,7 +723,7 @@
                                                              (uint16_t)&DDRL,
                                                              (uint16_t)&DDRL,
                                                           };
-    const PROGMEM uint16_t pwmListPort[DIGITAL_SIZE]     = { (uint16_t)&PORTE,
+    const PROGMEM uint16_t pwmListPort[PWM_SIZE]         = { (uint16_t)&PORTE,
                                                              (uint16_t)&PORTE,
                                                              (uint16_t)&PORTG,
                                                              (uint16_t)&PORTE,
