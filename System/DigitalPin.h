@@ -72,6 +72,8 @@
         #define ARDUINO_PIN_A3 103
         #define ARDUINO_PIN_A4 104
         #define ARDUINO_PIN_A5 105
+        #define ARDUINO_PIN_A6 106
+        #define ARDUINO_PIN_A7 107
     #endif
     #define DIGITAL_SIZE 10
     #define ANALOG_SIZE 8
@@ -151,7 +153,11 @@
                                                              #if !defined (I2C_M)
                                                              (uint16_t)&DDRC,
                                                              (uint16_t)&DDRC,
+                                                             0,
+                                                             0,
                                                              #else
+                                                             0,
+                                                             0,
                                                              0,
                                                              0,
                                                              #endif
@@ -163,7 +169,11 @@
                                                              #if !defined (I2C_M)
                                                              (uint16_t)&PORTC,
                                                              (uint16_t)&PORTC,
+                                                             0,
+                                                             0,
                                                              #else
+                                                             0,
+                                                             0,
                                                              0,
                                                              0,
                                                              #endif
@@ -175,7 +185,11 @@
                                                              #if !defined (I2C_M)
                                                              (uint16_t)&PINC,
                                                              (uint16_t)&PINC,
+                                                             0,
+                                                             0,
                                                              #else
+                                                             0,
+                                                             0,
                                                              0,
                                                              0,
                                                              #endif
@@ -187,7 +201,11 @@
                                                              #if !defined (I2C_M)
                                                              4,
                                                              5,
+                                                             0,
+                                                             0,
                                                              #else
+                                                             0,
+                                                             0,
                                                              0,
                                                              0,
                                                              #endif
