@@ -113,7 +113,7 @@ do
             board_type=__BOARD_arduinoUNO__
             processor_type=atmega328p
             upload_type=arduino
-            upload_speed=57600
+            upload_speed=115200
             cpu_speed=__FCPU_8MHz__
             fuse_ext=0xFD
             fuse_high=0xDE
@@ -135,7 +135,7 @@ do
             board_type=__BOARD_arduinoNANO__
             processor_type=atmega328p
             upload_type=arduino
-            upload_speed=57600
+            upload_speed=115200
             cpu_speed=__FCPU_8MHz__
             fuse_ext=0xFD
             fuse_high=0xDE

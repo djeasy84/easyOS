@@ -75,7 +75,7 @@ GCCROOT = ../../../AVR-GCC/bin/
 OBJ        = $(PROGRAM).o
 OPTIMIZE = -Os -fno-split-wide-types -mrelax
 
-DEFS       = 
+DEFS       =
 
 #
 # platforms support EEPROM and large bootloaders need the eeprom functions that
@@ -106,7 +106,7 @@ ifdef BAUD_RATE
 BAUD_RATE_CMD = -DBAUD_RATE=$(BAUD_RATE)
 dummy = FORCE
 else
-BAUD_RATE_CMD = -DBAUD_RATE=57600
+BAUD_RATE_CMD = -DBAUD_RATE=115200
 endif
 
 ifdef LED_START_FLASHES
@@ -190,7 +190,7 @@ endif
 virboot8: TARGET = atmega8
 virboot8: MCU_TARGET = atmega8
 virboot8: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-Dsave_vect_num=EE_RDY_vect_num'
-virboot8: AVR_FREQ ?= 16000000L 
+virboot8: AVR_FREQ ?= 16000000L
 virboot8: LDSECTIONS  = -Wl,--section-start=.text=0x1c00 -Wl,--section-start=.version=0x1ffe
 virboot8: $(PROGRAM)_virboot8.hex
 virboot8: $(PROGRAM)_virboot8.lst
@@ -223,7 +223,7 @@ virboot328_isp: isp
 atmega168: TARGET = atmega168
 atmega168: MCU_TARGET = atmega168
 atmega168: CFLAGS += $(COMMON_OPTIONS)
-atmega168: AVR_FREQ ?= 16000000L 
+atmega168: AVR_FREQ ?= 16000000L
 atmega168: $(PROGRAM)_atmega168.hex
 atmega168: $(PROGRAM)_atmega168.lst
 
@@ -240,7 +240,7 @@ atmega168_isp: isp
 atmega16: TARGET = atmega16
 atmega16: MCU_TARGET = atmega16
 atmega16: CFLAGS += $(COMMON_OPTIONS)
-atmega16: AVR_FREQ ?= 16000000L 
+atmega16: AVR_FREQ ?= 16000000L
 atmega16: $(PROGRAM)_atmega16.hex
 atmega16: $(PROGRAM)_atmega16.lst
 
@@ -296,7 +296,7 @@ atmega1280: $(PROGRAM)_atmega1280.lst
 atmega8: TARGET = atmega8
 atmega8: MCU_TARGET = atmega8
 atmega8: CFLAGS += $(COMMON_OPTIONS)
-atmega8: AVR_FREQ ?= 16000000L 
+atmega8: AVR_FREQ ?= 16000000L
 atmega8: LDSECTIONS  = -Wl,--section-start=.text=0x1e00 -Wl,--section-start=.version=0x1ffe -Wl,--gc-sections -Wl,--undefined=optiboot_version
 atmega8: $(PROGRAM)_atmega8.hex
 atmega8: $(PROGRAM)_atmega8.lst
