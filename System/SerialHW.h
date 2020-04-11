@@ -323,7 +323,7 @@ SerialHW0 SHW0;
 /****************************************************************************************/
 
 #if defined (__AVR_ATmega328P__)
-ISR(USART_RX_vect)
+ISR(USART_RX_vect)  // ~1.25us
 #elif defined (__AVR_ATmega2560__)
 ISR(USART0_RX_vect)
 #endif

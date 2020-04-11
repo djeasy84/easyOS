@@ -37,7 +37,7 @@
 
 volatile uint32_t milliseconds = 0;
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER1_COMPA_vect)  // busy time = ~1.35us every 16ms = ~0.008%
 {
     uint32_t millisec = milliseconds;
     millisec += 16;

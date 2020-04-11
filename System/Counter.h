@@ -31,14 +31,15 @@
 
 #include <avr/interrupt.h>
 
+volatile bool counter_ok = false;
 volatile uint8_t counter_div = 0;
-volatile int16_t counter_val = -1;
+volatile uint8_t counter_val = 0;
 volatile uint8_t counter_count = 0;
 
 ISR(TIMER0_OVF_vect)
 {
-    counter_val = -1;
-    counter_count = TCNT0 = 0;
+    counter_val = counter_count = TCNT0 = 0;
+    counter_ok = false;
 }
 ISR(TIMER2_COMPA_vect)
 {
@@ -46,6 +47,7 @@ ISR(TIMER2_COMPA_vect)
     {
         counter_val = TCNT0;
         counter_count = TCNT0 = 0;
+        counter_ok = true;
     }
 }
 
@@ -56,7 +58,7 @@ class Counter
 
         bool setup(uint16_t max_freq=2000);
 
-        int read();
+        unsigned int read();
 
     private:
         uint8_t freq_multiplier;
@@ -77,25 +79,25 @@ bool Counter::setup(uint16_t max_freq)
     {
         case 250:
         {
-            counter_div = 248;  // 1000ms - 250Hz
+            counter_div = 248;  // 1000ms - 1Hz to 250Hz
             freq_multiplier = 1;
         }
         break;
         case 500:
         {
-            counter_div = 124;  // 500ms - 500Hz
+            counter_div = 124;  // 500ms - 2Hz to 500Hz
             freq_multiplier = 2;
         }
         break;
         case 1000:
         {
-            counter_div = 62;  // 250ms - 1000Hz
+            counter_div = 62;  // 250ms - 4Hz to 1000Hz
             freq_multiplier = 4;
         }
         break;
         case 2000:
         {
-            counter_div = 31;  // 125ms - 2000Hz
+            counter_div = 31;  // 125ms - 8Hz to 2000Hz
             freq_multiplier = 8;
         }
         break;
@@ -121,16 +123,16 @@ bool Counter::setup(uint16_t max_freq)
     TCNT2 = 0;
 
     TCCR2A |= (1<<WGM21);
-    TCCR2B |= (1<<CS22) | (1<<CS21) | (1<<CS20);  // 124Hz
+    TCCR2B |= (1<<CS22) | (1<<CS21) | (1<<CS20);  // 248Hz
     TIMSK2 |= (1<<OCIE2A);
     OCR2A = 62;
 
     return true;
 }
 
-int Counter::read()
+unsigned int Counter::read()
 {
-    return (counter_val < 0) ? -1 : counter_val * freq_multiplier;
+    return (counter_ok) ? (uint16_t)counter_val * (uint16_t)freq_multiplier : 0;
 }
 
 #endif
