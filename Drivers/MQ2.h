@@ -85,7 +85,7 @@ bool GasSensor2::read(float *value)
 
 bool GasSensor2::update()
 {
-    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 2500/*60000*/ : 100))
+    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 250/*60000*/ : 100))
     {
         lastUpdate = ST.millisec();
 
