@@ -28,15 +28,43 @@
 
 #define TIME_M
 #define SERIAL_HW_M
+#define ANALOG_PIN_M
 
 #include "easyOS.h"
 
+#include "MQ2.h"
+#include "MQ135.h"
+
 int main()
 {
+    SHW0.setup(9600);
+
+    GasSensor2 GS1;
+    GasSensor135 GS2;
+    GS1.setup(ARDUINO_PIN_A5);
+    GS2.setup(ARDUINO_PIN_A0);
+
+    uint32_t timeSerial = ST.millisec();
+
     while(true)
     {
-        SHW0.print("A");
-        ST.wait_millisec(500);
+        if (ST.time_diff(ST.millisec(), timeSerial) > 500)
+        {
+            timeSerial = ST.millisec();
+
+            float val1 = 0.0, val2 = 0.0;
+            if (GS1.read(&val1) && GS2.read(&val2))
+            {
+                SHW0.print("CH4: ");
+                SHW0.println(val1);
+                SHW0.print("CO2: ");
+                SHW0.println(val2);
+                SHW0.println();
+            }
+        }
+
+        GS1.update();
+        GS2.update();
 
         // ----------------------
         ST.watchdog_reset();

@@ -31,7 +31,7 @@
 
 #include <string.h>
 
-#define DATA_SIZE 10
+#define MQ135_DATA_SIZE 10
 
 class GasSensor135
 {
@@ -47,7 +47,7 @@ class GasSensor135
         uint32_t lastUpdate;
         bool firstDone;
         uint8_t countValue;
-        uint16_t dataValue[DATA_SIZE];
+        uint16_t dataValue[MQ135_DATA_SIZE];
 };
 
 /****************************************************************************************/
@@ -60,7 +60,7 @@ bool GasSensor135::setup(uint8_t pin)
     firstDone = false;
 
     countValue = 0;
-    memset(dataValue, 0, sizeof(uint16_t)*DATA_SIZE);
+    memset(dataValue, 0, sizeof(uint16_t)*MQ135_DATA_SIZE);
 
     return true;
 }
@@ -71,12 +71,12 @@ bool GasSensor135::read(float *value)
         return false;
 
     uint32_t sumValue = 0;
-    for (uint8_t i=0; i<DATA_SIZE; i++)
+    for (uint8_t i=0; i<MQ135_DATA_SIZE; i++)
         sumValue = sumValue + dataValue[i];
 
     float charactCurve[3] =  {log10(10), log10(2.1), (log10(0.8)-log10(2.1))/(log10(200)-log10(10))};  // CO2 - Normally ~415ppm
 
-    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)DATA_SIZE)) - 1.0) * 20000.0) / 16500.0;
+    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ135_DATA_SIZE)) - 1.0) * 20000.0) / 43000.0;
 
     *value = (float)(pow(10, (((log10(RsRoValue)-charactCurve[1])/charactCurve[2])+charactCurve[0])));
 
@@ -85,12 +85,12 @@ bool GasSensor135::read(float *value)
 
 bool GasSensor135::update()
 {
-    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 2500/*60000*/ : 100))
+    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 250/*60000*/ : 250))
     {
         lastUpdate = ST.millisec();
 
         dataValue[countValue++] = AP.read(dataPin);
-        if (countValue >= DATA_SIZE)
+        if (countValue >= MQ135_DATA_SIZE)
         {
             countValue = 0;
             firstDone = true;

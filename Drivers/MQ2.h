@@ -31,7 +31,7 @@
 
 #include <string.h>
 
-#define DATA_SIZE 10
+#define MQ2_DATA_SIZE 10
 
 class GasSensor2
 {
@@ -47,7 +47,7 @@ class GasSensor2
         uint32_t lastUpdate;
         bool firstDone;
         uint8_t countValue;
-        uint16_t dataValue[DATA_SIZE];
+        uint16_t dataValue[MQ2_DATA_SIZE];
 };
 
 /****************************************************************************************/
@@ -60,7 +60,7 @@ bool GasSensor2::setup(uint8_t pin)
     firstDone = false;
 
     countValue = 0;
-    memset(dataValue, 0, sizeof(uint16_t)*DATA_SIZE);
+    memset(dataValue, 0, sizeof(uint16_t)*MQ2_DATA_SIZE);
 
     return true;
 }
@@ -71,12 +71,12 @@ bool GasSensor2::read(float *value)
         return false;
 
     uint32_t sumValue = 0;
-    for (uint8_t i=0; i<DATA_SIZE; i++)
+    for (uint8_t i=0; i<MQ2_DATA_SIZE; i++)
         sumValue = sumValue + dataValue[i];
 
     float charactCurve[3] =  {log10(200), log10(3.0), (log10(0.7)-log10(3.0))/(log10(10000)-log10(200))};  // CH4 - Normally ~2ppm
 
-    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)DATA_SIZE)) - 1.0) * 20000.0) / 2150.0;
+    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ2_DATA_SIZE)) - 1.0) * 20000.0) / 5750.0;
 
     *value = (float)(pow(10, (((log10(RsRoValue)-charactCurve[1])/charactCurve[2])+charactCurve[0])));
 
@@ -90,7 +90,7 @@ bool GasSensor2::update()
         lastUpdate = ST.millisec();
 
         dataValue[countValue++] = AP.read(dataPin);
-        if (countValue >= DATA_SIZE)
+        if (countValue >= MQ2_DATA_SIZE)
         {
             countValue = 0;
             firstDone = true;
