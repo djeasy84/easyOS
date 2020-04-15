@@ -76,7 +76,7 @@ bool GasSensor135::read(float *value)
 
     float charactCurve[3] =  {log10(10), log10(2.1), (log10(0.8)-log10(2.1))/(log10(200)-log10(10))};  // CO2 - Normally ~415ppm
 
-    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ135_DATA_SIZE)) - 1.0) * 20000.0) / 43000.0;
+    float RsRoValue = ((float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ135_DATA_SIZE)) - 1.0) * 20000.0) / 108000.0) * 1.25;
 
     *value = (float)(pow(10, (((log10(RsRoValue)-charactCurve[1])/charactCurve[2])+charactCurve[0])));
 

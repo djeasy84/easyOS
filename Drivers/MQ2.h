@@ -74,9 +74,9 @@ bool GasSensor2::read(float *value)
     for (uint8_t i=0; i<MQ2_DATA_SIZE; i++)
         sumValue = sumValue + dataValue[i];
 
-    float charactCurve[3] =  {log10(200), log10(3.0), (log10(0.7)-log10(3.0))/(log10(10000)-log10(200))};  // CH4 - Normally ~2ppm
+    float charactCurve[3] =  {log10(200), log10(3.0), (log10(0.7)-log10(3.0))/(log10(10000)-log10(200))};  // CH4 - Normally ~1.8ppm
 
-    float RsRoValue = (float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ2_DATA_SIZE)) - 1.0) * 20000.0) / 5750.0;
+    float RsRoValue = ((float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ2_DATA_SIZE)) - 1.0) * 20000.0) / 14100.0) * 1.25;
 
     *value = (float)(pow(10, (((log10(RsRoValue)-charactCurve[1])/charactCurve[2])+charactCurve[0])));
 
