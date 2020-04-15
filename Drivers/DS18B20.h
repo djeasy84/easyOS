@@ -129,8 +129,6 @@ bool Temperature::update()
         if (!reset())
             return false;
 
-        lastUpdate = ST.millisec();
-
         uint8_t oldSREG = SREG;
         cli();
 
@@ -142,6 +140,8 @@ bool Temperature::update()
         tempReaded = false;
 
         firstDone = true;
+
+        lastUpdate = ST.millisec();
     }
 
     return true;

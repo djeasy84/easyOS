@@ -99,8 +99,6 @@ bool TemperatureHumidity::update()
         if (DP.read(dataPin, true) == false)
             return false;
 
-        lastUpdate = ST.millisec();
-
         bool oldStatus = true;
         do
         {
@@ -139,6 +137,8 @@ bool TemperatureHumidity::update()
         lastTemp = ((float)tempValue) / 10.0;
 
         firstDone = true;
+
+        lastUpdate = ST.millisec();
     }
     return true;
 }
