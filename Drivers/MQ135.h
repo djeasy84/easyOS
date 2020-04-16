@@ -31,14 +31,14 @@
 
 #include <string.h>
 
-#define MQ135_DATA_SIZE 10
+#define AQS_DATA_SIZE 20
 
-class GasSensor135
+class AirQualitySensor
 {
     public:
         bool setup(uint8_t pin);
 
-        bool read(float *val);
+        bool read(uint8_t *val);
 
         bool update();
 
@@ -47,12 +47,12 @@ class GasSensor135
         uint32_t lastUpdate;
         bool firstDone;
         uint8_t countValue;
-        uint16_t dataValue[MQ135_DATA_SIZE];
+        uint8_t dataValue[AQS_DATA_SIZE];
 };
 
 /****************************************************************************************/
 
-bool GasSensor135::setup(uint8_t pin)
+bool AirQualitySensor::setup(uint8_t pin)
 {
     dataPin = pin;
 
@@ -60,37 +60,51 @@ bool GasSensor135::setup(uint8_t pin)
     firstDone = false;
 
     countValue = 0;
-    memset(dataValue, 0, sizeof(uint16_t)*MQ135_DATA_SIZE);
+    memset(dataValue, 0, AQS_DATA_SIZE);
 
     return true;
 }
 
-bool GasSensor135::read(float *value)
+bool AirQualitySensor::read(uint8_t *value)
 {
     if (firstDone == false)
         return false;
 
-    uint32_t sumValue = 0;
-    for (uint8_t i=0; i<MQ135_DATA_SIZE; i++)
+    uint16_t sumValue = 0;
+    for (uint8_t i=0; i<AQS_DATA_SIZE; i++)
         sumValue = sumValue + dataValue[i];
 
-    float charactCurve[3] =  {log10(10), log10(2.1), (log10(0.8)-log10(2.1))/(log10(200)-log10(10))};  // CO2 - Normally ~415ppm
+    uint16_t rawValue = sumValue / (uint16_t)AQS_DATA_SIZE;
 
-    float RsRoValue = ((float)(((1023.0 / (float)((uint32_t)sumValue / (uint32_t)MQ135_DATA_SIZE)) - 1.0) * 20000.0) / 108000.0) * 1.25;
-
-    *value = (float)(pow(10, (((log10(RsRoValue)-charactCurve[1])/charactCurve[2])+charactCurve[0])));
+    if (rawValue >= 0 && rawValue < 111)  // Good
+    {
+        *value = 0;
+    }
+    else if (rawValue >= 111 && rawValue < 167)  // Medium
+    {
+        *value = 1;
+    }
+    else if (rawValue >= 167 && rawValue < 222)  // Bad
+    {
+        *value = 2;
+    }
+    else  // Very Bad - Emergency
+    {
+        *value = 5;
+    }
+    SHW0.print(rawValue);  SHW0.print(";");
 
     return true;
 }
 
-bool GasSensor135::update()
+bool AirQualitySensor::update()
 {
-    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 250/*60000*/ : 250))
+    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 120000 : 250))
     {
         lastUpdate = ST.millisec();
 
-        dataValue[countValue++] = AP.read(dataPin);
-        if (countValue >= MQ135_DATA_SIZE)
+        dataValue[countValue++] = AP.read(dataPin) / 4;
+        if (countValue >= AQS_DATA_SIZE)
         {
             countValue = 0;
             firstDone = true;
