@@ -31,7 +31,7 @@
 
 #include <string.h>
 
-#define AQS_DATA_SIZE 20
+#define AQS_DATA_SIZE 25
 
 class AirQualitySensor
 {
@@ -39,6 +39,7 @@ class AirQualitySensor
         bool setup(uint8_t pin);
 
         bool read(uint8_t *val);
+        bool leakDetect();
 
         bool update();
 
@@ -48,6 +49,8 @@ class AirQualitySensor
         bool firstDone;
         uint8_t countValue;
         uint8_t dataValue[AQS_DATA_SIZE];
+        uint8_t lastAverage;
+        bool leakDetected;
 };
 
 /****************************************************************************************/
@@ -61,6 +64,9 @@ bool AirQualitySensor::setup(uint8_t pin)
 
     countValue = 0;
     memset(dataValue, 0, AQS_DATA_SIZE);
+    lastAverage = 0;
+
+    leakDetected = false;
 
     return true;
 }
@@ -70,36 +76,31 @@ bool AirQualitySensor::read(uint8_t *value)
     if (firstDone == false)
         return false;
 
-    uint16_t sumValue = 0;
-    for (uint8_t i=0; i<AQS_DATA_SIZE; i++)
-        sumValue = sumValue + dataValue[i];
-
-    uint16_t rawValue = sumValue / (uint16_t)AQS_DATA_SIZE;
-
-    if (rawValue >= 0 && rawValue < 111)  // Good
-    {
+    if (lastAverage >= 0 && lastAverage < 80)  // Good
         *value = 0;
-    }
-    else if (rawValue >= 111 && rawValue < 167)  // Medium
-    {
+    else if (lastAverage >= 80 && lastAverage < 110)  // Medium
         *value = 1;
-    }
-    else if (rawValue >= 167 && rawValue < 222)  // Bad
-    {
+    else if (lastAverage >= 110 && lastAverage < 130)  // Bad
         *value = 2;
-    }
     else  // Very Bad - Emergency
-    {
-        *value = 5;
-    }
-    SHW0.print(rawValue);  SHW0.print(";");
+        *value = 3;
+
+    *value = lastAverage;
 
     return true;
 }
 
+bool AirQualitySensor::leakDetect()
+{
+    if (firstDone == false)
+        return false;
+
+    return leakDetected;
+}
+
 bool AirQualitySensor::update()
 {
-    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 120000 : 250))
+    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 100/*120000*/ : 100))
     {
         lastUpdate = ST.millisec();
 
@@ -108,6 +109,23 @@ bool AirQualitySensor::update()
         {
             countValue = 0;
             firstDone = true;
+        }
+
+        if (firstDone == true)
+        {
+            uint16_t sumValue = 0;
+            for (uint8_t i=0; i<AQS_DATA_SIZE; i++)
+                sumValue = sumValue + dataValue[i];
+
+            lastAverage = sumValue / (uint16_t)AQS_DATA_SIZE;
+
+            leakDetected = true;
+
+            if (lastAverage < 130)
+                leakDetected = false;
+
+            if (lastAverage >= 130 || abs(dataValue[countValue] - lastAverage) >= 10)
+                leakDetected = true;
         }
     }
     return true;
