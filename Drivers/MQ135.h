@@ -85,8 +85,6 @@ bool AirQualitySensor::read(uint8_t *value)
     else  // Very Bad - Emergency
         *value = 3;
 
-    *value = lastAverage;
-
     return true;
 }
 
@@ -100,7 +98,7 @@ bool AirQualitySensor::leakDetect()
 
 bool AirQualitySensor::update()
 {
-    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 100/*120000*/ : 100))
+    if (ST.time_diff(ST.millisec(), lastUpdate) > ((countValue == 0 && firstDone == false) ? 120000 : 100))
     {
         lastUpdate = ST.millisec();
 
@@ -121,7 +119,7 @@ bool AirQualitySensor::update()
 
             leakDetected = true;
 
-            if (lastAverage < 150)
+            if (lastAverage < 80)
                 leakDetected = false;
 
             if (lastAverage >= 150 || abs(dataValue[countValue] - lastAverage) >= 10)
