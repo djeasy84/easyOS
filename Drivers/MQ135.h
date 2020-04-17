@@ -78,9 +78,9 @@ bool AirQualitySensor::read(uint8_t *value)
 
     if (lastAverage >= 0 && lastAverage < 80)  // Good
         *value = 0;
-    else if (lastAverage >= 80 && lastAverage < 110)  // Medium
+    else if (lastAverage >= 80 && lastAverage < 120)  // Medium
         *value = 1;
-    else if (lastAverage >= 110 && lastAverage < 130)  // Bad
+    else if (lastAverage >= 120 && lastAverage < 140)  // Bad
         *value = 2;
     else  // Very Bad - Emergency
         *value = 3;
@@ -121,10 +121,10 @@ bool AirQualitySensor::update()
 
             leakDetected = true;
 
-            if (lastAverage < 130)
+            if (lastAverage < 150)
                 leakDetected = false;
 
-            if (lastAverage >= 130 || abs(dataValue[countValue] - lastAverage) >= 10)
+            if (lastAverage >= 150 || abs(dataValue[countValue] - lastAverage) >= 10)
                 leakDetected = true;
         }
     }
