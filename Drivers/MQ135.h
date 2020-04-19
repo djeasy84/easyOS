@@ -85,6 +85,8 @@ bool AirQualitySensor::read(uint8_t *value)
     else  // Very Bad - Emergency
         *value = 3;
 
+    *value = lastAverage;
+
     return true;
 }
 
@@ -117,7 +119,7 @@ bool AirQualitySensor::update()
 
             lastAverage = sumValue / (uint16_t)AQS_DATA_SIZE;
 
-            if (lastAverage < 120)
+            if (lastAverage < 115)
                 leakDetected = false;
 
             if (lastAverage >= 150 || abs(dataValue[countValue] - lastAverage) >= 10)
