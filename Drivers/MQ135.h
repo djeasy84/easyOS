@@ -78,9 +78,9 @@ bool AirQualitySensor::read(uint8_t *value)
 
     if (lastAverage >= 0 && lastAverage < 80)  // Good
         *value = 0;
-    else if (lastAverage >= 80 && lastAverage < 120)  // Medium
+    else if (lastAverage >= 80 && lastAverage < 115)  // Medium
         *value = 1;
-    else if (lastAverage >= 120 && lastAverage < 140)  // Bad
+    else if (lastAverage >= 115 && lastAverage < 130)  // Bad
         *value = 2;
     else  // Very Bad - Emergency
         *value = 3;
