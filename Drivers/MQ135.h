@@ -85,8 +85,6 @@ bool AirQualitySensor::read(uint8_t *value)
     else  // Very Bad - Emergency
         *value = 3;
 
-    *value = lastAverage;
-
     return true;
 }
 
