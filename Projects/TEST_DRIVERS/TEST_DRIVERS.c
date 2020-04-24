@@ -58,14 +58,12 @@
 #include "TB6600.h"
 #include "PN532.h"
 #include "DHT22.h"
-#include "MQ2.h"
 #include "MQ135.h"
 
 Temperature DTS;
 TemperatureHumidity DTHS;
 
-GasSensor2 GS2;
-GasSensor135 GS135;
+AirQualitySensor AQS;
 
 bool init()
 {
@@ -98,8 +96,7 @@ bool init()
     DMX.update();
     STP.step();
     NFC.read(0);
-    GS2.setup(0);
-    GS135.setup(0);
+    AQS.setup(0);
 
     return false;
 }
