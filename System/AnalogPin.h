@@ -141,7 +141,7 @@
 class AnalogPin
 {
     public:
-        uint16_t read(uint8_t id);
+        uint16_t read(uint8_t id);  // ~55us
 };
 
 AnalogPin AP;
