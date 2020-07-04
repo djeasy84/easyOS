@@ -42,7 +42,7 @@
 class SerialHW
 {
     public:
-        virtual void setup(uint32_t speed=9600, bool dStop=false)=0;
+        virtual void setup(uint32_t speed=9600, bool dStop=false) = 0;
 
         void flush();
 
@@ -70,7 +70,8 @@ class SerialHW
         bool println(double data, uint8_t dec = 2);
         bool println(const char *data = "");
 
-        bool readln(char *data, uint8_t max);
+        bool readLineCR(char *data, uint8_t *len, uint8_t max);
+        bool readLineCRLF(char *data, uint8_t *len, uint8_t max);
 
     protected:
         bool writeMulti(uint8_t *data, uint8_t len);
@@ -247,25 +248,53 @@ bool SerialHW::println(const char *data)
     return true;
 }
 
-bool SerialHW::readln(char *data, uint8_t max)
+bool SerialHW::readLineCR(char *data, uint8_t *len, uint8_t max)
 {
-    uint8_t len = 0;
+    *len = 0;
     *data = 0;
     uint32_t start_microsec = ST.microsec();
-    while(len < max)
+    while(*len < max)
     {
-        if (read((uint8_t *)&data[len]))
-            len++;
-        if (len > 2)
+        if (read((uint8_t *)&data[*len]))
         {
-            if (data[len-2] == '\r' && data[len-1] == '\n')
+            (*len)++;
+            start_microsec = ST.microsec();
+        }
+        if (*len >= 1)
+        {
+            if (data[(*len)-1] == '\r')
                 break;
         }
         if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
             return false;
-        start_microsec = ST.microsec();
     }
-    data[len-2] = 0;
+    if (*len >= 1)
+        data[(*len)-1] = 0;
+    return true;
+}
+
+bool SerialHW::readLineCRLF(char *data, uint8_t *len, uint8_t max)
+{
+    *len = 0;
+    *data = 0;
+    uint32_t start_microsec = ST.microsec();
+    while(*len < max)
+    {
+        if (read((uint8_t *)&data[*len]))
+        {
+            (*len)++;
+            start_microsec = ST.microsec();
+        }
+        if (*len >= 2)
+        {
+            if (data[(*len)-2] == '\r' && data[(*len)-1] == '\n')
+                break;
+        }
+        if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
+            return false;
+    }
+    if (*len >= 2)
+        data[(*len)-2] = 0;
     return true;
 }
 
@@ -289,7 +318,10 @@ bool SerialHW::readMulti(uint8_t *data, uint8_t *len, uint8_t max)
         if (ST.time_diff(ST.microsec(), start_microsec) > SERIAL_HW_TIMEOUT)
             break;
         if (read(&data[*len]))
+        {
             (*len)++;
+            start_microsec = ST.microsec();
+        }
     }
     return true;
 }
