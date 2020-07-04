@@ -59,6 +59,7 @@
 #include "PN532.h"
 #include "DHT22.h"
 #include "MQ135.h"
+#include "SIM900.h"
 
 Temperature DTS;
 TemperatureHumidity DTHS;
@@ -97,6 +98,7 @@ bool init()
     STP.step();
     NFC.read(0);
     AQS.setup(0);
+    GSM.setup(0,0);
 
     return false;
 }
