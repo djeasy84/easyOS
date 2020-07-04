@@ -61,6 +61,7 @@ class Time
 {
     public:
         Time();
+
         void enable();
         void disable();
 
