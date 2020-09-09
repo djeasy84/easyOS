@@ -538,6 +538,7 @@ enum_gsm_cmd_result GSMEngine::sendCommand(char *command)
     {
         #if defined (SERIAL_HW_1_M)
         case 1:
+		{
             bool res = SHW1.write((unsigned char *)command, strlen(command));
 			if (res == false)
 			{
@@ -548,10 +549,12 @@ enum_gsm_cmd_result GSMEngine::sendCommand(char *command)
 			{
 				return ERROR;
 			}
-        break;
+        	break;
+		}
         #endif
         #if defined (SERIAL_HW_2_M)
         case 2:
+		{
             bool res = SHW2.write((unsigned char *)command, strlen(command));
 			if (res == false)
 			{
@@ -562,11 +565,13 @@ enum_gsm_cmd_result GSMEngine::sendCommand(char *command)
 			{
 				return ERROR;
 			}
-        break;
+        	break;
+		}
         #endif
         #if defined (SERIAL_HW_3_M)
         case 3:
-             ool res = SHW3.write((unsigned char *)command, strlen(command));
+		{
+            bool res = SHW3.write((unsigned char *)command, strlen(command));
 			if (res == false)
 			{
 				return ERROR;
@@ -576,7 +581,8 @@ enum_gsm_cmd_result GSMEngine::sendCommand(char *command)
 			{
 				return ERROR;
 			}
-        break;
+        	break;
+		}
         #endif
     }
 	cmd_response_timeout = ST.millisec();
