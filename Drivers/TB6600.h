@@ -115,8 +115,6 @@ void StepperMotor::step()
     _delay_us(500);
 }
 
-#include "SerialHW.h"
-
 void StepperMotor::steps(uint16_t num)
 {
     if (num == 0)
