@@ -47,7 +47,7 @@ class StepperMotor
         void step();
         void steps(uint16_t num);
 
-        bool update();
+        void update();
 
     private:
         uint8_t enaPin;
@@ -129,16 +129,16 @@ void StepperMotor::steps(uint16_t num)
     }
 }
 
-bool StepperMotor::update()
+void StepperMotor::update()
 {
-    if (ST.time_diff(ST.microsec(), lastUpdate) >= 2500)
+    if (ST.time_diff(ST.microsec(), lastUpdate) >= 1000)
     {
         lastUpdate = ST.microsec();
 
         if (curSpdVal < spdVal)
             curSpdVal = (curSpdVal < 200) ? (curSpdVal + 1) : (curSpdVal >= 200 && curSpdVal < 500) ? (curSpdVal + 2) : (curSpdVal + 4);
         if (curSpdVal > spdVal)
-            curSpdVal = (curSpdVal < 200) ? (curSpdVal - 1) : (curSpdVal >= 200 && curSpdVal < 500) ? (curSpdVal - 2) : (curSpdVal - 4);
+            curSpdVal = (curSpdVal < 200) ? (curSpdVal - 1) : (curSpdVal >= 200 && curSpdVal < 500) ? (curSpdVal - 4) : (curSpdVal - 8);
 
         PFM.write(curSpdVal);
     }
